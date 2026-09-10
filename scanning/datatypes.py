@@ -1,6 +1,5 @@
 from typing import Literal, TypedDict
 
-
 Level = Literal["top", "middle", "bottom"]
 
 BottomType = Literal["back", "hull", "front"]
@@ -64,7 +63,7 @@ class Boat:
         )
 
     # Validation method is generated
-    # Should fulfill previously discussed constraints 
+    # Should fulfill previously discussed constraints
     def validate(self) -> list[str]:
         errors = []
 
