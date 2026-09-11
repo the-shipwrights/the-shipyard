@@ -21,7 +21,7 @@ class AttachmentPoint:
     y: int
     direction: Direction
     
-    @dataclass(frozen=True)
+@dataclass(frozen=True)
 class PieceType:
     id: int
     name: str
