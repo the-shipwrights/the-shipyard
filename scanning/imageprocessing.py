@@ -40,3 +40,22 @@ def capture_photo(img_name: str | None = None) -> cv.typing.MatLike | str:
         return img_name
     finally:
         cam.release()
+
+
+# For sending the boat to the api
+"""
+import requests
+
+response = requests.post(
+    "http://localhost:8000/api/boats",
+    json=boat.to_dict(),
+    timeout=10,
+)
+
+response.raise_for_status()
+
+result = response.json()
+boat_id = result["id"]
+
+print(f"Open: http://localhost:5173/boat/{boat_id}")
+"""
