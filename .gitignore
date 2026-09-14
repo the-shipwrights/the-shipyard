@@ -16,3 +16,11 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 scanning/.env/
+
+node_modules/
+__pycache__/
+.venv/
+.venv-wsl/
+.venv-win/
+
+backend/boats.db

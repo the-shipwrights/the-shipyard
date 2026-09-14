@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from typing import Literal
 
 # ------------------------------------------------------------------
@@ -166,6 +166,9 @@ class Piece:
     flipped: bool = False
     colors: list[str] = field(default_factory=list)
 
+    def to_dict(self) -> dict:
+        return asdict(self)
+
 # ------------------------------------------------------------------
 # ASCII representation
 # ------------------------------------------------------------------
@@ -201,6 +204,45 @@ class Boat:
     the attachment points defined by their PieceTypes.
     """
     pieces: list[Piece] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        return {
+            "pieces": [
+                piece.to_dict()
+                for piece in self.pieces
+            ]
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Boat":
+        return cls(
+            pieces=[
+                Piece(**piece_data)
+                for piece_data in data.get("pieces", [])
+            ]
+        )
+
+    def validate(self) -> list[str]:
+        errors = []
+        piece_ids = set()
+
+        for piece in self.pieces:
+            if piece.id in piece_ids:
+                errors.append(
+                    f"Duplicate piece id: {piece.id}"
+                )
+
+            piece_ids.add(piece.id)
+
+            if piece.type_id not in PIECE_TYPES:
+                errors.append(
+                    f"Unknown piece type id: {piece.type_id}"
+                )
+
+        return errors
+
+    def is_valid(self) -> bool:
+        return not self.validate()
 
     def __str__(self) -> str:
         """String representation of the boat and all placed pieces."""
@@ -280,15 +322,51 @@ class Boat:
             rows.append(" ".join(row))
 
         return "\n".join(rows)
- 
-myBoat = Boat(pieces=[
-    Piece(0, 0,   0,   0),    # left/end hull
-    Piece(1, 1, 150,   0),    # middle hull
-    Piece(2, 2, 250,   0),    # right/end hull
-    Piece(3, 3, 150, 100),    # cabin
-    Piece(4, 6, 305, 100),    # flag on end hull
-    Piece(5, 6, 195, 200),    # flag on cabin
-])
 
-print(myBoat)
-print(myBoat.ascii(100))
+
+if __name__ == "__main__":
+    myBoat = Boat(pieces=[
+        Piece(0, 0,   0,   0),    # left/end hull
+        Piece(1, 1, 150,   0),    # middle hull
+        Piece(2, 2, 250,   0),    # right/end hull
+        Piece(3, 3, 150, 100),    # cabin
+        Piece(4, 6, 305, 100),    # flag on end hull
+        Piece(5, 6, 195, 200),    # flag on cabin
+    ])
+
+    print(myBoat)
+    print(myBoat.ascii(100))
+
+"""
+{
+  "id": "ABCD",
+  "boat": {
+    "pieces": []
+  },
+  "customization": {
+    "color": "#2f7fff"
+  },
+  "status": "customizing"
+}
+
+{
+  "pieces": [
+    {
+      "id": 0,
+      "type_id": 0,
+      "x": 0,
+      "y": 0,
+      "flipped": false,
+      "colors": []
+    },
+    {
+      "id": 1,
+      "type_id": 1,
+      "x": 150,
+      "y": 0,
+      "flipped": false,
+      "colors": []
+    }
+  ]
+}
+"""
