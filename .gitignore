@@ -16,4 +16,15 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 scanning/.env/
+<<<<<<< HEAD
 scanning/wooden_block_symbols/
+=======
+
+node_modules/
+__pycache__/
+.venv/
+.venv-wsl/
+.venv-win/
+
+backend/boats.db
+>>>>>>> e677f1637d9332946200cd622ceb30158a0212cc
