@@ -1,6 +1,8 @@
+import math
 from typing import overload
-import numpy as np
+
 import cv2 as cv
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -31,7 +33,7 @@ def capture_photo(img_name: str | None = None) -> cv.typing.MatLike | str:
 
         # cv.imshow("Captured", frame)
         # cv.waitKey(0)  # Await key press before continuing.
-       # cv.destroyWindow("Captured")
+        # cv.destroyWindow("Captured")
 
         if img_name is None:
             return frame
@@ -45,90 +47,112 @@ def capture_photo(img_name: str | None = None) -> cv.typing.MatLike | str:
 
 
 
-def find_feature(query_path: str, scene_path: str) -> tuple[int, int]:
+def find_feature(query_path: str, scene_path: str) -> tuple[float, float, float, float]:
     MIN_MATCH_COUNT = 10
 
-    # Query is what we're looking for, Scene is where we are looking.
-    query = cv.imread(query_path, cv.IMREAD_GRAYSCALE)       # queryImage
-    scene = cv.imread(scene_path, cv.IMREAD_GRAYSCALE)           # trainImage
+    query = cv.imread(query_path, cv.IMREAD_GRAYSCALE)
+    scene = cv.imread(scene_path, cv.IMREAD_GRAYSCALE)
 
-    ## Initiate SIFT detector
+    if query is None or scene is None:
+        raise FileNotFoundError("Could not load input images.")
+
+    # Initiate SIFT detector
     sift = cv.SIFT_create()
 
-    ## find the keypoints and descriptors with SIFT
-    kp1, des1 = sift.detectAndCompute(query,None)
-    kp2, des2 = sift.detectAndCompute(scene,None)
+    kp1, des1 = sift.detectAndCompute(query, None)
+    kp2, des2 = sift.detectAndCompute(scene, None)
 
     FLANN_INDEX_KDTREE = 1
-    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
-    search_params = dict(checks = 50)
+    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+    search_params = dict(checks=50)
 
     flann = cv.FlannBasedMatcher(index_params, search_params)
+    matches = flann.knnMatch(des1, des2, k=2)
 
-    matches = flann.knnMatch(des1,des2,k=2)
-
-    ## store all the good matches as per Lowe's ratio test.
+    # Lowe's ratio test
     good = []
-    for m,n in matches:
-        if m.distance < 0.7*n.distance:
+    for m, n in matches:
+        if m.distance < 0.7 * n.distance:
             good.append(m)
 
+    print(f"Matches found - {len(good)}")
 
-    '''
-    if len(good)>MIN_MATCH_COUNT:
-        src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
-        dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
-
-        M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC,5.0)
-        matchesMask = mask.ravel().tolist()
-
-        h,w = query.shape
-        pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
-        dst = cv.perspectiveTransform(pts,M)
-
-        scene = cv.polylines(scene,[np.int32(dst)],True,255,3, cv.LINE_AA)
-
-    else:
-        print( "Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT) )
-        matchesMask = None
-    '''
-    print( "Matches found - {}".format(len(good)))
-    matchesMask = None
-        
-
-    draw_params = dict(matchColor = (0,255,0), # draw matches in green color
-                    singlePointColor = None,
-                    matchesMask = matchesMask, # draw only inliers
-                    flags = 2)
-
-    img3 = cv.drawMatches(query,kp1,scene,kp2,good,None,**draw_params)
-
-    avg_x = 0
-    avg_y = 0
+    avg_x = 0.0
+    avg_y = 0.0
+    distance = 0.0
+    angle_deg = 0.0
 
     if len(good) > 0:
-        for match in good:             
-            point = kp2[match.trainIdx].pt
-            
-            avg_x += point[0]
-            avg_y += point[1] 
+        # Extract pixel locations of matches in scene image
+        scene_pts = np.float32([kp2[m.trainIdx].pt for m in good])
         
-        avg_x = avg_x /len(good)
-        avg_y = avg_y/len(good)
+        # Calculate centroid of matched points
+        avg_x = float(np.mean(scene_pts[:, 0]))
+        avg_y = float(np.mean(scene_pts[:, 1]))
 
-    print(avg_x, avg_y)
+        # Calculate scene frame center (Reference Point)
+        h, w = scene.shape
+        center_x, center_y = w / 2.0, h / 2.0
 
-    plt.imshow(img3, 'gray'),plt.show()
+        # Relative coordinates relative to image center
+        dx = avg_x - center_x
+        dy = avg_y - center_y  # Positive down in standard image space
 
-    return avg_x, avg_y
+        # Distance calculation
+        distance = math.hypot(dx, dy)
+
+        # Angle calculation (-180 to 180 degrees)
+        # 0 deg = Right, 90 deg = Down, -90 deg = Up, 180/-180 deg = Left
+        angle_rad = math.atan2(dy, dx)
+        angle_deg = math.degrees(angle_rad)
+
+        #print(f"Centroid: ({avg_x:.2f}, {avg_y:.2f})")
+        #print(f"Distance from center: {distance:.2f} px")
+        #print(f"Angle from center: {angle_deg:.2f}°")
+
+    draw_params = dict(
+        matchColor=(0, 255, 0),
+        singlePointColor=None,
+        matchesMask=None,
+        flags=2
+    )
+
+    img3 = cv.drawMatches(query, kp1, scene, kp2, good, None, **draw_params)
+    plt.imshow(img3, 'gray')
+    plt.show()
+
+    return avg_x, avg_y, distance, angle_deg
 
 
 
+while(True):
+    user_input = input("press any button to take a picture and run an analysis!")
 
-capture_photo("selfie.png")
+    capture_photo("webcam-feed.png")
 
-find_feature("matchpic-box.png", "bgscene.png")
+    avg_x1, avg_y1, distance1, angle1 = find_feature("matchpic-box.png", "webcam-feed.png")
+    print("BOX FEATURE MATCHING!")
+    print(f"average coordinates for matching points (x,y): ({avg_x1}, {avg_y1})")
+    print(f"distance and angle from image centroid: {distance1}, {angle1}")
 
-find_feature("matchpic-smile.png", "bgscene.png")
+
+    avg_x2, avg_y2, distance2, angle2 = find_feature("matchpic-smile.png", "webcam-feed.png")
+    print("BOX FEATURE MATCHING!")
+    print(f"average coordinates for matching points (x,y): ({avg_x2}, {avg_y2})")
+    print(f"distance and angle from image centroid: {distance2}, {angle2}")
+
+
+    # SORRY FILIP, NOT HAPPENING THIS TIME! 
+    # --- CALCULATE BETWEEN THE TWO MATCHES ---
+    # dx = avg_x2 - avg_x1
+    # dy = avg_y2 - avg_y1  # Positive down in image coordinates
+
+    # inter_distance = math.hypot(dx, dy)
+    # inter_angle_deg = math.degrees(math.atan2(dy, dx))
+
+    # print("=== RELATIVE DISTANCE & ANGLE (Box -> Smile) ===")
+    # print(f"Distance between objects: {inter_distance:.2f} px")
+    # print(f"Angle from Box to Smile: {inter_angle_deg:.2f}°")
+    # print("-" * 50)
 
 
