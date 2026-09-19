@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 def capture_photo(img_name: None = None) -> cv.typing.MatLike:
     ...
 
-
+# saves the image to a location in the repository instead.
 @overload
 def capture_photo(img_name: str) -> str:
     ...
@@ -48,7 +48,6 @@ def capture_photo(img_name: str | None = None) -> cv.typing.MatLike | str:
 
 
 def find_feature(query_path: str, scene_path: str) -> tuple[float, float, float, float]:
-    MIN_MATCH_COUNT = 10
 
     query = cv.imread(query_path, cv.IMREAD_GRAYSCALE)
     scene = cv.imread(scene_path, cv.IMREAD_GRAYSCALE)
@@ -63,8 +62,8 @@ def find_feature(query_path: str, scene_path: str) -> tuple[float, float, float,
     kp2, des2 = sift.detectAndCompute(scene, None)
 
     FLANN_INDEX_KDTREE = 1
-    index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-    search_params = dict(checks=50)
+    index_params = {"algorithm": FLANN_INDEX_KDTREE, "trees": 5}
+    search_params = {"checks": 50}
 
     flann = cv.FlannBasedMatcher(index_params, search_params)
     matches = flann.knnMatch(des1, des2, k=2)
@@ -85,7 +84,7 @@ def find_feature(query_path: str, scene_path: str) -> tuple[float, float, float,
     if len(good) > 0:
         # Extract pixel locations of matches in scene image
         scene_pts = np.float32([kp2[m.trainIdx].pt for m in good])
-        
+
         # Calculate centroid of matched points
         avg_x = float(np.mean(scene_pts[:, 0]))
         avg_y = float(np.mean(scene_pts[:, 1]))
@@ -110,12 +109,12 @@ def find_feature(query_path: str, scene_path: str) -> tuple[float, float, float,
         #print(f"Distance from center: {distance:.2f} px")
         #print(f"Angle from center: {angle_deg:.2f}°")
 
-    draw_params = dict(
-        matchColor=(0, 255, 0),
-        singlePointColor=None,
-        matchesMask=None,
-        flags=2
-    )
+    draw_params = {
+        "matchColor": (0, 255, 0),
+        "singlePointColor": None,
+        "matchesMask": None,
+        "flags": 2
+    }
 
     img3 = cv.drawMatches(query, kp1, scene, kp2, good, None, **draw_params)
     plt.imshow(img3, 'gray')
@@ -142,7 +141,7 @@ while(True):
     print(f"distance and angle from image centroid: {distance2}, {angle2}")
 
 
-    # SORRY FILIP, NOT HAPPENING THIS TIME! 
+    # SORRY FILIP, NOT HAPPENING THIS TIME!
     # --- CALCULATE BETWEEN THE TWO MATCHES ---
     # dx = avg_x2 - avg_x1
     # dy = avg_y2 - avg_y1  # Positive down in image coordinates
@@ -154,5 +153,3 @@ while(True):
     # print(f"Distance between objects: {inter_distance:.2f} px")
     # print(f"Angle from Box to Smile: {inter_angle_deg:.2f}°")
     # print("-" * 50)
-
-

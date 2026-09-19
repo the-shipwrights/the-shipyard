@@ -7,6 +7,14 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+"""
+This script generates a synthetic dataset of wooden blocks with
+symbols for training. It doesn't at all reflect the real circumstances.
+
+IMPORTANT: this code is AI generated! but it has been reviewed by a human and
+is functional.
+"""
+
 CLASSES = {
     "back": "◥",
     "front": "◤",
@@ -21,8 +29,6 @@ NAMES = list(CLASSES)
 SIZE = 640
 PATCH = 220
 
-
-# Generated code ahead! This code is meant to generate training data.
 
 def font_for(size, font_path=None):
     candidates = [
