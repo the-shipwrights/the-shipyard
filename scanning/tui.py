@@ -228,6 +228,21 @@ class App:
     # ------------------------------------------------------------------
 
     def _show_prediction_menu(self) -> None:
+        """
+        1. Ask the user to select a model from a list of weights
+            if no weights are present, tell them to go back and train a model first.
+
+        2. Ask the user if they would like to:
+            a) show camera stream and allow user input to take a snapshot of current prediction (saves ultralytics bounding boxes and their classes)
+            b) predict camera stream in real-time (for demo & testing purposes only)
+            c) predict a specific image (for testing purposes only)
+                If c) ask the user to input path to the specified image, use default if no input.
+            d) change current weights
+                if d) show user a list of weights and let them select one.
+                    if no weights are present, tell them to go back and train a model first.
+
+            once predictions are complete or if the user exists the camera stream, we should return to the main menu.
+        """
         model_predict()
         self.state = State.MENU
 
