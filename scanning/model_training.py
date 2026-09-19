@@ -81,20 +81,10 @@ def model_train(
     return Path(results.save_dir) / "weights" / "best.pt"
 
 
-def model_predict(mode: int | None = None, path: str | None = None) -> None:
-    """Prediction entry point reserved for the prediction implementation."""
-    raise NotImplementedError("Prediction is not implemented yet")
-
-
-
-# model_training.py shouldn't be manually run, this entry point is for debugging.
-if __name__ == "__main__":
-    # i am sorry for this line
-    print("\033[92m#################################### \n model_training.py debugging \n#################################### \033[00m")
-
-    result = model_train(
-        model="runs/detect/train/weights/best.pt",
-        epochs=1,
-        imgsz=32,
-    )
-    print(f"path to model: {result}")
+# NOTE: we could also not have a mode parameter and instead check if img is path or none instead.
+# using mode parameters feels more human-readable though.
+def model_predict(model, mode, img: Path | None = None):
+    if mode == mode.realtime: # TODO: implement mode enum.
+        print("realtime")
+    elif mode == mode.image:
+        print("single image")

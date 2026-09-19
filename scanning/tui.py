@@ -3,7 +3,7 @@ Terminal user interface for the scanning application. I really wanted to write a
 TUIs are awesome. Also this should abstract away a lot of the nitty-griity details of model training,
 so everyone else should be able to easily interact with it!
 
-NOTICE: AI was used to generate parts of the code, but a hefty part is human-written,
+NOTICE: AI was used to generate parts of the code, but it is part-human written,
 and everything has been thoroughly tested by a human. (Sep 19, 2026)
 """
 
@@ -15,8 +15,12 @@ from collections.abc import Callable, Sequence
 from enum import Enum, auto
 from pathlib import Path
 
-from model_training import model_predict, model_train
 from simple_term_menu import TerminalMenu
+
+if __package__:
+    from .model_training import model_predict, model_train
+else:
+    from model_training import model_predict, model_train
 
 # ---------------------------------------------------------------------------
 # Application configuration
@@ -24,7 +28,9 @@ from simple_term_menu import TerminalMenu
 
 DEFAULT_MODEL = "yolo26n.pt"
 RUNS_DIRECTORY = Path("runs/detect")
+PREDICTION_RUNS_DIRECTORY = Path("runs/predict")
 TRAINING_DATA_DIRECTORY = Path("training_data")
+DEFAULT_IMAGE_PATH = Path("test-image.jpg")
 
 MAIN_MENU_OPTIONS = (
     "🕮 TRAIN A MODEL",
@@ -114,13 +120,41 @@ class App:
             raise RuntimeError(f"Menu option has no action: {selection}")
 
     # ------------------------------------------------------------------
+    # model selection
+    # ------------------------------------------------------------------
+
+    def _select_model(self, *, include_default: bool) -> tuple[str | Path | None, bool]:
+        """Select model weights, optionally including the default model."""
+        model_paths = self._available_model_paths()
+        options = ([f"USE DEFAULT MODEL ({DEFAULT_MODEL})"] if include_default else [])
+        options += [str(path) for path in model_paths] + ["GO BACK"]
+        selection = self._menu_factory(options).show()
+
+        if selection is None or selection == len(options) - 1:
+            return None, True
+        if not isinstance(selection, int) or not 0 <= selection < len(options):
+            raise RuntimeError(f"Model menu returned invalid selection: {selection!r}")
+        if include_default and selection == 0:
+            return None, False
+        path_index = selection - 1 if include_default else selection
+        return model_paths[path_index], False
+
+    def _available_model_paths(self) -> list[Path]:
+        """Return unique trained model weights in stable order."""
+        paths = (
+            [self.current_weights] if self.current_weights is not None else []
+        )
+        paths.extend(self.runs_directory.glob("train*/weights/best.pt"))
+        return sorted({path for path in paths if path.is_file()})
+
+    # ------------------------------------------------------------------
     # Training workflow
     # ------------------------------------------------------------------
 
     def _show_train_menu(self) -> None:
         """Run model selection, dataset selection, and training confirmation."""
         while True:
-            model, went_back = self._select_model()
+            model, went_back = self._select_model(include_default=True)
             if went_back:
                 self.state = State.MENU
                 return
@@ -138,24 +172,6 @@ class App:
 
             self._run_training(model, dataset, epochs)
             return
-
-    def _select_model(self) -> tuple[str | Path | None, bool]:
-        """Select the base model, or return to the main menu."""
-        model_paths = sorted(
-            path / "weights" / "best.pt"
-            for path in self.runs_directory.glob("train*/")
-            if (path / "weights" / "best.pt").is_file()
-        )
-        options = [f"USE DEFAULT MODEL ({DEFAULT_MODEL})"] + [
-            str(path) for path in model_paths
-        ] + ["GO BACK"]
-        selection = self._menu_factory(options).show()
-
-        if selection is None or selection == len(options) - 1:
-            return None, True
-        if not isinstance(selection, int) or not 0 <= selection < len(options):
-            raise RuntimeError(f"Model menu returned invalid selection: {selection!r}")
-        return (None if selection == 0 else model_paths[selection - 1], False)
 
     def _select_dataset(self) -> Path | None:
         """Select a dataset, or return to model selection."""
@@ -226,23 +242,59 @@ class App:
     # ------------------------------------------------------------------
 
     def _show_prediction_menu(self) -> None:
-        """
-        1. Ask the user to select a model from a list of weights
-            if no weights are present, tell them to go back and train a model first.
+        """Select weights and a prediction mode, then return to the main menu."""
+        while True:
+            if not self._available_model_paths():
+                print("NO MODEL WEIGHTS FOUND. TRAIN A MODEL FIRST.")
+                self.state = State.MENU
+                return
 
-        2. Ask the user if they would like to:
-            a) show camera stream and allow user input to take a snapshot of current prediction (saves ultralytics bounding boxes and their classes)
-            b) predict camera stream in real-time (for demo & testing purposes only)
-            c) predict a specific image (for testing purposes only)
-                If c) ask the user to input path to the specified image, use default if no input.
-            d) change current weights
-                if d) show user a list of weights and let them select one.
-                    if no weights are present, tell them to go back and train a model first.
+            model, went_back = self._select_model(include_default=False)
+            if went_back:
+                self.state = State.MENU
+                return
 
-            once predictions are complete or if the user exists the camera stream, we should return to the main menu.
-        """
-        model_predict()
-        self.state = State.MENU
+            while True:
+                mode = self._select_prediction_mode()
+                if mode is None:
+                    break
+
+                if mode == "IMAGE":
+                    image_path = self._select_prediction_image()
+                    if image_path is None:
+                        continue
+                    model_predict(model=model, mode="image", path=image_path)
+                else:
+                    model_predict(model=model, mode=mode.lower())
+
+                self.state = State.MENU
+                return
+
+    def _select_prediction_mode(self) -> str | None:
+        """Select camera snapshot, realtime camera, image, or go back."""
+        options = (
+            "REALTIME WITH SNAPSHOTTING",
+            "SINGLE IMAGE",
+            "GO BACK",
+        )
+        selection = self._menu_factory(options).show()
+        if selection is None or selection == 3:
+            return None
+        if not isinstance(selection, int) or not 0 <= selection < 3:
+            raise RuntimeError(
+                f"Prediction mode menu returned invalid selection: {selection!r}"
+            )
+        return ("REALTIME", "IMAGE")[selection]
+
+    def _select_prediction_image(self) -> Path | None:
+        """Read an image path, using the default when the input is empty."""
+        value = input(
+            f"ENTER IMAGE PATH (DEFAULT: {DEFAULT_IMAGE_PATH}) "
+            "OR 'GO BACK': "
+        ).strip()
+        if value.lower() in {"back", "go back", "b"}:
+            return None
+        return Path(value) if value else DEFAULT_IMAGE_PATH
 
     # ------------------------------------------------------------------
     # Application lifecycle
