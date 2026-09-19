@@ -83,8 +83,10 @@ def model_train(
 
 # NOTE: we could also not have a mode parameter and instead check if img is path or none instead.
 # using mode parameters feels more human-readable though.
-def model_predict(model, mode, img: Path | None = None):
-    if mode == mode.realtime: # TODO: implement mode enum.
+def model_predict(model, mode: str, img: Path | None = None):
+    if mode == "realtime":
         print("realtime")
-    elif mode == mode.image:
+        # use ultralytics to get the camera feed or something.
+    elif mode == "image":
         print("single image")
+        # use ultralytics again.

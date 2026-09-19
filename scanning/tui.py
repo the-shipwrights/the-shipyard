@@ -265,7 +265,7 @@ class App:
                         continue
                     model_predict(model=model, mode="image", path=image_path)
                 else:
-                    model_predict(model=model, mode=mode.lower())
+                    model_predict(model=model, mode="realtime")
 
                 self.state = State.MENU
                 return
