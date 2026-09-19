@@ -31,8 +31,6 @@ MAIN_MENU_OPTIONS = (
     "👁 PREDICT CONTENTS",
     "✖ QUIT",
 )
-# Backwards-compatible name for callers that import the menu options.
-MENU_OPTIONS = MAIN_MENU_OPTIONS
 
 
 # ---------------------------------------------------------------------------
@@ -251,12 +249,10 @@ class App:
     # ------------------------------------------------------------------
 
     def quit(self) -> None:
-        """Stop the event loop after an explicit user choice."""
         self.state = State.QUIT
 
 
 def main() -> None:
-    """Start the terminal application."""
     App().run()
 
 
