@@ -33,9 +33,9 @@ TRAINING_DATA_DIRECTORY = Path("training_data")
 DEFAULT_IMAGE_PATH = Path("test-image.jpg")
 
 MAIN_MENU_OPTIONS = (
-    "🕮 TRAIN A MODEL",
-    "👁 PREDICT CONTENTS",
-    "✖ QUIT",
+    "🕮  TRAIN BOAT-VISION",
+    "👁  BEAR WITNESS TO BOATS",
+    "✖  QUIT",
 )
 
 
