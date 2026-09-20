@@ -18,9 +18,9 @@ from pathlib import Path
 from simple_term_menu import TerminalMenu
 
 if __package__:
-    from .model_training import model_predict, model_train
+    from .model_interface import model_predict, model_train
 else:
-    from model_training import model_predict, model_train
+    from model_interface import model_predict, model_train
 
 # ---------------------------------------------------------------------------
 # Application configuration
