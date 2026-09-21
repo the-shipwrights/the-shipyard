@@ -15,7 +15,7 @@ from collections.abc import Callable, Sequence
 from enum import Enum, auto
 from pathlib import Path
 
-from model_interface import model_predict, model_predict_single, model_train
+from model_interface import model_predict_cam, model_predict_single, model_train
 from simple_term_menu import TerminalMenu
 
 # ---------------------------------------------------------------------------
@@ -54,7 +54,6 @@ class State(Enum):
 
 class App:
     """Own application state and coordinate the terminal event loop."""
-
     def __init__(
         self,
         *,
@@ -63,6 +62,7 @@ class App:
         current_weights: str | Path | None = None,
         runs_directory: str | Path = RUNS_DIRECTORY,
         training_data_directory: str | Path = TRAINING_DATA_DIRECTORY,
+        latest_prediction: dict | None = None
     ) -> None:
         self.state = State.MENU
         self.options = tuple(options)
@@ -72,6 +72,11 @@ class App:
         )
         self.runs_directory = Path(runs_directory)
         self.training_data_directory = Path(training_data_directory)
+        self.latest_prediction = latest_prediction
+
+    def _on_snapshot(self, detections: list[dict]) -> None:
+        """Store the latest non-empty camera prediction snapshot."""
+        self.latest_prediction = {"detections": detections}
 
     # ------------------------------------------------------------------
     # Main event loop
@@ -260,9 +265,11 @@ class App:
                     if image_path is None:
                         continue
                     model_predict_single(model, image_path)
-                    # model_predict(model=model, mode="image", path=image_path)
                 else:
-                    model_predict(model=model, mode="realtime")
+                    camera_index = self._select_camera_index()
+                    if camera_index is None:
+                        continue
+                    model_predict_cam(model, camera_index, self._on_snapshot)
 
                 self.state = State.MENU
                 return
@@ -293,12 +300,37 @@ class App:
             return None
         return Path(value) if value else DEFAULT_IMAGE_PATH
 
+    def _select_camera_index(self) -> int | None:
+        """Read a camera index, using camera 0 when the input is empty."""
+        while True:
+            value = input(
+                "ENTER CAMERA INDEX (DEFAULT: 0) OR 'GO BACK'\n\033[90m-> hint: you can check which idx are available with `python camera_indexing.py`\033[91m\n"
+            ).strip()
+            if value.lower() in {"back", "go back", "b"}:
+                return None
+
+            if not value:
+                return 0
+
+            try:
+                camera_index = int(value)
+            except ValueError:
+                print("INCORRECT INPUT: ENTER A NON-NEGATIVE INTEGER.")
+                continue
+
+            if camera_index < 0:
+                print("INCORRECT INPUT: ENTER A NON-NEGATIVE INTEGER.")
+                continue
+
+            return camera_index
+
     # ------------------------------------------------------------------
     # Application lifecycle
     # ------------------------------------------------------------------
 
     def quit(self) -> None:
         self.state = State.QUIT
+        raise SystemExit
 
 
 def main() -> None:

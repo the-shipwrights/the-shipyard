@@ -8,8 +8,10 @@ and **everything** has been thoroughly tested by a human[1]
 """
 
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
 
+import cv2 as cv
 import yaml
 from ultralytics import YOLO
 
@@ -100,10 +102,12 @@ def model_predict_single(weights_path: Path, img_path: Path) -> None:
 
     result = results[0] # a list of results. single image predictions are a 1-item list.
 
-    print(result.verbose())
-    print(result.summary())
 
-    """result.verbose() has this shape (data not representative):
+    print(result.verbose()) # this prints a list of detected occurences for each class, i.e "1 front, 2 hull"
+    print(result.summary()) # this prints each result object in results, very verbose
+    # The naming for these methods makes no sense at all. wtf @ultralytics??
+
+    """result.summary() has this shape (data not representative):
     {
         "name": "boat",
         "class": 0,
@@ -118,30 +122,42 @@ def model_predict_single(weights_path: Path, img_path: Path) -> None:
     """
 
 
-def model_predict_cam(weights_path: Path, camera_idx: int) -> dict:
+def model_predict_cam(
+    weights_path: Path,
+    camera_idx: int,
+    on_snapshot: Callable[[list[dict]], None],
+) -> None:
     """
+    -> owns camera, prediction stream, window, key handling
+    -> publishes snapshots through callback to App in tui.py
+    -> returns when q is pressed.
     predict from camera footage. Given a specific input, take a snapshot of
     the data and output it.
-    input: path to model weights, camera index.
-    return: that bigass log of detected classes and where they are located.
+    input: path to model weights, camera index, snapshot callback.
     """
+
     model = YOLO(weights_path)
     results = model.predict(
         source=camera_idx,
-        stream=True,  # optimizes memory usage, we dont need it here.
-        verbose=False, # skip logging results to terminal
+        stream=True,
+        verbose=False,
     )
-    result = results[0] # a list of results. single image predictions are a 1-item list.
+    latest_non_empty_summary: list[dict] = []
 
-    print(result.verbose())
-    print(result.summary())
+    try:
+        for result in results:
+            cv.imshow("Camera prediction", result.plot())
+            key = cv.waitKey(1) & 0xFF
+            summary = result.summary()
 
-# NOTE: we could also not have a mode parameter and instead check if img is path or none instead.
-# using mode parameters feels more human-readable though.
-def model_predict(model, mode: str, img: Path | None = None):
-    if mode == "realtime":
-        print("realtime")
-        # use ultralytics to get the camera feed or something.
-    elif mode == "image":
-        print("single image")
-        # use ultralytics again.
+            if summary:
+                latest_non_empty_summary = summary
+
+            if key == ord("p"):
+                snapshot = summary or latest_non_empty_summary
+                on_snapshot(snapshot)
+                print(snapshot)
+            elif key == ord("q"):
+                break
+    finally:
+        cv.destroyAllWindows()
