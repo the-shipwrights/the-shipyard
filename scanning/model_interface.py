@@ -2,7 +2,9 @@
 Model training & prediction entry points.
 
 NOTICE: AI was used to generate parts of the code, but a hefty part is human-written,
-and everything has been thoroughly tested by a human. (Sep 19, 2026)
+and **everything** has been thoroughly tested by a human[1]
+
+[1]: (its python: if its not thoroughly tested, it will break)
 """
 
 import tempfile
@@ -80,6 +82,59 @@ def model_train(
 
     return Path(results.save_dir) / "weights" / "best.pt"
 
+
+
+#  docs: (https://docs.ultralytics.com/modes/predict)
+def model_predict_single(weights_path: Path, img_path: Path) -> None:
+    """
+    predict a single image. Display result directly on-screen until user exits.
+    input: path to model weights, path to image
+    return: a print of that bigass log of detected classes and where they are located.
+    """
+    model = YOLO(weights_path)
+    results = model.predict(
+        source=img_path,
+        stream=False,  # optimizes memory usage, we dont need it here.
+        verbose=False, # skip logging results to terminal
+    )
+
+    result = results[0] # a list of results. single image predictions are a 1-item list.
+
+    print(result.verbose())
+    print(result.summary())
+
+    """result.verbose() has this shape (data not representative):
+    {
+        "name": "boat",
+        "class": 0,
+        "confidence": 0.93,
+        "box": {
+            "x1": 120.0,
+            "y1": 85.0,
+            "x2": 410.0,
+            "y2": 300.0,
+        },
+    }
+    """
+
+
+def model_predict_cam(weights_path: Path, camera_idx: int) -> dict:
+    """
+    predict from camera footage. Given a specific input, take a snapshot of
+    the data and output it.
+    input: path to model weights, camera index.
+    return: that bigass log of detected classes and where they are located.
+    """
+    model = YOLO(weights_path)
+    results = model.predict(
+        source=camera_idx,
+        stream=True,  # optimizes memory usage, we dont need it here.
+        verbose=False, # skip logging results to terminal
+    )
+    result = results[0] # a list of results. single image predictions are a 1-item list.
+
+    print(result.verbose())
+    print(result.summary())
 
 # NOTE: we could also not have a mode parameter and instead check if img is path or none instead.
 # using mode parameters feels more human-readable though.

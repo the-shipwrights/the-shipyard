@@ -1,4 +1,5 @@
 import math
+import sys
 from typing import overload
 
 import cv2 as cv
@@ -9,21 +10,21 @@ from matplotlib import pyplot as plt
 # cv.typing.MatLike is OpenCV's type hint for a NumPy array containing pixel data.
 # basically an image.
 @overload
-def capture_photo(img_name: None = None) -> cv.typing.MatLike:
+def capture_photo(camera: int = 0, img_name: None = None) -> cv.typing.MatLike:
     ...
 
 # saves the image to a location in the repository instead.
 @overload
-def capture_photo(img_name: str) -> str:
+def capture_photo(camera: int = 0, img_name: str = "captured_photo.png") -> str:
     ...
 
 
 # it can either take in an img name or it nothing at all. Sending nothing will return
 # the raw image as a NumPy array, otherwise it will return the filepath.
-def capture_photo(img_name: str | None = None) -> cv.typing.MatLike | str:
+def capture_photo(camera: int = 0 , img_name: str | None = None) -> cv.typing.MatLike | str:
     """Capture a photo and return the image or the path it was saved to."""
     # init webcam (0 is default)
-    cam = cv.VideoCapture(0)
+    cam = cv.VideoCapture(camera)
 
     try:
         ret, frame = cam.read()
@@ -124,32 +125,30 @@ def find_feature(query_path: str, scene_path: str) -> tuple[float, float, float,
 
 
 
-while(True):
-    user_input = input("press any button to take a picture and run an analysis!")
 
-    capture_photo("webcam-feed.png")
+def main() -> None:
+    cap = cv.VideoCapture(0)
+    if not cap.isOpened():
+        print("Cannot open camera")
+        sys.exit()
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
 
-    avg_x1, avg_y1, distance1, angle1 = find_feature("matchpic-box.png", "webcam-feed.png")
-    print("BOX FEATURE MATCHING!")
-    print(f"average coordinates for matching points (x,y): ({avg_x1}, {avg_y1})")
-    print(f"distance and angle from image centroid: {distance1}, {angle1}")
+        # if frame is read correctly ret is True
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
+        # Our operations on the frame come here
+        gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+        # Display the resulting frame
+        cv.imshow('frame', gray)
+        if cv.waitKey(1) == ord('q'):
+            break
 
+    # When everything done, release the capture
+    cap.release()
+    cv.destroyAllWindows()
 
-    avg_x2, avg_y2, distance2, angle2 = find_feature("matchpic-smile.png", "webcam-feed.png")
-    print("BOX FEATURE MATCHING!")
-    print(f"average coordinates for matching points (x,y): ({avg_x2}, {avg_y2})")
-    print(f"distance and angle from image centroid: {distance2}, {angle2}")
-
-
-    # SORRY FILIP, NOT HAPPENING THIS TIME!
-    # --- CALCULATE BETWEEN THE TWO MATCHES ---
-    # dx = avg_x2 - avg_x1
-    # dy = avg_y2 - avg_y1  # Positive down in image coordinates
-
-    # inter_distance = math.hypot(dx, dy)
-    # inter_angle_deg = math.degrees(math.atan2(dy, dx))
-
-    # print("=== RELATIVE DISTANCE & ANGLE (Box -> Smile) ===")
-    # print(f"Distance between objects: {inter_distance:.2f} px")
-    # print(f"Angle from Box to Smile: {inter_angle_deg:.2f}°")
-    # print("-" * 50)
+if __name__ == "__main__":
+    main()

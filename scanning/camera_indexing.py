@@ -209,7 +209,7 @@ if __name__ == "__main__":
         print("\033[1mINDEX    TYPE     NAME\033[0m")
         print("\033[1m───────────────────────────────────────────\033[0m")
         for cam in devices:
-            cam_type = "[IR ]" if cam["is_ir"] else "[RGB]"
+            cam_type = "IR  " if cam["is_ir"] else "RGB "
             print(f"{cam['index']}:       {cam_type:<8} {cam['name']}")
 
-        print("\n\033[1mif you got any weird warnings but you ended up getting a nice output, ignore them :p its just openCV being a turd!\033[0m \n(PS: Iloonio recommends using the first index of any camera device)")
+        print("\n\033[1mif you got any weird warnings but got a nice output, ignore them :P its just openCV being a turd!\033[0m \n(PS: Iloonio recommends using the first index of any camera device)")

@@ -15,12 +15,8 @@ from collections.abc import Callable, Sequence
 from enum import Enum, auto
 from pathlib import Path
 
+from model_interface import model_predict, model_predict_single, model_train
 from simple_term_menu import TerminalMenu
-
-if __package__:
-    from .model_interface import model_predict, model_train
-else:
-    from model_interface import model_predict, model_train
 
 # ---------------------------------------------------------------------------
 # Application configuration
@@ -30,11 +26,11 @@ DEFAULT_MODEL = "yolo26n.pt"
 RUNS_DIRECTORY = Path("runs/detect")
 PREDICTION_RUNS_DIRECTORY = Path("runs/predict")
 TRAINING_DATA_DIRECTORY = Path("training_data")
-DEFAULT_IMAGE_PATH = Path("test-image.jpg")
+DEFAULT_IMAGE_PATH = Path("training_data/wooden_block_symbols/images/train/scene_00010.jpg")
 
 MAIN_MENU_OPTIONS = (
-    "🕮  TRAIN BOAT-VISION",
-    "👁  BEAR WITNESS TO BOATS",
+    "🕮  PRACTICE BOAT-VISION (train)",
+    "👁  BEAR WITNESS TO BOATS (predict)",
     "✖  QUIT",
 )
 
@@ -263,7 +259,8 @@ class App:
                     image_path = self._select_prediction_image()
                     if image_path is None:
                         continue
-                    model_predict(model=model, mode="image", path=image_path)
+                    model_predict_single(model, image_path)
+                    # model_predict(model=model, mode="image", path=image_path)
                 else:
                     model_predict(model=model, mode="realtime")
 
