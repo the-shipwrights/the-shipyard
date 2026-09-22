@@ -78,6 +78,7 @@ class App:
         """Store the latest non-empty camera prediction snapshot."""
         self.latest_prediction = {"detections": detections}
 
+
     # ------------------------------------------------------------------
     # Main event loop
     # ------------------------------------------------------------------
@@ -331,6 +332,7 @@ class App:
     def quit(self) -> None:
         self.state = State.QUIT
         raise SystemExit
+
 
 
 def main() -> None:
