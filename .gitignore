@@ -22,5 +22,6 @@ __pycache__/
 .venv/
 .venv-wsl/
 .venv-win/
+.vscode/
 
 backend/boats.db

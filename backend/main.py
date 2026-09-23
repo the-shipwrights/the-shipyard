@@ -27,13 +27,7 @@ class BoatPayload(BaseModel):
 
     @model_validator(mode="after")
     def validate_canonical_boat(self):
-        boat = Boat(
-            pieces=[
-                Piece(**piece.model_dump())
-                for piece in self.pieces
-            ]
-        )
-
+        boat = payload_to_boat(self)
         errors = boat.validate()
 
         if errors:
@@ -41,10 +35,29 @@ class BoatPayload(BaseModel):
 
         return self
 
+def payload_to_boat(payload: BoatPayload) -> Boat:
+    return Boat(
+        pieces=[
+            Piece(**piece.model_dump())
+            for piece in payload.pieces
+        ]
+    )
 
 class ColorPatch(BaseModel):
     color: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
 
+DEFAULT_BOAT_COLOR = "#2f7fff"
+STATUS_CUSTOMIZING = "customizing"
+STATUS_LAUNCHED = "launched"
+BOAT_ID_LENGTH = 4
+
+
+def normalize_boat_id(boat_id: str) -> str:
+    return boat_id.strip().upper()
+
+
+def utc_timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 app = FastAPI(title="Shipwright API")
 
@@ -60,7 +73,7 @@ app.add_middleware(
 )
 
 
-def get_connection():
+def get_connection() -> sqlite3.Connection:
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
     return connection
@@ -109,7 +122,7 @@ def generate_boat_id(connection):
     raise RuntimeError("Unable to generate a unique boat ID")
 
 
-def get_boat_row(boat_id):
+def get_boat_row(boat_id: str) -> sqlite3.Row | None:
     connection = get_connection()
     try:
         return connection.execute(
@@ -215,7 +228,7 @@ def update_boat(boat_id: str, patch: ColorPatch):
 
 
 @app.post("/api/boats/{boat_id}/launch")
-def launch_boat(boat_id: str):
+def launch_boat(boat_id: str, patch: ColorPatch):
     boat_id = boat_id.upper()
     now = timestamp()
 
@@ -224,10 +237,19 @@ def launch_boat(boat_id: str):
         result = connection.execute(
             """
             UPDATE boats
-            SET status = ?, launched_at = ?, updated_at = ?
+            SET color = ?,
+                status = ?,
+                launched_at = ?,
+                updated_at = ?
             WHERE id = ?
             """,
-            ("launched", now, now, boat_id),
+            (
+                patch.color,
+                STATUS_LAUNCHED,
+                now,
+                now,
+                boat_id,
+            ),
         )
         connection.commit()
     finally:
