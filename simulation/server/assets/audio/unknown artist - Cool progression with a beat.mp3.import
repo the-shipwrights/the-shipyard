@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b2rd4ljie43s0"
+path="res://.godot/imported/unknown artist - Cool progression with a beat.mp3-45c86cd2990755ddb4a4e75f76f613f2.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/unknown artist - Cool progression with a beat.mp3"
+dest_files=["res://.godot/imported/unknown artist - Cool progression with a beat.mp3-45c86cd2990755ddb4a4e75f76f613f2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

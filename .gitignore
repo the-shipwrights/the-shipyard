@@ -16,6 +16,11 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 scanning/.env/
+scanning/training_data/*
+scanning/runs/detect/
+
+# we want to push this folder, idk how to do this im no .gitignore expert, but this works.
+*!scanning/training_data/training.md
 
 node_modules/
 __pycache__/
@@ -24,4 +29,7 @@ __pycache__/
 .venv-win/
 .vscode/
 
+runs/
 backend/boats.db
+scanning/yolo26n.pt
+weights/
