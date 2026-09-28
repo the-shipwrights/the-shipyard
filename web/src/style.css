@@ -168,6 +168,15 @@ code {
   box-sizing: border-box;
 }
 
+/* Ensure the canvas never computes to 0x0 */
+#canvas, iframe {
+  width: 100%;
+  height: 100%;
+  min-width: 375px;
+  min-height: 812px;
+  display: block;
+}
+
 #center {
   display: flex;
   flex-direction: column;

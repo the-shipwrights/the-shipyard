@@ -5,7 +5,7 @@ import secrets
 import sqlite3
 import string
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 from scanning.Boat import Boat, Piece
@@ -227,8 +227,44 @@ def update_boat(boat_id: str, patch: ColorPatch):
     return serialize_boat(get_boat_row(boat_id))
 
 
+class SimulationConnectionManager:
+    def __init__(self):
+        self.active_connections: list[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+        print(f"[WS] Simulation client connected. Total clients: {len(self.active_connections)}")
+
+    def disconnect(self, websocket: WebSocket):
+        if websocket in self.active_connections:
+            self.active_connections.remove(websocket)
+            print(f"[WS] Simulation client disconnected. Total clients: {len(self.active_connections)}")
+
+    async def broadcast(self, message: dict):
+        for connection in list(self.active_connections):
+            try:
+                await connection.send_json(message)
+            except Exception:
+                self.disconnect(connection)
+
+simulation_manager = SimulationConnectionManager()
+
+# --- 2. WebSocket Endpoint ---
+@app.websocket("/ws/simulation")
+async def simulation_ws(websocket: WebSocket):
+    await simulation_manager.connect(websocket)
+    try:
+        while True:
+            # Keeps connection open and detects when the client disconnects
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        simulation_manager.disconnect(websocket)
+
+
+# --- 3. Async Launch Endpoint with Broadcast ---
 @app.post("/api/boats/{boat_id}/launch")
-def launch_boat(boat_id: str, patch: ColorPatch):
+async def launch_boat(boat_id: str, patch: ColorPatch):
     boat_id = boat_id.upper()
     now = timestamp()
 
@@ -258,5 +294,12 @@ def launch_boat(boat_id: str, patch: ColorPatch):
     if result.rowcount == 0:
         raise HTTPException(status_code=404, detail="Boat not found")
 
-    # Later this is where you can broadcast to the ocean simulation.
-    return serialize_boat(get_boat_row(boat_id))
+    boat_data = serialize_boat(get_boat_row(boat_id))
+
+    # Broadcast event to Godot simulation
+    await simulation_manager.broadcast({
+        "event": "boat_launched",
+        "data": boat_data
+    })
+
+    return boat_data
