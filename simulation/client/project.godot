@@ -11,11 +11,14 @@ config_version=5
 [application]
 
 config/name="mobile-controls"
+run/main_scene="uid://bsh6truohdknt"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [display]
 
+window/size/viewport_width=375
+window/size/viewport_height=812
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

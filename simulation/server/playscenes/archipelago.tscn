@@ -1,3 +1,12 @@
 [gd_scene format=3 uid="uid://c5uk6yjaw255c"]
 
+[ext_resource type="Script" uid="uid://cuagpkfhosbom" path="res://playscenes/archipelago.gd" id="1_bfcpi"]
+
 [node name="Archipelago" type="Node3D" unique_id=1966149558]
+script = ExtResource("1_bfcpi")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=771390558]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5, 8)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2046508634]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 5, 0)
