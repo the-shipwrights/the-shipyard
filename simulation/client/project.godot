@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="mobile-controls"
-run/main_scene="uid://bsh6truohdknt"
+run/main_scene="uid://jt1n5ha3iehg"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

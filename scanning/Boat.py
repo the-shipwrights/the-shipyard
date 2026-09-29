@@ -120,7 +120,7 @@ CABIN = PieceType(
 )
 
 SHARED_CABIN = PieceType(
-    id=4, name="shared_cabin", category="structure", width=150, height=100,
+    id=4, name="shared_cabin", category="structure", width=100, height=100,
     attachments=(
         AttachmentPoint(
             name="end_hull_bottom", kinds=("half_structure",),
@@ -157,6 +157,16 @@ FLAG = PieceType(
     ),
 )
 
+CHIMNEY = PieceType(
+    id=7, name="flag", category="structure", width=10, height=50,
+    attachments=(
+        AttachmentPoint(
+            name="bottom", kinds=("structure", "hull"),
+            x=5, y=0, direction="down",
+        ),
+    ),
+)
+
 PIECE_TYPES: dict[int, PieceType] = {
     HULL_FRONT.id: HULL_FRONT,
     HULL_MIDDLE.id: HULL_MIDDLE,
@@ -165,6 +175,7 @@ PIECE_TYPES: dict[int, PieceType] = {
     SHARED_CABIN.id: SHARED_CABIN,
     TENT.id: TENT,
     FLAG.id: FLAG,
+    CHIMNEY.id: CHIMNEY,
 }
 
 # ------------------------------------------------------------------

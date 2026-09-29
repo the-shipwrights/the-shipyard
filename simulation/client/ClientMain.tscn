@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://jt1n5ha3iehg"]
+
+[ext_resource type="Script" uid="uid://g2gft4uqn0uh" path="res://client_main.gd" id="1_tbnjw"]
+[ext_resource type="PackedScene" uid="uid://bsh6truohdknt" path="res://CustomizeView.tscn" id="2_8dsab"]
+[ext_resource type="PackedScene" uid="uid://c0rck3dp1p2sw" path="res://ControlView.tscn" id="3_e3qio"]
+
+[node name="ClientMain" type="Control" unique_id=1258100918]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tbnjw")
+
+[node name="ViewContainer" type="Control" parent="." unique_id=830004323]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CustomizeView" parent="ViewContainer" unique_id=783958750 instance=ExtResource("2_8dsab")]
+layout_mode = 1
+
+[node name="ControlView" parent="ViewContainer" unique_id=1945440094 instance=ExtResource("3_e3qio")]
+visible = false
+layout_mode = 1
+
+[node name="NoBoatScreen" type="Control" parent="." unique_id=1273123870]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Overlay" type="ColorRect" parent="NoBoatScreen" unique_id=1861154363]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.35)
+
+[node name="CenterContainer" type="CenterContainer" parent="NoBoatScreen" unique_id=696234399]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="NoBoatLabel" type="Label" parent="NoBoatScreen/CenterContainer" unique_id=886440166]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "No boat found"
+horizontal_alignment = 1

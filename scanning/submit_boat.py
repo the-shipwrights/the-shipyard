@@ -29,10 +29,13 @@ def test_boat_submission():
     # (Matches piece IDs: 0=hull_front, 1=hull_middle, 2=hull_back, 3=cabin)
     scanned_boat = Boat(
         pieces=[
-            Piece(id=0, type_id=0, x=0, y=0),
-            Piece(id=1, type_id=1, x=150, y=0),
-            Piece(id=2, type_id=2, x=250, y=0),
-            Piece(id=3, type_id=3, x=150, y=100),
+            Piece(0, 0,   0,   0),    # left/end hull
+            Piece(1, 1, 150,   0),    # middle hull
+            Piece(6, 1, 250,   0),    # middle hull
+            Piece(2, 2, 350,   0),    # right/end hull
+            Piece(3, 3, 150, 100),    # cabin
+            Piece(7, 5, 250, 100),    # cabin
+            Piece(5, 6, 195, 200),    # flag on cabin
         ]
     )
 
