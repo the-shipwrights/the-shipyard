@@ -16,7 +16,10 @@ from enum import Enum, auto
 from pathlib import Path
 
 from model_interface import model_predict_cam, model_predict_single, model_train
+from parse_prediction import parse
 from simple_term_menu import TerminalMenu
+
+from boat import Boat
 
 # ---------------------------------------------------------------------------
 # Application configuration
@@ -31,6 +34,7 @@ DEFAULT_IMAGE_PATH = Path("training_data/wooden_block_symbols/images/train/scene
 MAIN_MENU_OPTIONS = (
     "🕮  PRACTICE BOAT-VISION (train)",
     "👁  BEAR WITNESS TO BOATS (predict)",
+    "🖾  FATHOM OBSERVATION (parse)",
     "✖  QUIT",
 )
 
@@ -45,6 +49,7 @@ class State(Enum):
     MENU = auto()
     TRAINING = auto()
     PREDICTING = auto()
+    PARSING = auto()
     QUIT = auto()
 
 
@@ -62,7 +67,8 @@ class App:
         current_weights: str | Path | None = None,
         runs_directory: str | Path = RUNS_DIRECTORY,
         training_data_directory: str | Path = TRAINING_DATA_DIRECTORY,
-        latest_prediction: dict | None = None
+        latest_prediction: dict | None = None,
+        latest_boat: Boat | None = None
     ) -> None:
         self.state = State.MENU
         self.options = tuple(options)
@@ -73,6 +79,7 @@ class App:
         self.runs_directory = Path(runs_directory)
         self.training_data_directory = Path(training_data_directory)
         self.latest_prediction = latest_prediction
+        self.latest_boat = latest_boat
 
     def _on_snapshot(self, detections: list[dict]) -> None:
         """Store the latest non-empty camera prediction snapshot."""
@@ -97,6 +104,8 @@ class App:
                 self._show_train_menu()
             elif self.state is State.PREDICTING:
                 self._show_prediction_menu()
+            elif self.state is State.PARSING:
+                self._show_parsing_menu()
 
     # ------------------------------------------------------------------
     # Main menu
@@ -117,6 +126,8 @@ class App:
         elif selection == 1:
             self.state = State.PREDICTING
         elif selection == 2:
+            self.state = State.PARSING
+        elif selection == 3:
             self.quit()
         else:
             raise RuntimeError(f"Menu option has no action: {selection}")
@@ -324,6 +335,44 @@ class App:
                 continue
 
             return camera_index
+
+    # ------------------------------------------------------------------
+    # Parsing workflow
+    # ------------------------------------------------------------------
+    
+    def _show_parsing_menu(self) -> None:
+        """Parse latest prediciton, then return to the main menu."""
+        while True:
+            if self.latest_prediction is None:
+                print("NO PREDICTION FOUND. RUN A PREDICTION FIRST.")
+                self.state = State.MENU
+                return
+
+            options = (
+                        "PARSE LATEST PREDICTION",
+                        "PRINT BOAT",
+                        "SEND BOAT",
+                        "GO BACK",
+                    )
+            selection = self._menu_factory(options).show()
+
+            if selection == 0:
+                self.latest_boat = parse(self.latest_prediction)
+                continue
+            elif selection == 1:
+                if self.latest_boat is None:
+                    print("NO BOAT FOUND. PARSE A PREDICTION FIRST.")
+                    continue
+                else:
+                    print(self.latest_boat.ascii())
+                    continue
+            elif selection == 2:
+                # TODO Send boat
+                print("NOT IMPLEMENTED")
+                continue
+
+            self.state = State.MENU
+            return
 
     # ------------------------------------------------------------------
     # Application lifecycle

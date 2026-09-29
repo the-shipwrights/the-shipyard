@@ -8,7 +8,7 @@ import string
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
-from scanning.Boat import Boat, Piece
+from scanning.boat import Boat, Piece
 
 DB_PATH = Path(__file__).with_name("boats.db")
 ALPHABET = string.ascii_uppercase

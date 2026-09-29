@@ -31,6 +31,7 @@ symbol_positions = [
 
 def parse(prediction: dict) -> boat.Boat:
 
+    detections = prediction["detections"]
     scanned_boat = boat.Boat(pieces=[])
 
     "{ class: int, width: float, height: float, x_position: float, y_position: float, scale: float }"
@@ -42,14 +43,14 @@ def parse(prediction: dict) -> boat.Boat:
     accessory_pieces: list[dict] = []
 
     # Symbol data collection
-    for match in prediction:
+    for detection in detections:
         symbol_data = {
-            "class": match["class"],
-            "width": match["x2"] - match["x1"],
-            "height": match["y2"] - match["y1"],
-            "x_position": (match["x2"] + match["x1"]) / 2,
-            "y_position": (match["y2"] + match["y1"]) / 2,
-            "scale": (match["x2"] - match["x1"]) / symbol_sizes[match["class"]][0]
+            "class": detection["class"],
+            "width": detection["x2"] - detection["x1"],
+            "height": detection["y2"] - detection["y1"],
+            "x_position": (detection["x2"] + detection["x1"]) / 2,
+            "y_position": (detection["y2"] + detection["y1"]) / 2,
+            "scale": (detection["x2"] - detection["x1"]) / symbol_sizes[detection["class"]][0]
         }
 
         symbols.append(symbol_data)
