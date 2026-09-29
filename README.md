@@ -11,19 +11,25 @@ In root (`the-shipyard`) run the following:
 
 Create and activate a virtual environment + install backend dependencies
 
-```powershell
+```bash
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
 python -m pip install --upgrade pip
-python -m pip install -r backend\requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-(Optional) Initialize the database with the sample boat: `python -m backend.seed_ABCD`
+(Optional) Initialize the database with the sample boat: 
+- Ruslan's Notes: I've found that this part is actually not optional! The backend doesn't work with out an initialized database, atleast not on my machine.  
+```bash
+
+python -m backend.seed_ABCD
+```
+
 
 Start the FastAPI backend (available at: `http://localhost:8000`):
 
-```powershell
+```bash
 python -m uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -39,17 +45,27 @@ Leave this terminal running.
 
 ### Web client customizer setup:
 
-Prerequisite: Node? Npm?
+Prerequisite: Node & Npm. 
 
 In `the-shipyard/web` run (client available at `http://localhost:5173`):
+```bash
+npm install vite # required dependency. 
+npm --prefix web run dev
+```
 
-`npm run dev`
 
 ### "Scan" (create) boats:
 
-In `scanning` run `python3 submit_boat.py`
+run `python3 scanning/submit_boat.py` to submit a boat without scanning 
 
 Generated boat is available at `localhost:5173/boat/ABCD`
+
+### Scan boats from live cam footage 
+```bash
+python scanning/tui.py
+```
+Select the predict option and choose a specific set of weights. Choose to predict contents from a live cam footage with snapshotting. A snapshot can be taken by pressing "p" while the camera footage is up. 
+
 
 ### "See" boats in archipelago:
 
