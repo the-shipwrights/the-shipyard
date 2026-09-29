@@ -20,7 +20,7 @@ python -m pip install -r requirements.txt
 ```
 
 (Optional) Initialize the database with the sample boat: 
-- Ruslan's Notes: I've found that this part is actually not optional! The backend doesn't work with out an initialized database, atleast not on my machine.  
+- Ruslan's Notes: I've found that this part is actually not optional! The backend doesn't work without an initialized database, atleast not on my machine.  
 ```bash
 
 python -m backend.seed_ABCD
