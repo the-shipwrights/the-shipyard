@@ -209,20 +209,25 @@ def update_boat(boat_id: str, patch: ColorPatch):
 
     connection = get_connection()
     try:
-        result = connection.execute(
-            """
-            UPDATE boats
-            SET color = ?, updated_at = ?
-            WHERE id = ?
-            """,
+        row = connection.execute(
+            "SELECT status FROM boats WHERE id = ?", (boat_id,)
+        ).fetchone()
+        
+        if row is None:
+            raise HTTPException(status_code=404, detail="Boat not found")
+        if row["status"] == STATUS_LAUNCHED:
+            raise HTTPException(
+                status_code=409, 
+                detail="Boat has already been launched and cannot be customized"
+            )
+
+        connection.execute(
+            "UPDATE boats SET color = ?, updated_at = ? WHERE id = ?",
             (patch.color, now, boat_id),
         )
         connection.commit()
     finally:
         connection.close()
-
-    if result.rowcount == 0:
-        raise HTTPException(status_code=404, detail="Boat not found")
 
     return serialize_boat(get_boat_row(boat_id))
 
@@ -255,8 +260,23 @@ simulation_manager = SimulationConnectionManager()
 async def simulation_ws(websocket: WebSocket):
     await simulation_manager.connect(websocket)
     try:
+        # Send initial snapshot of launched boats upon connection
+        connection = get_connection()
+        try:
+            rows = connection.execute(
+                "SELECT * FROM boats WHERE status = ?",
+                (STATUS_LAUNCHED,)
+            ).fetchall()
+            initial_boats = [serialize_boat(r) for r in rows]
+        finally:
+            connection.close()
+
+        await websocket.send_json({
+            "event": "initial_boats",
+            "data": initial_boats
+        })
+
         while True:
-            # Keeps connection open and detects when the client disconnects
             await websocket.receive_text()
     except WebSocketDisconnect:
         simulation_manager.disconnect(websocket)
@@ -270,33 +290,33 @@ async def launch_boat(boat_id: str, patch: ColorPatch):
 
     connection = get_connection()
     try:
-        result = connection.execute(
+        row = connection.execute(
+            "SELECT status FROM boats WHERE id = ?", (boat_id,)
+        ).fetchone()
+
+        if row is None:
+            raise HTTPException(status_code=404, detail="Boat not found")
+        if row["status"] == STATUS_LAUNCHED:
+            raise HTTPException(
+                status_code=409, 
+                detail="Boat has already been launched"
+            )
+
+        connection.execute(
             """
             UPDATE boats
-            SET color = ?,
-                status = ?,
-                launched_at = ?,
-                updated_at = ?
+            SET color = ?, status = ?, launched_at = ?, updated_at = ?
             WHERE id = ?
             """,
-            (
-                patch.color,
-                STATUS_LAUNCHED,
-                now,
-                now,
-                boat_id,
-            ),
+            (patch.color, STATUS_LAUNCHED, now, now, boat_id),
         )
         connection.commit()
     finally:
         connection.close()
 
-    if result.rowcount == 0:
-        raise HTTPException(status_code=404, detail="Boat not found")
-
     boat_data = serialize_boat(get_boat_row(boat_id))
 
-    # Broadcast event to Godot simulation
+    # Broadcast single launch event
     await simulation_manager.broadcast({
         "event": "boat_launched",
         "data": boat_data

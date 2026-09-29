@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://c0rck3dp1p2sw"]
+
+[ext_resource type="Script" uid="uid://bm5u5olpv6sfl" path="res://control_view.gd" id="1_vcfef"]
+
+[node name="ControlView" type="Control" unique_id=1945440094]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vcfef")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1101034234]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.541541, 0.543099, 1)
+
+[node name="BoatTitle" type="Label" parent="." unique_id=355979904]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 24.0
+offset_bottom = 56.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 22
+text = "Piloting Boat"
+horizontal_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="." unique_id=1826761783]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "Boat is active in the archipelago simulation."
+horizontal_alignment = 1
+autowrap_mode = 2

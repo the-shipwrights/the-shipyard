@@ -25,7 +25,7 @@ function mountGodot(path, title) {
 
 if (route === "boat" && boatId) {
   mountGodot(
-    `/godot/customizer/customizer.html?boat=${encodeURIComponent(boatId)}`,
+    `/godot/client/client.html?boat=${encodeURIComponent(boatId)}`,
     `Customizing boat ${boatId.toUpperCase()}`
   );
 } else if (route === "simulation") {
