@@ -113,6 +113,7 @@ func _generate_primitive(type_id: int, mat: StandardMaterial3D) -> MeshInstance3
 			mesh = PrismMesh.new() # Using prism for angled hull
 			mesh.size = Vector3(w, h, BOAT_DEPTH)
 			mesh.left_to_right = 1.0
+			mesh_instance.rotation_degrees.x = 180.0
 		1: # HULL_MIDDLE (w=100, h=100)
 			w = 1.0; h = 1.0
 			mesh = BoxMesh.new()
@@ -122,6 +123,7 @@ func _generate_primitive(type_id: int, mat: StandardMaterial3D) -> MeshInstance3
 			mesh = PrismMesh.new() # Using prism for angled hull
 			mesh.size = Vector3(w, h, BOAT_DEPTH)
 			mesh.left_to_right = 0.0
+			mesh_instance.rotation_degrees.x = 180.0
 		3: # CABIN (w=100, h=100)
 			w = 0.8; h = 1.0
 			mesh = BoxMesh.new()
@@ -134,6 +136,7 @@ func _generate_primitive(type_id: int, mat: StandardMaterial3D) -> MeshInstance3
 			w = 1.0; h = 0.8
 			mesh = PrismMesh.new()
 			mesh.size = Vector3(w, h, BOAT_DEPTH)
+			mesh_instance.rotation_degrees.y = 90.0
 		6: # FLAG (w=10, h=80)
 			w = 0.1; h = 0.8
 			mesh = CylinderMesh.new()

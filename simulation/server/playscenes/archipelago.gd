@@ -6,8 +6,11 @@ const RECONNECT_DELAY := 2.0
 var ws := WebSocketPeer.new()
 var is_connected := false
 var reconnect_timer := 0.0
-var spawn_offset_x := 0.0
-var spawn_offset_y := 5.0
+
+# Grid layout settings
+const BOATS_PER_ROW := 5
+const SPACING_X := 5.0
+const SPACING_Z := 5.0
 var spawned_boats: Dictionary = {}
 
 var mesh_constructor_scene = preload("res://packedscenes/meshconstructor.tscn")
@@ -68,7 +71,7 @@ func _spawn_boat(boat_data: Dictionary) -> void:
 	if boat_id.is_empty():
 		return
 
-	# If boat already exists, rebuild it with the new color/configuration
+	# If boat already exists, update it in place without moving its grid position
 	if spawned_boats.has(boat_id):
 		print("[WS] Updating existing boat: ", boat_id)
 		var existing_node = spawned_boats[boat_id]
@@ -77,15 +80,22 @@ func _spawn_boat(boat_data: Dictionary) -> void:
 			_attach_boat_label(existing_node, boat_id)
 		return
 
+	# Calculate grid coordinate based on the current boat count
+	var boat_index: int = spawned_boats.size()
+	var col: int = boat_index % BOATS_PER_ROW
+	var row: int = boat_index / BOATS_PER_ROW
+
+	var current_x: float = col * SPACING_X
+	var current_z: float = row * SPACING_Z
+
 	var constructor = mesh_constructor_scene.instantiate()
 	add_child(constructor)
-	constructor.position = Vector3(spawn_offset_x, spawn_offset_y, 0.0)
+	constructor.position = Vector3(current_x, 0.0, current_z)
 	constructor.build_from_data(boat_data)
 	_attach_boat_label(constructor, boat_id)
 
 	spawned_boats[boat_id] = constructor
-	print("[WS] Spawned boat '%s' at position: %s" % [boat_id, str(constructor.position)])
-	spawn_offset_x += 5.0
+	print("[WS] Spawned boat '%s' at grid position: (%d, %d) -> %s" % [boat_id, col, row, str(constructor.position)])
 
 func _attach_boat_label(boat_node: Node3D, boat_id: String) -> void:
 	# Avoid naming collisions if a previous label is queued for cleanup
