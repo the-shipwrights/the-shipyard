@@ -323,3 +323,35 @@ async def launch_boat(boat_id: str, patch: ColorPatch):
     })
 
     return boat_data
+
+# --- Async boat control endpoint with broadcast ---
+
+@app.websocket("/ws/control/{boat_id}")
+async def boat_control_ws(websocket: WebSocket, boat_id: str):
+    await websocket.accept()
+    normalized_id = normalize_boat_id(boat_id)
+    print(f"[WS Control] Controller connected for boat: {normalized_id}")
+
+    try:
+        while True:
+            payload = await websocket.receive_json()
+            command = payload.get("command", "")
+            active = bool(payload.get("active", False))
+
+            # Broadcast control command to the archipelago simulation
+            await simulation_manager.broadcast({
+                "event": "boat_control",
+                "boat_id": normalized_id,
+                "command": command,
+                "active": active
+            })
+
+    except WebSocketDisconnect:
+        print(f"[WS Control] Controller disconnected for boat: {normalized_id}")
+        # Failsafe: stop active commands if client drops connection
+        await simulation_manager.broadcast({
+            "event": "boat_control",
+            "boat_id": normalized_id,
+            "command": "rotate",
+            "active": False
+        })

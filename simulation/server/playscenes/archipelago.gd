@@ -13,6 +13,9 @@ const SPACING_X := 5.0
 const SPACING_Z := 5.0
 var spawned_boats: Dictionary = {}
 
+const ROTATION_SPEED := 1.8 # Radians per second
+var active_rotations: Dictionary = {} # boat_id (String) -> bool
+
 var mesh_constructor_scene = preload("res://packedscenes/meshconstructor.tscn")
 
 func _ready() -> void:
@@ -48,6 +51,14 @@ func _process(delta: float) -> void:
 			print("[WS] Attempting to reconnect...")
 			_connect_to_server()
 
+	# Process active boat rotations
+	for b_id in active_rotations.keys():
+		if active_rotations[b_id] and spawned_boats.has(b_id):
+			var boat_node: Node3D = spawned_boats[b_id]
+			if is_instance_valid(boat_node):
+				boat_node.rotate_y(ROTATION_SPEED * delta)
+
+
 func _handle_network_message(json_text: String) -> void:
 	print("[WS] Incoming message: ", json_text)
 	var message = JSON.parse_string(json_text)
@@ -65,6 +76,14 @@ func _handle_network_message(json_text: String) -> void:
 		var boat_data: Dictionary = message.get("data", {})
 		print("[WS] Launch event for boat: ", boat_data.get("id", ""))
 		_spawn_boat(boat_data)
+
+	elif event == "boat_control":
+		var target_id: String = message.get("boat_id", "")
+		var command: String = message.get("command", "")
+		var active: bool = message.get("active", false)
+
+		if command == "rotate":
+			active_rotations[target_id] = active
 
 func _spawn_boat(boat_data: Dictionary) -> void:
 	var boat_id: String = boat_data.get("id", "")

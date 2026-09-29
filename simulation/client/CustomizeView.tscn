@@ -446,5 +446,5 @@ mouse_filter = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 28
-text = "No boat found"
+text = "Boat not found"
 horizontal_alignment = 1
