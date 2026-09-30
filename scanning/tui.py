@@ -368,8 +368,12 @@ class App:
                     print(self.latest_boat.ascii())
                     continue
             elif selection == 2:
-                submit_scanned_boat(self.latest_boat)
-                continue
+                if self.latest_boat is None:
+                    print("NO BOAT FOUND. PARSE A PREDICTION FIRST.")
+                    continue
+                else:
+                    submit_scanned_boat(self.latest_boat)
+                    continue
 
             self.state = State.MENU
             return
