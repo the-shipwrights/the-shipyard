@@ -1,0 +1,450 @@
+[gd_scene format=3 uid="uid://bsh6truohdknt"]
+
+[ext_resource type="Script" uid="uid://b6umuy4r1jmgh" path="res://customize_view.gd" id="1_ukjbo"]
+[ext_resource type="Script" uid="uid://yhts4vgshkss" path="res://palette.gd" id="2_6jt7g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pxf7l"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dw0c"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3lpll"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ghm4"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sht8u"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpec3"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j5yko"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n1vgs"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6cvk"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xjrq"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gesif"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vm64i"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6qds"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_70f7v"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ls5rr"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7he02"]
+bg_color = Color(0, 0, 0, 0)
+
+[node name="Control" type="Control" unique_id=783958750]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ukjbo")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1101034234]
+layout_mode = 0
+offset_right = 375.0
+offset_bottom = 812.0
+color = Color(0, 0.5415405, 0.54309857, 1)
+
+[node name="Palette" type="GridContainer" parent="." unique_id=1606151572]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 319.0
+offset_right = 335.0
+offset_bottom = 611.0
+columns = 4
+script = ExtResource("2_6jt7g")
+palette_colors = Array[Color]([Color(0.90588236, 0.25882354, 0.2627451, 1), Color(0.92156863, 0.5568628, 0.3529412, 1), Color(0.9137255, 0.8, 0.38039216, 1), Color(0.81960785, 0.8901961, 0.4627451, 1), Color(0.654902, 0.73333335, 0.4509804, 1), Color(0.49803922, 0.8235294, 0.3764706, 1), Color(0.25882354, 0.79607844, 0.42745098, 1), Color(0.29411766, 0.7176471, 0.6039216, 1), Color(0.27450982, 0.69411767, 0.76862746, 1), Color(0.30980393, 0.57254905, 0.95686275, 1), Color(0.43137255, 0.45882353, 0.7882353, 1), Color(0.69803923, 0.33333334, 0.43529412, 1), Color(0.09795057, 0.09661385, 0.029443337, 1), Color(0.78039217, 0.654902, 0.5372549, 1), Color(0.69411767, 0.62352943, 0.59607846, 1), Color(0.8352941, 0.827451, 0.83137256, 1)])
+
+[node name="PaletteSwatch" type="Control" parent="Palette" unique_id=632402623]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/PaletteSwatch" unique_id=1033933532]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.90588236, 0.25882354, 0.2627451, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/PaletteSwatch" unique_id=1785754322]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pxf7l")
+
+[node name="@Control@19816" type="Control" parent="Palette" unique_id=1687428853]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19816" unique_id=1217348512]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.92156863, 0.5568628, 0.3529412, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19816" unique_id=824569432]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3dw0c")
+
+[node name="@Control@19817" type="Control" parent="Palette" unique_id=1173057342]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19817" unique_id=1847046303]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.9137255, 0.8, 0.38039216, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19817" unique_id=1100611187]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3lpll")
+
+[node name="@Control@19818" type="Control" parent="Palette" unique_id=162937969]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19818" unique_id=199982685]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.81960785, 0.8901961, 0.4627451, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19818" unique_id=1810158362]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2ghm4")
+
+[node name="@Control@19819" type="Control" parent="Palette" unique_id=484169144]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19819" unique_id=808589751]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.654902, 0.73333335, 0.4509804, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19819" unique_id=1292556154]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sht8u")
+
+[node name="@Control@19820" type="Control" parent="Palette" unique_id=1697638071]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19820" unique_id=478467288]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.49803922, 0.8235294, 0.3764706, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19820" unique_id=1672845220]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xpec3")
+
+[node name="@Control@19821" type="Control" parent="Palette" unique_id=784169712]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19821" unique_id=957819895]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.25882354, 0.79607844, 0.42745098, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19821" unique_id=61776479]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j5yko")
+
+[node name="@Control@19822" type="Control" parent="Palette" unique_id=343759318]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19822" unique_id=1680273091]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.29411766, 0.7176471, 0.6039216, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19822" unique_id=549732930]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_n1vgs")
+
+[node name="@Control@19823" type="Control" parent="Palette" unique_id=1257986316]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19823" unique_id=675827182]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.27450982, 0.69411767, 0.76862746, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19823" unique_id=1358951816]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u6cvk")
+
+[node name="@Control@19824" type="Control" parent="Palette" unique_id=275429638]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19824" unique_id=1022970780]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.30980393, 0.57254905, 0.95686275, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19824" unique_id=1009385994]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2xjrq")
+
+[node name="@Control@19825" type="Control" parent="Palette" unique_id=289522807]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19825" unique_id=1574470390]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.43137255, 0.45882353, 0.7882353, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19825" unique_id=736722607]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gesif")
+
+[node name="@Control@19826" type="Control" parent="Palette" unique_id=1064971422]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19826" unique_id=1920437734]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.69803923, 0.33333334, 0.43529412, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19826" unique_id=1628583532]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vm64i")
+
+[node name="@Control@19827" type="Control" parent="Palette" unique_id=1366452323]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19827" unique_id=1048229528]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.09795057, 0.09661385, 0.029443337, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19827" unique_id=571116588]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_c6qds")
+
+[node name="@Control@19828" type="Control" parent="Palette" unique_id=123198910]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19828" unique_id=984962346]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.78039217, 0.654902, 0.5372549, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19828" unique_id=2050117906]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_70f7v")
+
+[node name="@Control@19829" type="Control" parent="Palette" unique_id=459340974]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19829" unique_id=162363739]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.69411767, 0.62352943, 0.59607846, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19829" unique_id=1314304998]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ls5rr")
+
+[node name="@Control@19830" type="Control" parent="Palette" unique_id=608040456]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@19830" unique_id=2087683167]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.8352941, 0.827451, 0.83137256, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@19830" unique_id=1293840504]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7he02")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="." unique_id=616031305]
+visible = false
+layout_mode = 0
+offset_left = 37.0
+offset_top = 635.0
+offset_right = 335.0
+offset_bottom = 708.0
+text = "Pick color"
+metadata/_edit_lock_ = true
+
+[node name="LaunchButton" type="Button" parent="." unique_id=369057098]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 649.0
+offset_right = 239.0
+offset_bottom = 680.0
+text = "Launch boat!"
+
+[node name="StatusLabel" type="Label" parent="." unique_id=1826761783]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 693.0
+offset_right = 200.0
+offset_bottom = 716.0
+
+[node name="Label" type="Label" parent="." unique_id=355979904]
+layout_mode = 0
+offset_left = 124.0
+offset_top = 18.0
+offset_right = 238.0
+offset_bottom = 41.0
+text = "Editing boat { }"
+
+[node name="NoBoatScreen" type="Control" parent="." unique_id=933621215]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Overlay" type="ColorRect" parent="NoBoatScreen" unique_id=1020604343]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.25)
+
+[node name="CenterContainer" type="CenterContainer" parent="NoBoatScreen" unique_id=540811789]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="NoBoatLabel" type="Label" parent="NoBoatScreen/CenterContainer" unique_id=210014847]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "Boat not found"
+horizontal_alignment = 1

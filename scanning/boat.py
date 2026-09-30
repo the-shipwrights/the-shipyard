@@ -31,6 +31,20 @@ class PieceType:
     attachments: tuple[AttachmentPoint, ...] = ()
 
 # ------------------------------------------------------------------
+# Edge definition
+# ------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Edge:
+    from_piece_id: int
+    from_attachment: str
+    to_piece_id: int
+    to_attachment: str
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+# ------------------------------------------------------------------
 # Piece type catalogue
 # ------------------------------------------------------------------
 
@@ -106,7 +120,7 @@ CABIN = PieceType(
 )
 
 SHARED_CABIN = PieceType(
-    id=4, name="shared_cabin", category="structure", width=150, height=100,
+    id=4, name="shared_cabin", category="structure", width=100, height=100,
     attachments=(
         AttachmentPoint(
             name="end_hull_bottom", kinds=("half_structure",),
@@ -143,6 +157,16 @@ FLAG = PieceType(
     ),
 )
 
+CHIMNEY = PieceType(
+    id=7, name="flag", category="structure", width=10, height=50,
+    attachments=(
+        AttachmentPoint(
+            name="bottom", kinds=("structure", "hull"),
+            x=5, y=0, direction="down",
+        ),
+    ),
+)
+
 PIECE_TYPES: dict[int, PieceType] = {
     HULL_FRONT.id: HULL_FRONT,
     HULL_MIDDLE.id: HULL_MIDDLE,
@@ -151,6 +175,7 @@ PIECE_TYPES: dict[int, PieceType] = {
     SHARED_CABIN.id: SHARED_CABIN,
     TENT.id: TENT,
     FLAG.id: FLAG,
+    CHIMNEY.id: CHIMNEY,
 }
 
 # ------------------------------------------------------------------
@@ -204,39 +229,59 @@ class Boat:
     the attachment points defined by their PieceTypes.
     """
     pieces: list[Piece] = field(default_factory=list)
+    edges: list[Edge] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return {
-            "pieces": [
-                piece.to_dict()
-                for piece in self.pieces
-            ]
+            "pieces": [piece.to_dict() for piece in self.pieces],
+            "edges": [edge.to_dict() for edge in self.edges],
         }
 
     @classmethod
     def from_dict(cls, data: dict) -> "Boat":
         return cls(
-            pieces=[
-                Piece(**piece_data)
-                for piece_data in data.get("pieces", [])
-            ]
+            pieces=[Piece(**p) for p in data.get("pieces", [])],
+            edges=[Edge(**e) for e in data.get("edges", [])],
         )
 
     def validate(self) -> list[str]:
         errors = []
-        piece_ids = set()
+        piece_map = {p.id: p for p in self.pieces}
+
+        # 1. Piece duplicate and type checks
+        if len(piece_map) < len(self.pieces):
+            errors.append("Duplicate piece id detected.")
 
         for piece in self.pieces:
-            if piece.id in piece_ids:
-                errors.append(
-                    f"Duplicate piece id: {piece.id}"
-                )
-
-            piece_ids.add(piece.id)
-
             if piece.type_id not in PIECE_TYPES:
+                errors.append(f"Unknown piece type id: {piece.type_id}")
+
+        # 2. Edge validation
+        for edge in self.edges:
+            p_from = piece_map.get(edge.from_piece_id)
+            p_to = piece_map.get(edge.to_piece_id)
+
+            if not p_from or not p_to:
+                errors.append(f"Edge references invalid piece: {edge}")
+                continue
+
+            # Verify attachments exist on piece types
+            from_type = PIECE_TYPES.get(p_from.type_id)
+            to_type = PIECE_TYPES.get(p_to.type_id)
+
+            from_att = next((a for a in from_type.attachments if a.name == edge.from_attachment), None)
+            to_att = next((a for a in to_type.attachments if a.name == edge.to_attachment), None)
+
+            if not from_att or not to_att:
+                errors.append(f"Attachment name missing on piece type in edge: {edge}")
+                continue
+
+            # Check kind compatibility
+            shared_kinds = set(from_att.kinds).intersection(to_att.kinds)
+            if not shared_kinds:
                 errors.append(
-                    f"Unknown piece type id: {piece.type_id}"
+                    f"Incompatible attachment kinds between {edge.from_attachment} "
+                    f"and {edge.to_attachment}"
                 )
 
         return errors
@@ -351,21 +396,15 @@ if __name__ == "__main__":
 
 {
   "pieces": [
+    {"id": 0, "type_id": 0, "x": 0, "y": 0, "flipped": false, "colors": []},
+    {"id": 1, "type_id": 1, "x": 150, "y": 0, "flipped": false, "colors": []}
+  ],
+  "edges": [
     {
-      "id": 0,
-      "type_id": 0,
-      "x": 0,
-      "y": 0,
-      "flipped": false,
-      "colors": []
-    },
-    {
-      "id": 1,
-      "type_id": 1,
-      "x": 150,
-      "y": 0,
-      "flipped": false,
-      "colors": []
+      "from_piece_id": 0,
+      "from_attachment": "hull_right_connection",
+      "to_piece_id": 1,
+      "to_attachment": "hull_left_connection"
     }
   ]
 }
