@@ -33,6 +33,7 @@ def parse(prediction: dict) -> boat.Boat:
 
     detections = prediction["detections"]
     scanned_boat = boat.Boat(pieces=[])
+    print(detections)
 
     "{ class: int, width: float, height: float, x_position: float, y_position: float, scale: float }"
     symbols:          list[dict] = []
@@ -54,8 +55,8 @@ def parse(prediction: dict) -> boat.Boat:
         }
 
         symbols.append(symbol_data)
-        average_width_diff += symbol_data["scale"]
-    
+        average_scale += symbol_data["scale"]
+
     average_scale /= len(symbol_data)
     position_thresold_scaled = position_thresold * average_scale
 

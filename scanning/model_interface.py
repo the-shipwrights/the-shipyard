@@ -9,6 +9,7 @@ and **everything** has been thoroughly tested by a human[1]
 
 import tempfile
 from collections.abc import Callable
+from datetime import datetime
 from pathlib import Path
 
 import cv2 as cv
@@ -143,10 +144,12 @@ def model_predict_cam(
         verbose=False,
     )
     latest_non_empty_summary: list[dict] = []
+    snapshot_directory = Path("runs/predict")
 
     try:
         for result in results:
-            cv.imshow("Camera prediction", result.plot())
+            frame = result.plot()
+            cv.imshow("Camera prediction", frame)
             key = cv.waitKey(1) & 0xFF
             summary = result.summary()
 
@@ -155,8 +158,25 @@ def model_predict_cam(
 
             if key == ord("p"):
                 snapshot = summary or latest_non_empty_summary
+                snapshot_directory.mkdir(parents=True, exist_ok=True)
+                snapshot_name = (
+                    f"camera-{camera_idx}-{datetime.now():%Y%m%d-%H%M%S-%f}"
+                )
+                annotated_path = snapshot_directory / f"{snapshot_name}.jpg"
+                original_path = snapshot_directory / f"{snapshot_name}-original.jpg"
+                if not cv.imwrite(str(annotated_path), frame):
+                    raise OSError(
+                        f"Failed to save annotated camera snapshot to {annotated_path}"
+                    )
+                if not cv.imwrite(str(original_path), result.orig_img):
+                    raise OSError(
+                        f"Failed to save original camera snapshot to {original_path}"
+                    )
                 on_snapshot(snapshot)
                 print(snapshot)
+                print(f"Annotated snapshot saved to {annotated_path}")
+                print(f"Original snapshot saved to {original_path}")
+
             elif key == ord("q"):
                 break
     finally:
