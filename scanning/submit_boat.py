@@ -1,5 +1,5 @@
 import requests
-from Boat import Boat, Piece
+from boat import Boat, Piece
 
 
 def submit_scanned_boat(boat: Boat, server_url: str = "http://localhost:8000") -> str:

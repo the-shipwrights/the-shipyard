@@ -20,6 +20,7 @@ from parse_prediction import parse
 from simple_term_menu import TerminalMenu
 
 from boat import Boat
+from submit_boat import submit_scanned_boat
 
 # ---------------------------------------------------------------------------
 # Application configuration
@@ -367,8 +368,7 @@ class App:
                     print(self.latest_boat.ascii())
                     continue
             elif selection == 2:
-                # TODO Send boat
-                print("NOT IMPLEMENTED")
+                submit_scanned_boat(self.latest_boat)
                 continue
 
             self.state = State.MENU
