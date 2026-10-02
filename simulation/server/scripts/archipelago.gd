@@ -16,7 +16,8 @@ var spawned_boats: Dictionary = {}
 const ROTATION_SPEED := 1.8 # Radians per second
 var active_rotations: Dictionary = {} # boat_id (String) -> bool
 
-var mesh_constructor_scene = preload("res://packedscenes/meshconstructor.tscn")
+# FIX: Use @export instead of filepaths 
+var mesh_constructor_scene = preload("res://packedscenes/mesh_constructor.tscn") 
 
 func _ready() -> void:
 	_connect_to_server()

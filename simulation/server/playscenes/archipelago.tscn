@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://c5uk6yjaw255c"]
 
-[ext_resource type="Script" uid="uid://cuagpkfhosbom" path="res://playscenes/archipelago.gd" id="1_bfcpi"]
-[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://playscenes/camera_controller.gd" id="2_c4xo3"]
-[ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://playscenes/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="3_bf338"]
+[ext_resource type="Script" uid="uid://cuagpkfhosbom" path="res://scripts/archipelago.gd" id="1_bfcpi"]
+[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="2_c4xo3"]
+[ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="3_bf338"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_sif7b"]
 

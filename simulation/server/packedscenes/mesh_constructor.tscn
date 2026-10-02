@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bd1lh3es45ghs"]
 
-[ext_resource type="Script" uid="uid://ctsfhj0nmmmtc" path="res://packedscenes/mesh_constructor.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ctsfhj0nmmmtc" path="res://scripts/mesh_constructor.gd" id="1_script"]
 
 [node name="MeshConstructor" type="Node3D" unique_id=916306915]
 script = ExtResource("1_script")
