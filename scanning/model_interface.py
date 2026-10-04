@@ -56,6 +56,18 @@ def _portable_dataset_yaml(data_file: Path) -> tuple[Path, tempfile.TemporaryDir
     return portable_file, temporary_directory
 
 
+def _threshold_frame(frame: cv.typing.MatLike) -> cv.typing.MatLike:
+    """Convert a color frame to a three-channel binary image using Otsu thresholding."""
+    grayscale = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    _, binary = cv.threshold(
+        grayscale,
+        0,
+        255,
+        cv.THRESH_BINARY | cv.THRESH_OTSU,
+    )
+    return cv.cvtColor(binary, cv.COLOR_GRAY2BGR)
+
+
 def model_train(
     model: str | Path | None = None,
     dataset: str | Path = "wooden_block_symbols",
@@ -88,24 +100,48 @@ def model_train(
 
 
 #  docs: (https://docs.ultralytics.com/modes/predict)
-def model_predict_single(weights_path: Path, img_path: Path) -> None:
+def model_predict_single(
+    weights_path: Path,
+    img_path: Path,
+    threshold: bool = False,
+) -> None:
     """
     predict a single image. Display result directly on-screen until user exits.
     input: path to model weights, path to image
     return: a print of that bigass log of detected classes and where they are located.
     """
     model = YOLO(weights_path)
+    image = cv.imread(str(img_path))
+    if image is None:
+        raise FileNotFoundError(f"Could not load image: {img_path}")
+    original_image = image.copy()
+    if threshold:
+        image = _threshold_frame(image)
+
     results = model.predict(
-        source=img_path,
+        source=image,
         stream=False,  # optimizes memory usage, we dont need it here.
         verbose=False, # skip logging results to terminal
     )
 
     result = results[0] # a list of results. single image predictions are a 1-item list.
 
+    snapshot_directory = Path("runs/predict")
+    snapshot_directory.mkdir(parents=True, exist_ok=True)
+    snapshot_name = (
+        f"{Path(img_path).stem}-{datetime.now():%Y%m%d-%H%M%S-%f}"
+    )
+    annotated_path = snapshot_directory / f"{snapshot_name}.jpg"
+    original_path = snapshot_directory / f"{snapshot_name}-original.jpg"
+    if not cv.imwrite(str(annotated_path), result.plot()):
+        raise OSError(f"Failed to save annotated prediction to {annotated_path}")
+    if not cv.imwrite(str(original_path), original_image):
+        raise OSError(f"Failed to save original input image to {original_path}")
 
     print(result.verbose()) # this prints a list of detected occurences for each class, i.e "1 front, 2 hull"
     print(result.summary()) # this prints each result object in results, very verbose
+    print(f"Annotated prediction saved to {annotated_path}")
+    print(f"Original image saved to {original_path}")
     # The naming for these methods makes no sense at all. wtf @ultralytics??
 
     """result.summary() has this shape (data not representative):
@@ -127,6 +163,7 @@ def model_predict_cam(
     weights_path: Path,
     camera_idx: int,
     on_snapshot: Callable[[list[dict]], None],
+    threshold: bool = False,
 ) -> None:
     """
     -> owns camera, prediction stream, window, key handling
@@ -138,16 +175,27 @@ def model_predict_cam(
     """
 
     model = YOLO(weights_path)
-    results = model.predict(
-        source=camera_idx,
-        stream=True,
-        verbose=False,
-    )
+    camera = cv.VideoCapture(camera_idx)
+    if not camera.isOpened():
+        camera.release()
+        raise RuntimeError(f"Could not open camera index {camera_idx}")
+
     latest_non_empty_summary: list[dict] = []
     snapshot_directory = Path("runs/predict")
 
     try:
-        for result in results:
+        while True:
+            success, original_frame = camera.read()
+            if not success:
+                raise RuntimeError(
+                    f"Failed to read a frame from camera index {camera_idx}"
+                )
+
+            model_frame = (
+                _threshold_frame(original_frame) if threshold else original_frame
+            )
+            results = model.predict(source=model_frame, verbose=False)
+            result = results[0]
             frame = result.plot()
             cv.imshow("Camera prediction", frame)
             key = cv.waitKey(1) & 0xFF
@@ -168,7 +216,7 @@ def model_predict_cam(
                     raise OSError(
                         f"Failed to save annotated camera snapshot to {annotated_path}"
                     )
-                if not cv.imwrite(str(original_path), result.orig_img):
+                if not cv.imwrite(str(original_path), original_frame):
                     raise OSError(
                         f"Failed to save original camera snapshot to {original_path}"
                     )
@@ -180,4 +228,7 @@ def model_predict_cam(
             elif key == ord("q"):
                 break
     finally:
-        cv.destroyAllWindows()
+        try:
+            camera.release()
+        finally:
+            cv.destroyAllWindows()

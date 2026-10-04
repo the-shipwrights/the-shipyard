@@ -268,6 +268,10 @@ class App:
                 self.state = State.MENU
                 return
 
+            threshold = self._select_thresholding()
+            if threshold is None:
+                continue
+
             while True:
                 mode = self._select_prediction_mode()
                 if mode is None:
@@ -277,15 +281,37 @@ class App:
                     image_path = self._select_prediction_image()
                     if image_path is None:
                         continue
-                    model_predict_single(model, image_path)
+                    model_predict_single(model, image_path, threshold=threshold)
                 else:
                     camera_index = self._select_camera_index()
                     if camera_index is None:
                         continue
-                    model_predict_cam(model, camera_index, self._on_snapshot)
+                    model_predict_cam(
+                        model,
+                        camera_index,
+                        self._on_snapshot,
+                        threshold=threshold,
+                    )
 
                 self.state = State.MENU
                 return
+
+    def _select_thresholding(self) -> bool | None:
+        """Ask whether prediction inputs should be thresholded."""
+        options = (
+            "YES - APPLY OTSU THRESHOLDING",
+            "NO - USE ORIGINAL IMAGES",
+        )
+        selection = self._menu_factory(options).show()
+        if selection is None:
+            return None
+        if selection == 0:
+            return True
+        if selection == 1:
+            return False
+        raise RuntimeError(
+            f"Thresholding menu returned invalid selection: {selection!r}"
+        )
 
     def _select_prediction_mode(self) -> str | None:
         """Select camera snapshot, realtime camera, image, or go back."""
@@ -340,7 +366,7 @@ class App:
     # ------------------------------------------------------------------
     # Parsing workflow
     # ------------------------------------------------------------------
-    
+
     def _show_parsing_menu(self) -> None:
         """Parse latest prediciton, then return to the main menu."""
         while True:
