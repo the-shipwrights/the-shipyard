@@ -1,5 +1,12 @@
-extends Node
+# NETWORK MANAGER is responsible for establishing and maintaining
+# connection to server. it can hook up to any valid mesh constructor
+# that is in the same scene which is a sibling to it.
+#
+# Network Manager will emit signals of its events, which
+# mesh constructors will listen for.
+#
 
+extends Node
 # ---------------------------------------
 # EXPORTS
 # ---------------------------------------

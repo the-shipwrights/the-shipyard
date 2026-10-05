@@ -28,3 +28,16 @@ The first part is simple & intuitive: if a node needs to be updated that is furt
 
 ## Structure 
 Scripts should store any .gd files that are created.
+
+
+## Simulation Logic
+A network manager will establish connection to server backend. It will send a signal to notify the boat constructor to spawn in a boat inside of a generic `Boats` Node3D with correct settings. 
+
+A spawned boat will have an assigned ID. When a client interacts with a boat via phone controls, the network manager will send a signal to Boats, which will then propagate the controls to the related singular boat. 
+
+If each boat ends up having unique properties based on its build or some setting, we can give it its own script and propogate the call down into the boat.
+
+Why keep boat constructor and client interaction seperate? umm SOLID or something. it also makes for more manageable code.
+
+
+![](simulation-diagram.png)
