@@ -281,7 +281,12 @@ class App:
                     image_path = self._select_prediction_image()
                     if image_path is None:
                         continue
-                    model_predict_single(model, image_path, threshold=threshold)
+                    model_predict_single(
+                        model,
+                        image_path,
+                        self._on_snapshot,
+                        threshold=threshold
+                    )
                 else:
                     camera_index = self._select_camera_index()
                     if camera_index is None:

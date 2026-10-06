@@ -103,6 +103,7 @@ def model_train(
 def model_predict_single(
     weights_path: Path,
     img_path: Path,
+    on_snapshot: Callable[[list[dict]], None],
     threshold: bool = False,
 ) -> None:
     """
@@ -137,6 +138,8 @@ def model_predict_single(
         raise OSError(f"Failed to save annotated prediction to {annotated_path}")
     if not cv.imwrite(str(original_path), original_image):
         raise OSError(f"Failed to save original input image to {original_path}")
+
+    on_snapshot(result.summary())
 
     print(result.verbose()) # this prints a list of detected occurences for each class, i.e "1 front, 2 hull"
     print(result.summary()) # this prints each result object in results, very verbose
