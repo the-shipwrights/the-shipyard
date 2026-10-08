@@ -2,38 +2,38 @@
 Turn prediction results into boat data.
 Produce visual feedback in case of faliure.
 
-Todo:
-- Perspective correction?
-- TUI integration
-- Verbose ERRORs
+TODO:
+- Perspective correction
+- Cleanup
 - Image feedback
 """
 
 import boat
 
-symbol_ratio_threshold = 0.1
+symbol_ratio_threshold = 1
 scale_threshold = 0.1
-position_thresold = 10
+position_thresold = 20
 
-grid_cell_size = 25
-hull_height = 100
+grid_cell_size = 11.25
+hull_height = 4
 symbol_sizes = [
-    (16, 26.8),
-    (10, 10),
-    (10, 10),
-    (10, 10)
+    (16, 27),
+    (25, 6),
+    (17, 22),
+    (18, 27)
 ]
 symbol_positions = [
-    (8.4, 28),
-    (22.5, 22.5),
-    (22.5, 22.5),
-    (22.5, 22.5)
+    (8.5, 28),
+    (23.5, 29),
+    (32, 30),
+    (21.5, 16.5)
 ]
 
 
 def parse(prediction: dict) -> boat.Boat:
 
     detections = prediction["detections"]
+    image_height = prediction["image_height"]
     scanned_boat = boat.Boat(pieces=[])
 
     "{ class: int, width: float, height: float, x_position: float, y_position: float, scale: float }"
@@ -53,7 +53,7 @@ def parse(prediction: dict) -> boat.Boat:
             "width": detection["box"]["x2"] - detection["box"]["x1"],
             "height": detection["box"]["y2"] - detection["box"]["y1"],
             "x_position": (detection["box"]["x2"] + detection["box"]["x1"]) / 2,
-            "y_position": (detection["box"]["y2"] + detection["box"]["y1"]) / 2,
+            "y_position": image_height - (detection["box"]["y2"] + detection["box"]["y1"]) / 2,
             "scale": (detection["box"]["x2"] - detection["box"]["x1"]) / symbol_sizes[detection["class"]][0]
         }
 
@@ -71,12 +71,14 @@ def parse(prediction: dict) -> boat.Boat:
         piece_ratio = symbol["width"] / symbol["height"]
         if abs(symbol_ratio - piece_ratio) > symbol_ratio_threshold:
             # ERROR ratio
-            print("Ratio: " + str(piece_ratio) + " deviates too much from symbol " + str(symbol["class"]) + " ratio: " + str(symbol_ratio))
+            print("Ratio: " + str(piece_ratio) + " deviates too much from " + boat.PIECE_TYPES[symbol["class"]].name + " symbol ratio: " + str(symbol_ratio))
+            print("Boat parsing failed")
             return scanned_boat
 
         if abs(average_scale - symbol["scale"]) > scale_threshold:
             # ERROR scale
             print("Scale: " + str(symbol["scale"]) + " deviates too much from average: " + str(average_scale))
+            print("Boat parsing failed")
             return scanned_boat
 
     # Piece data collection
@@ -93,13 +95,15 @@ def parse(prediction: dict) -> boat.Boat:
         category = boat.PIECE_TYPES[symbol["class"]].category
         if category == "hull":
             hull_pieces.append(piece_data)
-        elif category == "structure":
+        elif category == "middle":
             middle_pieces.append(piece_data)
         elif category == "accessory":
             accessory_pieces.append(piece_data)
         else:
             #ERROR category
-            print("Invalid category: " + str(category))
+            print("Scanned piece is of invalid category: " + str(category))
+            print("Boat parsing failed")
+            return scanned_boat
 
     # Hull validation
     if len(hull_pieces) == 0:
@@ -113,20 +117,20 @@ def parse(prediction: dict) -> boat.Boat:
     current_x = 0
 
     for hull_piece in sorted_hull_pieces:
-        current_x_scaled = current_x * average_scale + origin[0]
+        current_x_scaled = origin[0] + current_x * grid_cell_size * average_scale
         if abs(current_x_scaled - hull_piece["x_position"]) > position_thresold_scaled:
             # ERROR hull x
             print("X position: " + str(hull_piece["x_position"]) + " of hull piece deviates too much from expectation: " + str(current_x_scaled))
-            print("Boat parsing failed")
+            print("Boat partially parsed")
             return None
 
         if abs(hull_piece["y_position"] - origin[1]) > position_thresold_scaled:
             # ERROR hull y
             print("Y position: " + hull_piece["y_position"] + " of hull piece deviates too much from origin: " + origin[1])
-            print("Boat parsing failed")
+            print("Boat partially parsed")
             return None
 
-        scanned_boat.pieces.append(boat.Piece(len(scanned_boat.pieces), hull_piece["class"], current_x, 0))
+        scanned_boat.pieces.append(boat.Piece(hull_piece["class"], current_x, 0))
         current_x += piece_size(hull_piece["class"])[0]
 
     # Middle piece validation
@@ -137,19 +141,18 @@ def parse(prediction: dict) -> boat.Boat:
             print("Boat partially parsed")
             return scanned_boat
 
-        if abs(middle_piece["y_position"] - origin[1] - hull_height * average_scale) > position_thresold_scaled:
+        if abs(middle_piece["y_position"] - origin[1] - hull_height * grid_cell_size * average_scale) > position_thresold_scaled:
             # ERROR middle y
-            print("Y position: " + str(middle_piece["y_position"]) + " of middle piece deviates too much from expectation: " + str(origin[1]) + str(hull_height) * str(average_scale))
+            print("Y position: " + str(middle_piece["y_position"]) + " of middle piece deviates too much from expectation: " + str(origin[1] + hull_height * grid_cell_size * average_scale))
             print("Boat partially parsed")
             return scanned_boat
 
-        grid_x_position = (middle_piece["x_position"] - origin[0]) / average_scale
-        nearest_x_position = round(grid_x_position / grid_cell_size) * grid_cell_size
+        grid_x_position = round((middle_piece["x_position"] - origin[0]) / (grid_cell_size * average_scale))
 
         # TODO validate middle collision
         # TODO validate middle connection
 
-        scanned_boat.pieces.append(boat.Piece(len(scanned_boat.pieces), middle_piece["class"], nearest_x_position, hull_height))
+        scanned_boat.pieces.append(boat.Piece(middle_piece["class"], grid_x_position, hull_height))
 
     # Accessory validation
     for accessory_piece in accessory_pieces:
@@ -165,15 +168,13 @@ def parse(prediction: dict) -> boat.Boat:
             print("Boat partially parsed")
             return scanned_boat
 
-        grid_x_position = (accessory_piece["x_position"] - origin[0]) / average_scale
-        grid_y_position = (accessory_piece["y_position"] - origin[1]) / average_scale
-        nearest_x_position = round(grid_x_position / grid_cell_size) * grid_cell_size
-        nearest_y_position = round(grid_y_position / grid_cell_size) * grid_cell_size
+        grid_x_position = round((accessory_piece["x_position"] - origin[0]) / (grid_cell_size * average_scale))
+        grid_y_position = round((accessory_piece["y_position"] - origin[1]) / (grid_cell_size * average_scale))
 
         # TODO validate accessory collision
         # TODO validate accessory connection
 
-        scanned_boat.pieces.append(boat.Piece(len(scanned_boat.pieces), accessory_piece["class"], nearest_x_position, nearest_y_position))
+        scanned_boat.pieces.append(boat.Piece(accessory_piece["class"], grid_x_position, grid_y_position))
 
     print("Prediction parsed successfully")
     return scanned_boat

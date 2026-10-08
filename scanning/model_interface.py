@@ -139,7 +139,7 @@ def model_predict_single(
     if not cv.imwrite(str(original_path), original_image):
         raise OSError(f"Failed to save original input image to {original_path}")
 
-    on_snapshot(result.summary())
+    on_snapshot(result.summary(), image.shape[0])
 
     print(result.verbose()) # this prints a list of detected occurences for each class, i.e "1 front, 2 hull"
     print(result.summary()) # this prints each result object in results, very verbose
