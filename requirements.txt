@@ -7,3 +7,4 @@ simple-term-menu==1.6.6
 ultralytics==8.4.154
 fastapi
 uvicorn[standard]
+textual ==8.2.8
