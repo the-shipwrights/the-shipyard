@@ -5,22 +5,47 @@ from typing import Literal
 # Type definitions
 # ------------------------------------------------------------------
 
-PieceCategory = Literal["hull", "middle", "accessory"]
-Direction = Literal["left", "right", "up", "down"]
-ConnectionKind = Literal["hull", "structure", "half_structure", "accessory"]
+PieceCategory = Literal[
+    "hull",
+    "middle",
+    "accessory"
+]
+
+AttachmentType = Literal[
+    "to_hull",
+    "to_middle_left",
+    "to_middle_right",
+    "from_middle",
+    "to_accessory",
+    "from_accessory"
+]
 
 # ------------------------------------------------------------------
-# Piece type definitions
+# Attachment point
 # ------------------------------------------------------------------
 
 @dataclass(frozen=True)
 class AttachmentPoint:
-    name: str
-    kinds: tuple[ConnectionKind, ...]
+    type: AttachmentType
     x: int
     y: int
-    direction: Direction
-    
+
+    def width(self) -> int:
+        return ATTACHMENT_POINT_WIDTH.get(self.type)
+
+ATTACHMENT_POINT_WIDTH: dict[AttachmentType, int] = {
+    "to_hull": 1,
+    "to_middle_left": 2,
+    "to_middle_right": 2,
+    "from_middle": 4,
+    "to_accessory": 2,
+    "from_accessory": 2,
+}
+
+# ------------------------------------------------------------------
+# Piece type
+# ------------------------------------------------------------------
+
 @dataclass(frozen=True)
 class PieceType:
     id: int
@@ -28,60 +53,79 @@ class PieceType:
     category: PieceCategory
     width: int
     height: int
-    attachments: tuple[AttachmentPoint, ...] = ()
+    attachmentPoints: tuple[AttachmentPoint, ...] = ()
 
-# ------------------------------------------------------------------
 # Piece type catalogue
 # ------------------------------------------------------------------
 
 HULL_STERN = PieceType(
     id=2, name="hull_stern", category="hull", width=4, height=4,
-    attachments=(
-        
+    attachmentPoints=(
+        AttachmentPoint("to_hull", 3, 2),
+        AttachmentPoint("to_middle_left", 2, 3),
+        AttachmentPoint("to_accessory", 0, 3),
+        AttachmentPoint("to_accessory", 1, 3),
+        AttachmentPoint("to_accessory", 2, 3)
     ),
 )
 
 HULL_SECTION = PieceType(
     id=1, name="hull_section", category="hull", width=4, height=4,
-    attachments=(
-        
+    attachmentPoints=(
+        AttachmentPoint("to_hull", 3, 0),
+        AttachmentPoint("to_hull", 3, 2),
+        AttachmentPoint("to_middle_left", 0, 3),
+        AttachmentPoint("to_middle_right", 2, 3),
+        AttachmentPoint("to_accessory", 0, 3),
+        AttachmentPoint("to_accessory", 1, 3),
+        AttachmentPoint("to_accessory", 2, 3)
     ),
 )
 
 HULL_BOW = PieceType(
     id=0, name="hull_bow", category="hull", width=6, height=4,
-    attachments=(
-        
+    attachmentPoints=(
+        AttachmentPoint("to_hull", 3, 0),
+        AttachmentPoint("to_middle_right", 0, 3),
+        AttachmentPoint("to_accessory", 0, 3),
+        AttachmentPoint("to_accessory", 1, 3),
+        AttachmentPoint("to_accessory", 2, 3)
     ),
 )
 
 CABIN = PieceType(
     id=3, name="cabin", category="middle", width=4, height=3,
-    attachments=(
-        
+    attachmentPoints=(
+        AttachmentPoint("from_middle", 0, 0),
+        AttachmentPoint("to_accessory", 0, 2),
+        AttachmentPoint("to_accessory", 1, 2),
+        AttachmentPoint("to_accessory", 2, 2)
     ),
 )
 
 TARP = PieceType(
     id=1000, name="tarp", category="middle", width=100, height=80,
-    attachments=(
+    attachmentPoints=(
         
     ),
 )
 
 FLAG = PieceType(
     id=1000, name="flag", category="accessory", width=100, height=100,
-    attachments=(
+    attachmentPoints=(
         
     ),
 )
 
 CHIMNEY = PieceType(
     id=1000, name="chimney", category="accessory", width=100, height=100,
-    attachments=(
+    attachmentPoints=(
         
     ),
 )
+
+# Piece type from id
+# ------------------------------------------------------------------
 
 PIECE_TYPES: dict[int, PieceType] = {
     HULL_BOW.id: HULL_BOW,
@@ -105,8 +149,15 @@ class Piece:
     def to_dict(self) -> dict:
         return asdict(self)
 
-# ------------------------------------------------------------------
-# Text representation
+    def piece_text(self) -> list[str]:
+        piece_type = PIECE_TYPES.get(self.id)
+
+        if piece_type is None:
+            return "?"
+
+        return PIECE_TEXT.get(piece_type.name, "?")
+
+# Piece text catalogue
 # ------------------------------------------------------------------
 
 PIECE_TEXT: dict[str, list[str]] = {
@@ -115,14 +166,6 @@ PIECE_TEXT: dict[str, list[str]] = {
     "hull_stern": [" ──────┘", "╲      │", "│      │", "┌──────┐"],
     "cabin": ["└──────┘", "│  []  │", "┌──────┐"],
 }
-
-def piece_text(piece: Piece) -> list[str]:
-    piece_type = PIECE_TYPES.get(piece.id)
-
-    if piece_type is None:
-        return "?"
-
-    return PIECE_TEXT.get(piece_type.name, "?")
 
 # ------------------------------------------------------------------
 # Boat
@@ -144,6 +187,10 @@ class Boat:
             pieces=data,
         )
 
+    # Boat validation
+    # ------------------------------------------------------------------
+
+    # TODO Make not broken?
     def validate(self) -> list[str]:
         errors = []
         piece_map = {p.id: p for p in self.pieces}
@@ -189,8 +236,11 @@ class Boat:
     def is_valid(self) -> bool:
         return not self.validate()
 
+    # String representation
+    # ------------------------------------------------------------------
+
     def __str__(self) -> str:
-        """String representation of the boat and all placed pieces."""
+        """Generate a string representation of all pieces that make up the boat."""
         lines = [f"Boat: {len(self.pieces)} pieces"]
 
         for piece in self.pieces:
@@ -216,14 +266,14 @@ class Boat:
 
         return "\n".join(lines)
 
+    # Text art 
+    # ------------------------------------------------------------------
+
     def to_text(self) -> str:
         """
-        Generate a text representation directly from the runtime pieces.
-
-        x determines horizontal position.
-        y determines vertical level.
-
-        No separate matrix/grid is stored in Boat.
+        Generate a text-based image representation of the boat.
+        
+        Note: No separate matrix/grid is stored in Boat.
         """
         if not self.pieces:
             return "(empty boat)"
@@ -254,43 +304,9 @@ class Boat:
 
         return "\n".join(output_rows)
 
-        '''
-        for piece in self.pieces:
-            piece_type = PIECE_TYPES.get(piece.type_id)
-
-            if piece_type is None:
-                center_x = piece.x
-            else:
-                center_x = piece.x + piece_type.width // 2
-
-            positions.append((piece, center_x, piece.y))
-
-        # Use all actual Y levels present in the boat.
-        y_levels = sorted({y for _, _, y in positions}, reverse=True)
-
-        min_x = min(x for _, x, _ in positions)
-        max_x = max(x for _, x, _ in positions)
-
-        # Convert physical X coordinates into printable columns.
-        column_count = round((max_x - min_x) / cell_width) + 1
-
-        
-
-        for y in y_levels:
-            row = ["."] * column_count
-
-            for piece, center_x, piece_y in positions:
-                if piece_y != y:
-                    continue
-
-                column = round((center_x - min_x) / cell_width)
-                row[column] = piece_symbol(piece)
-
-            rows.append(" ".join(row))
-
-        return "\n".join(rows)
-        '''
-
+# ------------------------------------------------------------------
+# Main function
+# ------------------------------------------------------------------
 
 if __name__ == "__main__":
     myBoat = Boat(pieces=[
@@ -304,31 +320,3 @@ if __name__ == "__main__":
 
     print(myBoat)
     print(myBoat.to_text())
-
-"""
-{
-  "id": "ABCD",
-  "boat": {
-    "pieces": []
-  },
-  "customization": {
-    "color": "#2f7fff"
-  },
-  "status": "customizing"
-}
-
-{
-  "pieces": [
-    {"id": 0, "type_id": 0, "x": 0, "y": 0, "flipped": false, "colors": []},
-    {"id": 1, "type_id": 1, "x": 150, "y": 0, "flipped": false, "colors": []}
-  ],
-  "edges": [
-    {
-      "from_piece_id": 0,
-      "from_attachment": "hull_right_connection",
-      "to_piece_id": 1,
-      "to_attachment": "hull_left_connection"
-    }
-  ]
-}
-"""
