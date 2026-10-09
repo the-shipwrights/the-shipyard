@@ -92,17 +92,6 @@ class App:
     # ------------------------------------------------------------------
 
     def run(self) -> None:
-
-        self.latest_prediction = {
-            'detections': [
-                {'name': 'back', 'class': 2, 'confidence': 0.98459, 'box': {'x1': 573.7207, 'y1': 534.51068, 'x2': 704.0166, 'y2': 704.5036}},
-                {'name': 'front', 'class': 0, 'confidence': 0.97483, 'box': {'x1': 1184.07983, 'y1': 523.90942, 'x2': 1309.28369, 'y2': 737.1416}},
-                {'name': 'cabin', 'class': 3, 'confidence': 0.97269, 'box': {'x1': 692.69812, 'y1': 248.34073, 'x2': 831.76038, 'y2': 463.31561}},
-                {'name': 'hull', 'class': 1, 'confidence': 0.90007, 'box': {'x1': 846.73523, 'y1': 575.54138, 'x2': 1041.50916, 'y2': 624.57959}}
-            ],
-            'image_height': 1080
-        }
-
         """Run until the user explicitly selects Quit.
 
         ``TerminalMenu.show`` returns ``None`` when the menu is cancelled

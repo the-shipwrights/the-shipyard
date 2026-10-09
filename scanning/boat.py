@@ -243,14 +243,14 @@ class Boat:
             piece_text = PIECE_TEXT[piece_type.name]
             for piece_row_index, piece_row in enumerate(piece_text):
                 output_row = output_rows[piece_row_index + piece.y + 2]
-                output_rows[piece_row_index + piece.y + 2] = piece_row.join([output_row[:piece.x * 2 + 1], output_row[piece_far_x * 2 + 1:]])
+                output_rows[piece_row_index + piece.y + 2] = piece_row.join([output_row[:piece.x * 2 + 2], output_row[piece_far_x * 2 + 1:]])
 
         output_rows = output_rows[:boat_height + 4]
         output_rows.reverse()
         for row_index in range(len(output_rows)):
-            output_rows[row_index] = "║" + output_rows[row_index][:boat_width * 2 + 2] + "║"
-        output_rows[0]  = "◯" + "═" * (boat_width * 2 + 2) + "◯"
-        output_rows[-1] = "◯" + "═" * (boat_width * 2 + 2) + "◯"
+            output_rows[row_index] = "║" + output_rows[row_index][:boat_width * 2 + 4] + "║"
+        output_rows[0]  = "╔" + "═" * (boat_width * 2 + 4) + "╗"
+        output_rows[-1] = "╚" + "═" * (boat_width * 2 + 4) + "╝"
 
         return "\n".join(output_rows)
 
