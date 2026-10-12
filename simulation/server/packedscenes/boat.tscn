@@ -1,3 +1,7 @@
 [gd_scene format=3 uid="uid://cxa4wyqnbm02s"]
 
 [node name="Boat" type="Node3D" unique_id=990209358]
+
+[node name="RayCast3D" type="RayCast3D" parent="." unique_id=956753181]
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1313056482]
