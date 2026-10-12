@@ -4,14 +4,12 @@ Welcome to the simulation part of the project!
 **Structure**
 - Keep all scripts in `scripts/` folder.
 - `assets/` will keep aaaall of the project's assets, which includes `shaders` and any other .tres files that get created.
-- `packedscenes/` contains "prefabs". You can see that boat components are in there for instance. 
+- `packedscenes/` contains "prefabs". You can see that boat components are in there for instance. These scenes are meant to be used inside of other scenes, such as constructing a boat, etc..  
 - `playscenes/` contains any scene that is meant to be played (differing from `packedscenes/`)
 - Avoid making edits directly to `main_scene.tscn`. This is to avoid difficult merge conflicts. This scene should only be edited once features are stable enough to be orchestrated into it. Until then, make copies of the main_scene if you want to use features of it.
 
 ## Godot workflow 
 Godot is a Node-based Game engine where everything is a tree of nodes! Nodes can be anything: From audio players, mesh instances, hitboxes, particle systems, to simply holding a script. There exist three main nodes: Node3D, Node2D, and Node. the latter of the three is a parent to the rest. 
-
-
 
 ### Propagate down, Signal Up
 A saying in Godot goes something like this: 
@@ -43,6 +41,18 @@ A spawned boat will have an assigned ID. When a client interacts with a boat via
 
 If each boat ends up having unique properties based on its build or some setting, we can give it its own script and propogate the call down into the boat.
 
-Why keep boat constructor and client interaction seperate? umm SOLID or something. it also makes for more manageable code.
+Why keep boat constructor and client interaction seperate? umm SOLID or something. it makes for more manageable code.
 
 ![](simulation-diagram.png)
+
+## Boat reconstruction
+todo
+
+## Terrain Generation
+todo
+
+## Boat Shaders 
+todo
+
+## Ocean & Fog Shaders
+todo
