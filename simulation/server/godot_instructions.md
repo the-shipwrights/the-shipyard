@@ -51,8 +51,11 @@ todo
 ## Terrain Generation
 todo
 
-## Boat Shaders 
+### Shaders
+todo 
+#### Boat shaders
 todo
-
-## Ocean & Fog Shaders
+#### Ocean shaders
+todo
+#### Fog shaders
 todo
