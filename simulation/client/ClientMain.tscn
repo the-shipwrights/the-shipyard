@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://jt1n5ha3iehg"]
 
-[ext_resource type="Script" uid="uid://g2gft4uqn0uh" path="res://client_main.gd" id="1_tbnjw"]
-[ext_resource type="PackedScene" uid="uid://bsh6truohdknt" path="res://CustomizeView.tscn" id="2_8dsab"]
-[ext_resource type="PackedScene" uid="uid://c0rck3dp1p2sw" path="res://ControlView.tscn" id="3_e3qio"]
+[ext_resource type="Script" uid="uid://g2gft4uqn0uh" path="res://Scripts/client_main.gd" id="1_tbnjw"]
+[ext_resource type="PackedScene" uid="uid://bsh6truohdknt" path="res://Views/CustomizeView.tscn" id="2_8dsab"]
+[ext_resource type="PackedScene" uid="uid://dp6yq7w4x8kfa" path="res://Views/BuilderView.tscn" id="2_qdac4"]
+[ext_resource type="PackedScene" uid="uid://c0rck3dp1p2sw" path="res://Views/ControlView.tscn" id="3_e3qio"]
 
 [node name="ClientMain" type="Control" unique_id=1258100918]
 layout_mode = 3
@@ -20,6 +21,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="BuilderView" parent="ViewContainer" unique_id=19207504 instance=ExtResource("2_qdac4")]
+visible = false
+layout_mode = 1
 
 [node name="CustomizeView" parent="ViewContainer" unique_id=783958750 instance=ExtResource("2_8dsab")]
 layout_mode = 1

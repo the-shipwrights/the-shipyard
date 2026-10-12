@@ -19,12 +19,24 @@ var active_rotations: Dictionary = {} # boat_id (String) -> bool
 # FIX: Use @export instead of filepaths 
 var mesh_constructor_scene = preload("res://packedscenes/mesh_constructor.tscn") 
 
+func get_server_host() -> String:
+	if OS.has_feature("web"):
+		var window = JavaScriptBridge.get_interface("window")
+		return str(window.location.hostname)
+	return "127.0.0.1"
+
+func get_api_base() -> String:
+	return "http://" + get_server_host() + ":8000"
+
+func get_ws_url(path: String) -> String:
+	return "ws://" + get_server_host() + ":8000" + path
+
 func _ready() -> void:
 	_connect_to_server()
 
 func _connect_to_server() -> void:
-	print("[WS] Connecting to simulation endpoint: ", WS_URL)
-	var err := ws.connect_to_url(WS_URL)
+	print("[WS] Connecting to simulation endpoint: ", get_ws_url("/ws/simulation"))
+	var err := ws.connect_to_url(get_ws_url("/ws/simulation"))
 	if err != OK:
 		push_error("[WS] Connection initiation failed: %d" % err)
 
