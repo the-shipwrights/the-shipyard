@@ -1,6 +1,19 @@
 [gd_scene format=3 uid="uid://cxa4wyqnbm02s"]
 
+[ext_resource type="Script" uid="uid://dq1kexbqqfli3" path="res://scripts/boat.gd" id="1_q5874"]
+[ext_resource type="Script" uid="uid://ctsfhj0nmmmtc" path="res://scripts/mesh_constructor.gd" id="2_q5874"]
+
 [node name="Boat" type="Node3D" unique_id=990209358]
+script = ExtResource("1_q5874")
+
+[node name="MeshConstructor" type="Node3D" parent="." unique_id=1407592588]
+script = ExtResource("2_q5874")
+
+[node name="IDLabel" type="Label3D" parent="." unique_id=1612036051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 2.6, 0)
+billboard = 1
+font_size = 48
+outline_size = 8
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=956753181]
 
