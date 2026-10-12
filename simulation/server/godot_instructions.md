@@ -39,5 +39,4 @@ If each boat ends up having unique properties based on its build or some setting
 
 Why keep boat constructor and client interaction seperate? umm SOLID or something. it also makes for more manageable code.
 
-
 ![](simulation-diagram.png)
