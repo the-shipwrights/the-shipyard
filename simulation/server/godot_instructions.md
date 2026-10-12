@@ -1,8 +1,17 @@
 # The Archipelago, and more... 
 Welcome to the simulation part of the project!  
 
+**Structure**
+- Keep all scripts in `scripts/` folder.
+- `assets/` will keep aaaall of the project's assets, which includes `shaders` and any other .tres files that get created.
+- `packedscenes/` contains "prefabs". You can see that boat components are in there for instance. 
+- `playscenes/` contains any scene that is meant to be played (differing from `packedscenes/`)
+- Avoid making edits directly to `main_scene.tscn`. This is to avoid difficult merge conflicts. This scene should only be edited once features are stable enough to be orchestrated into it. Until then, make copies of the main_scene if you want to use features of it.
+
 ## Godot workflow 
 Godot is a Node-based Game engine where everything is a tree of nodes! Nodes can be anything: From audio players, mesh instances, hitboxes, particle systems, to simply holding a script. There exist three main nodes: Node3D, Node2D, and Node. the latter of the three is a parent to the rest. 
+
+
 
 ### Propagate down, Signal Up
 A saying in Godot goes something like this: 
@@ -13,7 +22,7 @@ The first part is simple & intuitive: if a node needs to be updated that is furt
 ### Exports are awesome!
 @export is a very powerful keyword which lets you fiddle around with a script via Godot UI. Although it may feel convenient to use a bunch of magic numbers while working on a script, taking the time to write some huge & pretty @export blocks helps everyone a lot. [more info from the docs here!](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html) 
 
-## Naming Conventions
+### Naming Conventions
 |     Type     |   Convention  |          Example          |
 |:------------:|:-------------:|:-------------------------:|
 | File names   | snake_case    | yaml_parser.gd            |
@@ -25,9 +34,6 @@ The first part is simple & intuitive: if a node needs to be updated that is furt
 | Constants    | CONSTANT_CASE | const MAX_SPEED = 200     |
 | Enum names   | PascalCase    | enum Element              |
 | Enum members | CONSTANT_CASE | {EARTH, WATER, AIR, FIRE} |
-
-## Structure 
-Scripts should store any .gd files that are created.
 
 
 ## Simulation Logic
