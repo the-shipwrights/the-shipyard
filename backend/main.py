@@ -15,7 +15,6 @@ ALPHABET = string.ascii_uppercase
 
 class PiecePayload(BaseModel):
     id: int
-    type_id: int
     x: int
     y: int
     flipped: bool = False
@@ -36,12 +35,10 @@ class BoatPayload(BaseModel):
         return self
 
 def payload_to_boat(payload: BoatPayload) -> Boat:
-    return Boat(
-        pieces=[
-            Piece(**piece.model_dump())
-            for piece in payload.pieces
-        ]
-    )
+    return Boat(pieces=[
+        Piece(**piece.model_dump())
+        for piece in payload.pieces
+    ])
 
 class ColorPatch(BaseModel):
     color: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")

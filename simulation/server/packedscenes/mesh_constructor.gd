@@ -3,8 +3,7 @@ class_name MeshConstructor
 
 const API_BASE := "http://localhost:8000"
 # Converts Boat.py pixel dimensions (e.g., width 100) to Godot 3D meters (1.0m)
-const SCALE_FACTOR := 0.01 
-const BOAT_DEPTH := 1.0
+const SCALE_FACTOR := 0.25
 
 var http_request: HTTPRequest
 var use_custom_models := false # Toggle this to true when final models are ready
@@ -54,7 +53,7 @@ func _clear_existing_meshes() -> void:
 			child.queue_free()
 
 func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) -> Node3D:
-	var type_id: int = piece.get("type_id", -1)
+	var id: int = piece.get("id", -1)
 	var pos_x: float = float(piece.get("x", 0)) * SCALE_FACTOR
 	var pos_y: float = float(piece.get("y", 0)) * SCALE_FACTOR
 	var flipped: bool = piece.get("flipped", false)
@@ -62,13 +61,13 @@ func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) ->
 	var piece_node: Node3D
 	
 	if use_custom_models:
-		# FUTURE IMPLEMENTATION: Load custom scenes based on type_id
+		# FUTURE IMPLEMENTATION: Load custom scenes based on piece id
 		# Example:
-		# piece_node = load("res://models/pieces/piece_%d.tscn" % type_id).instantiate()
+		# piece_node = load("res://models/pieces/piece_%d.tscn" % id).instantiate()
 		pass
 	else:
-		# CURRENT IMPLEMENTATION: Procedural primitive shapes based on Boat.py[cite: 1]
-		piece_node = _generate_primitive(type_id, base_material)
+		# CURRENT IMPLEMENTATION: Procedural primitive shapes based on boat.py[cite: 1]
+		piece_node = _generate_primitive(id, base_material)
 	
 	if not piece_node:
 		return null
@@ -100,49 +99,37 @@ func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) ->
 		
 	return piece_node
 
-func _generate_primitive(type_id: int, mat: StandardMaterial3D) -> MeshInstance3D:
+func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
 	var mesh: Mesh
 	var w := 1.0
 	var h := 1.0
+	var d := 1.5
 	
-	# Mapping based on PieceType definitions in Boat.py[cite: 1]
-	match type_id:
-		0: # HULL_FRONT (w=150, h=100)
-			w = 1.5; h = 1.0
+	# Mapping based on PieceType definitions in boat.py[cite: 1]
+	match id:
+		0: # HULL_FRONT (w=6, h=4)
+			w = 1.5; h = 1.0; d = 1.5
 			mesh = PrismMesh.new() # Using prism for angled hull
-			mesh.size = Vector3(w, h, BOAT_DEPTH)
+			mesh.size = Vector3(w, h, d)
 			mesh.left_to_right = 1.0
 			mesh_instance.rotation_degrees.x = 180.0
-		1: # HULL_MIDDLE (w=100, h=100)
-			w = 1.0; h = 1.0
+		1: # HULL_MIDDLE (w=4, h=4)
+			w = 1.0; h = 1.0; d = 1.5
 			mesh = BoxMesh.new()
-			mesh.size = Vector3(w, h, BOAT_DEPTH)
-		2: # HULL_BACK (w=100, h=100)
-			w = 1.0; h = 1.0
+			mesh.size = Vector3(w, h, d)
+		2: # HULL_BACK (w=4, h=4)
+			w = 1.0; h = 1.0; d = 1.5
 			mesh = PrismMesh.new() # Using prism for angled hull
-			mesh.size = Vector3(w, h, BOAT_DEPTH)
+			mesh.size = Vector3(w, h, d)
 			mesh.left_to_right = 0.0
 			mesh_instance.rotation_degrees.x = 180.0
-		3: # CABIN (w=100, h=100)
-			w = 0.8; h = 1.0
+		3: # CABIN (w=4, h=3)
+			w = 1.0; h = 0.75; d = 1.0
 			mesh = BoxMesh.new()
-			mesh.size = Vector3(w, h, BOAT_DEPTH*0.8)
-		4: # SHARED_CABIN (w=150, h=100)
-			w = 1.5; h = 1.0
-			mesh = BoxMesh.new()
-			mesh.size = Vector3(w, h, BOAT_DEPTH)
-		5: # TENT (w=100, h=80)
-			w = 1.0; h = 0.8
-			mesh = PrismMesh.new()
-			mesh.size = Vector3(w, h, BOAT_DEPTH)
-			mesh_instance.rotation_degrees.y = 90.0
-		6: # FLAG (w=10, h=80)
-			w = 0.1; h = 0.8
-			mesh = CylinderMesh.new()
-			mesh.top_radius = 0.05; mesh.bottom_radius = 0.05; mesh.height = h
+			mesh.size = Vector3(w, h, d)
 		_:
-			push_warning("Unknown piece type: ", type_id)
+			push_warning("Unknown piece type: ", id)
 			return null
 			
 	mesh_instance.mesh = mesh
@@ -151,5 +138,6 @@ func _generate_primitive(type_id: int, mat: StandardMaterial3D) -> MeshInstance3
 	# Store dimensions as metadata for positioning math
 	mesh_instance.set_meta("width", w)
 	mesh_instance.set_meta("height", h)
+	mesh_instance.set_meta("depth", d)
 	
 	return mesh_instance
