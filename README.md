@@ -12,24 +12,26 @@ In root (`the-shipyard`) run the following:
 Create and activate a virtual environment + install backend dependencies
 
 ```bash
-py -3 -m venv .venv
-.\.venv\Scripts\Activate.ps1
+# Dependencies
+sudo apt update; sudo apt install make build-essential libssl-dev zlib1g-dev \ libbz2-dev libreadline-dev libsqlite3-dev curl git \ libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev libzstd-dev
+sudo apt install pyenv
+pyenv install 3.14.7
 
+# Config
+pyenv local 3.14.7
+python3 -m venv .venv-wsl
+
+# Run virtual env
+source .venv-wsl/bin/Activate
+
+# Install venv libraries
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
 
-(Optional) Initialize the database with the sample boat: 
-- Ruslan's Notes: I've found that this part is actually not optional! The backend doesn't work without an initialized database, atleast not on my machine.  
-```bash
-
+# Initialize the database with a sample boat:
 python -m backend.seed_ABCD
-```
 
-
-Start the FastAPI backend (available at: `http://localhost:8000`):
-
-```bash
+# Start the FastAPI backend (available at: `http://localhost:8000`):
 python -m uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 ```
 

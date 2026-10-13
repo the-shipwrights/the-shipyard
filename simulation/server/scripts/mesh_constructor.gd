@@ -1,26 +1,14 @@
 extends Node3D
 class_name MeshConstructor
 
-const API_BASE := "http://localhost:8000"
 # Converts Boat.py pixel dimensions (e.g., width 100) to Godot 3D meters (1.0m)
 const SCALE_FACTOR := 0.25
 
-var http_request: HTTPRequest
 var use_custom_models := false # Toggle this to true when final models are ready
 
-func _ready() -> void:
-	# Initialize internal HTTPRequest for independent fetching
-	http_request = HTTPRequest.new()
-	add_child(http_request)
-	http_request.request_completed.connect(_on_request_completed)
+# func _ready() -> void:
 
-## ENTRY POINT 1: Fetch from backend using boat ID
-func build_from_id(boat_id: String) -> void:
-	var error := http_request.request(API_BASE + "/api/boats/" + boat_id.to_upper())
-	if error != OK:
-		push_error("Failed to request boat data for ID: " + boat_id)
-
-## ENTRY POINT 2: Build directly from a provided data dictionary
+## Build directly from a provided data dictionary
 func build_from_data(data: Dictionary) -> void:
 	_clear_existing_meshes()
 	
@@ -37,20 +25,10 @@ func build_from_data(data: Dictionary) -> void:
 		if piece_node:
 			add_child(piece_node)
 
-func _on_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	if response_code != 200:
-		push_error("Failed to load boat. HTTP Code: " + str(response_code))
-		return
-		
-	var data = JSON.parse_string(body.get_string_from_utf8())
-	if data and data is Dictionary:
-		build_from_data(data)
-
 func _clear_existing_meshes() -> void:
 	# Removes existing pieces so the constructor can be reused/updated safely
 	for child in get_children():
-		if child != http_request:
-			child.queue_free()
+		child.queue_free()
 
 func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) -> Node3D:
 	var id: int = piece.get("id", -1)
