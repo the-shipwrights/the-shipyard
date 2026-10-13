@@ -2,7 +2,15 @@ from pathlib import Path
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal
-from textual.widgets import DirectoryTree, Footer, Header, Label, ListItem, ListView, Static
+from textual.widgets import (
+    DirectoryTree,
+    Footer,
+    Header,
+    Label,
+    ListItem,
+    ListView,
+    Static,
+)
 
 
 class Tui(App):
@@ -32,11 +40,11 @@ class Tui(App):
                 ListItem(Label("PRACTICE BOAT VISION")),
                 ListItem(Label("OBSERVE BOATS")),
                 ListItem(Label("FATHOM OBSERVATION")),
-                id="main_menu",
+                id="main_menu"
             )
             with Container(id="directory_panel"):
-                yield Static(f"Current working directory: {Path.cwd()}")
-                yield DirectoryTree(Path.cwd(), id="directory_tree")
+                yield Static("runs/detect")
+                yield DirectoryTree("scanning/runs/detect/", id="directory_tree")
         yield Footer()
 
     def on_list_view_selected(self, event: ListView.Selected) -> None:
