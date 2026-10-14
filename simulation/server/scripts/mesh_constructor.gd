@@ -86,17 +86,17 @@ func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 	
 	# Mapping based on PieceType definitions in boat.py[cite: 1]
 	match id:
-		0: # HULL_FRONT (w=6, h=4)
+		0: # HULL_BOW (w=6, h=4)
 			w = 1.5; h = 1.0; d = 1.5
 			mesh = PrismMesh.new() # Using prism for angled hull
 			mesh.size = Vector3(w, h, d)
 			mesh.left_to_right = 1.0
 			mesh_instance.rotation_degrees.x = 180.0
-		1: # HULL_MIDDLE (w=4, h=4)
+		1: # HULL_SECTION (w=4, h=4)
 			w = 1.0; h = 1.0; d = 1.5
 			mesh = BoxMesh.new()
 			mesh.size = Vector3(w, h, d)
-		2: # HULL_BACK (w=4, h=4)
+		2: # HULL_STERN (w=4, h=4)
 			w = 1.0; h = 1.0; d = 1.5
 			mesh = PrismMesh.new() # Using prism for angled hull
 			mesh.size = Vector3(w, h, d)

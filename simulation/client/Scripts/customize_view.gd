@@ -31,7 +31,7 @@ func setup(data: Dictionary) -> void:
 	# Inspect and log piece layout as in customize.gd[cite: 26]
 	var pieces: Array = boat_data.get("boat", {}).get("pieces", [])
 	for piece in pieces:
-		print("Piece type: ", piece.get("type_id"), " position: (", piece.get("x"), ", ", piece.get("y"), ")")
+		print("Piece type: ", piece.get("id"), " position: (", piece.get("x"), ", ", piece.get("y"), ")")
 
 	# Initialize boat color[cite: 26]
 	var hex_color: String = boat_data.get("customization", {}).get("color", "#2f7fff")

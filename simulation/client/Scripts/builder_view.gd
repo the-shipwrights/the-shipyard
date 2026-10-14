@@ -2,20 +2,18 @@ extends Control
 
 signal boat_created(boat_data: Dictionary)
 
-const SCALE_PREVIEW := 0.6  # Scales Boat.py coordinates into the preview panel
+const SCALE_PREVIEW := 15.0  # Scales boat.py coordinates into the preview panel
 const CANVAS_ORIGIN := Vector2(20, 240) # Bottom-left baseline in the canvas
 
-# Piece metadata matching Boat.py definitions[cite: 1]
+# Piece metadata matching boat.py definitions[cite: 1]
 const PIECE_CONFIGS := {
-	0: {"name": "hull_front", "width": 150, "height": 100, "category": "hull", "color": Color(0.3, 0.5, 0.7)},
-	1: {"name": "hull_middle", "width": 100, "height": 100, "category": "hull", "color": Color(0.35, 0.55, 0.75)},
-	2: {"name": "hull_back", "width": 150, "height": 100, "category": "hull", "color": Color(0.3, 0.5, 0.7)},
-	3: {"name": "cabin", "width": 100, "height": 100, "category": "structure", "color": Color(0.8, 0.6, 0.3)},
-	5: {"name": "tent", "width": 100, "height": 80, "category": "structure", "color": Color(0.4, 0.7, 0.4)},
-	6: {"name": "flag", "width": 10, "height": 80, "category": "structure", "color": Color(0.9, 0.2, 0.2)},
+	0: {"name": "hull_bow", "width": 6, "height": 4, "category": "hull", "color": Color(0.3, 0.5, 0.7)},
+	1: {"name": "hull_section", "width": 4, "height": 4, "category": "hull", "color": Color(0.35, 0.55, 0.75)},
+	2: {"name": "hull_stern", "width": 4, "height": 4, "category": "hull", "color": Color(0.3, 0.5, 0.7)},
+	3: {"name": "cabin", "width": 4, "height": 3, "category": "middle", "color": Color(0.8, 0.6, 0.3)},
 }
 
-var placed_pieces: Array[Dictionary] = []
+var piece_instances: Array[Dictionary] = []
 var next_piece_id: int = 0
 var submit_request := HTTPRequest.new()
 
@@ -25,76 +23,69 @@ var submit_request := HTTPRequest.new()
 @onready var reset_button: Button = $ActionsContainer/ResetButton
 
 # Palette buttons
-@onready var btn_front: Button = $PaletteGrid/AddHullFront
-@onready var btn_mid: Button = $PaletteGrid/AddHullMid
-@onready var btn_back: Button = $PaletteGrid/AddHullBack
+@onready var btn_bow: Button = $PaletteGrid/AddHullBow
+@onready var btn_section: Button = $PaletteGrid/AddHullSection
+@onready var btn_stern: Button = $PaletteGrid/AddHullStern
 @onready var btn_cabin: Button = $PaletteGrid/AddCabin
-@onready var btn_tent: Button = $PaletteGrid/AddTent
-@onready var btn_flag: Button = $PaletteGrid/AddFlag
 
 func _ready() -> void:
 	add_child(submit_request)
 	submit_request.request_completed.connect(_on_submit_completed)
 
-	btn_front.pressed.connect(func(): _add_piece(0))
-	btn_mid.pressed.connect(func(): _add_piece(1))
-	btn_back.pressed.connect(func(): _add_piece(2))
+	btn_bow.pressed.connect(func(): _add_piece(0))
+	btn_section.pressed.connect(func(): _add_piece(1))
+	btn_stern.pressed.connect(func(): _add_piece(2))
 	btn_cabin.pressed.connect(func(): _add_piece(3))
-	btn_tent.pressed.connect(func(): _add_piece(5))
-	btn_flag.pressed.connect(func(): _add_piece(6))
 
 	reset_button.pressed.connect(clear_builder)
 	submit_button.pressed.connect(submit_boat)
 
 func clear_builder() -> void:
-	placed_pieces.clear()
-	next_piece_id = 0
+	piece_instances.clear()
 	status_label.text = ""
 	for child in pieces_container.get_children():
 		child.queue_free()
 
-func _add_piece(type_id: int) -> void:
-	var config: Dictionary = PIECE_CONFIGS.get(type_id, {})
+func _add_piece(id: int) -> void:
+	var config: Dictionary = PIECE_CONFIGS.get(id, {})
 	if config.is_empty():
 		return
 
 	var x_pos := 0
 	var y_pos := 0
 
-	# Standard snapping matching Boat.py layout rules[cite: 1, 8]
+	# Standard snapping matching boat.py layout rules[cite: 1, 8]
 	if config["category"] == "hull":
 		y_pos = 0
 		var current_hull_width := 0
-		for p in placed_pieces:
-			if PIECE_CONFIGS[p["type_id"]]["category"] == "hull":
-				current_hull_width += PIECE_CONFIGS[p["type_id"]]["width"]
+		for p in piece_instances:
+			if PIECE_CONFIGS[p["id"]]["category"] == "hull":
+				current_hull_width += PIECE_CONFIGS[p["id"]]["width"]
 		x_pos = current_hull_width
 	else:
-		y_pos = 100
-		# Snap structure to the first hull middle piece if available, else stack on deck[cite: 8]
-		var mid_piece = _find_first_piece_by_type(1)
-		if mid_piece != null:
-			x_pos = mid_piece["x"]
+		y_pos = 4
+		# Snap structure to the first hull section piece if available, else stack on deck[cite: 8]
+		var section_piece = _find_first_piece_by_type(1)
+		if section_piece != null:
+			x_pos = section_piece["x"]
 		else:
-			x_pos = 150
+			x_pos = 6
 
 	var piece := {
-		"id": next_piece_id,
-		"type_id": type_id,
+		"id": id,
 		"x": x_pos,
 		"y": y_pos,
 		"flipped": false,
 		"colors": []
 	}
-	next_piece_id += 1
-	placed_pieces.append(piece)
+	piece_instances.append(piece)
 
 	_render_preview_piece(piece, config)
 	status_label.text = "Added " + config["name"]
 
-func _find_first_piece_by_type(target_type_id: int):
-	for p in placed_pieces:
-		if p["type_id"] == target_type_id:
+func _find_first_piece_by_type(target_id: int):
+	for p in piece_instances:
+		if p["id"] == target_id:
 			return p
 	return null
 
@@ -107,7 +98,7 @@ func _render_preview_piece(piece: Dictionary, config: Dictionary) -> void:
 	var height: float = float(config["height"]) * SCALE_PREVIEW
 	rect.size = Vector2(width, height)
 
-	# Invert Godot GUI Y axis to match Boat.py bottom-up coordinates[cite: 1]
+	# Invert Godot GUI Y axis to match boat.py bottom-up coordinates[cite: 1]
 	var screen_x: float = CANVAS_ORIGIN.x + (float(piece["x"]) * SCALE_PREVIEW)
 	var screen_y: float = CANVAS_ORIGIN.y - (float(piece["y"]) * SCALE_PREVIEW) - height
 
@@ -115,7 +106,7 @@ func _render_preview_piece(piece: Dictionary, config: Dictionary) -> void:
 	pieces_container.add_child(rect)
 
 func submit_boat() -> void:
-	if placed_pieces.is_empty():
+	if piece_instances.is_empty():
 		status_label.text = "Add at least one piece before submitting."
 		return
 
@@ -124,7 +115,7 @@ func submit_boat() -> void:
 
 	# Match payload expected by FastAPI backend and submit_boat.py[cite: 2, 8]
 	var payload := {
-		"pieces": placed_pieces,
+		"pieces": piece_instances,
 		"edges": []
 	}
 
