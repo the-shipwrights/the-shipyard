@@ -136,7 +136,7 @@ PowerShell:
 ```powershell
 curl.exe -X POST "http://localhost:8000/api/boats" `
   -H "Content-Type: application/json" `
-  -d '{"pieces":[{"id":0,"type_id":0,"x":0,"y":0,"flipped":false,"colors":[]},{"id":1,"type_id":1,"x":150,"y":0,"flipped":false,"colors":[]},{"id":2,"type_id":2,"x":250,"y":0,"flipped":false,"colors":[]},{"id":3,"type_id":3,"x":150,"y":100,"flipped":false,"colors":[]}]}' 
+  -d '{"pieces":[{"id":2,"x":0,"y":0,"flipped":false,"colors":[]},{"id":1,"x":4,"y":0,"flipped":false,"colors":[]},{"id":0"x":8,"y":0,"flipped":false,"colors":[]},{"id":3,"x":2,"y":4,"flipped":false,"colors":[]}]}' 
 ```
 
 Successful response status:
@@ -152,7 +152,6 @@ Request body structure:
   "pieces": [
     {
       "id": 0,
-      "type_id": 0,
       "x": 0,
       "y": 0,
       "flipped": false,

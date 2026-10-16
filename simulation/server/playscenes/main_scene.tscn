@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://bygbttvsg706t"]
+
+[ext_resource type="PackedScene" uid="uid://cxa4wyqnbm02s" path="res://packedscenes/boat.tscn" id="2_316dy"]
+[ext_resource type="Script" uid="uid://di8a0hlree2w6" path="res://scripts/network_manager.gd" id="3_316dy"]
+[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="3_bcdhw"]
+[ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="4_316dy"]
+[ext_resource type="Script" uid="uid://c0ccfpadd8ft4" path="res://scripts/boat_spawner.gd" id="boat_spawner"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hlqd2"]
+panorama = ExtResource("4_316dy")
+energy_multiplier = 0.8
+
+[sub_resource type="Sky" id="Sky_6mxlk"]
+sky_material = SubResource("PanoramaSkyMaterial_hlqd2")
+
+[sub_resource type="Environment" id="Environment_laaxe"]
+background_mode = 2
+background_energy_multiplier = 0.8
+sky = SubResource("Sky_6mxlk")
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_c2iha"]
+
+[sub_resource type="Compositor" id="Compositor_hcif4"]
+
+[node name="MainScene" type="Node3D" unique_id=383862652]
+
+[node name="NetworkManager" type="Node" parent="." unique_id=1849556459]
+script = ExtResource("3_316dy")
+
+[node name="BoatSpawner" type="Node3D" parent="." unique_id=968204350]
+script = ExtResource("boat_spawner")
+boat_scene = ExtResource("2_316dy")
+
+[node name="World" type="Node" parent="." unique_id=233776155]
+
+[node name="Ocean" type="Node3D" parent="World" unique_id=1162286959]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Ocean" unique_id=1569370617]
+
+[node name="Terrain" type="Node3D" parent="World" unique_id=1992012816]
+
+[node name="TerrainMesh" type="MeshInstance3D" parent="World/Terrain" unique_id=1435768873]
+
+[node name="ShrubberyMultiMesh" type="MultiMeshInstance3D" parent="World/Terrain" unique_id=465128265]
+
+[node name="BuildingsMultiMesh" type="MultiMeshInstance3D" parent="World/Terrain" unique_id=1550905449]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1614344467]
+transform = Transform3D(1, 0, 0, 0, 0.8660253, 0.50000024, 0, -0.50000024, 0.8660253, 9, 3, 12)
+script = ExtResource("3_bcdhw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1224911466]
+transform = Transform3D(0.8660253, -0.25000033, 0.43301278, 0, 0.8660252, 0.50000036, -0.50000024, -0.43301296, 0.7499997, 0, 14.195905, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1821364644]
+environment = SubResource("Environment_laaxe")
+camera_attributes = SubResource("CameraAttributesPractical_c2iha")
+compositor = SubResource("Compositor_hcif4")

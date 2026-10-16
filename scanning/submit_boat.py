@@ -9,7 +9,6 @@ def submit_scanned_boat(boat: Boat, server_url: str = "http://localhost:8000") -
     # BoatPayload expects a list of pieces matching PiecePayload
     payload = {
         "pieces": [piece.to_dict() for piece in boat.pieces],
-        "edges": [edge.to_dict() for edge in boat.edges]
     }
 
     response = requests.post(endpoint, json=payload, timeout=5.0)
@@ -20,34 +19,25 @@ def submit_scanned_boat(boat: Boat, server_url: str = "http://localhost:8000") -
     return data["id"]
 
 
-
-
-
-
 def test_boat_submission():
     # 1. Simulate a boat detected by the vision system
     # (Matches piece IDs: 0=hull_front, 1=hull_middle, 2=hull_back, 3=cabin)
-    scanned_boat = Boat(
-        pieces=[
-            Piece(0, 0,   0,   0),    # left/end hull
-            Piece(1, 1, 150,   0),    # middle hull
-            Piece(6, 1, 250,   0),    # middle hull
-            Piece(2, 2, 350,   0),    # right/end hull
-            Piece(3, 3, 150, 100),    # cabin
-            Piece(7, 5, 250, 100),    # cabin
-            Piece(5, 6, 195, 200),    # flag on cabin
-        ]
-    )
+    myBoat = Boat(pieces=[
+        Piece(2, 0, 0),    # stern
+        Piece(1, 4, 0),    # hull section
+        Piece(0, 8, 0),    # bow
+        Piece(3, 2, 4),    # cabin
+    ])
 
     # 2. Optional local pre-validation using Boat's validation logic
-    validation_errors = scanned_boat.validate()
+    validation_errors = myBoat.validate()
     if validation_errors:
         print(f"Validation failed before sending: {validation_errors}")
         return
 
     # 3. Post to the FastAPI backend
     try:
-        boat_id = submit_scanned_boat(scanned_boat, server_url="http://localhost:8000")
+        boat_id = submit_scanned_boat(myBoat, server_url="http://localhost:8000")
         print(f"Success! Boat registered with ID: {boat_id}")
         print(f"Participant customizer link: http://localhost:5173/boat/{boat_id}")
     except requests.exceptions.HTTPError as err:

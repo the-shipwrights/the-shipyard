@@ -5,38 +5,18 @@ from backend.main import (
     initialize_database,
     timestamp,
 )
-from scanning.Boat import Boat, Piece
+from scanning.boat import Boat, Piece
 
 
 def main():
-    boat = Boat(pieces=[
-        Piece(
-            id=0,
-            type_id=0,
-            x=0,
-            y=0,
-        ),
-        Piece(
-            id=1,
-            type_id=1,
-            x=150,
-            y=0,
-        ),
-        Piece(
-            id=2,
-            type_id=2,
-            x=250,
-            y=0,
-        ),
-        Piece(
-            id=3,
-            type_id=3,
-            x=150,
-            y=100,
-        ),
+    myBoat = Boat(pieces=[
+        Piece(2, 0, 0),    # stern
+        Piece(1, 4, 0),    # hull section
+        Piece(0, 8, 0),    # bow
+        Piece(3, 2, 4),    # cabin
     ])
 
-    errors = boat.validate()
+    errors = myBoat.validate()
 
     if errors:
         raise RuntimeError(
@@ -70,7 +50,7 @@ def main():
             """,
             (
                 "ABCD",
-                json.dumps(boat.to_dict()),
+                json.dumps(myBoat.to_dict()),
                 "#2f7fff",
                 "customizing",
                 now,

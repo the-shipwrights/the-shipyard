@@ -15,11 +15,10 @@ from collections.abc import Callable, Sequence
 from enum import Enum, auto
 from pathlib import Path
 
+from boat import Boat
 from model_interface import model_predict_cam, model_predict_single, model_train
 from parse_prediction import parse
 from simple_term_menu import TerminalMenu
-
-from boat import Boat
 from submit_boat import submit_scanned_boat
 
 # ---------------------------------------------------------------------------
