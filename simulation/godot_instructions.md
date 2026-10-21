@@ -81,7 +81,7 @@ Clouds themselves will be a [MultiMesh3D](https://docs.godotengine.org/en/stable
 
 ![](cloudtestscene_composition.png)
 
-Clouds is a packedscene that is responsible for managing spawning of meshes. SubViewport2 will hold the compositor 
+Clouds is a packedscene that is responsible for managing spawning of meshes. SubViewport2 will hold the compositor along with the CompositorEffect, which currently links back to the placeholder [post_process_shader.gd](simulation/server/assets/shaders/post_process_shader.gd). 
 <!-- TODO: rewrite docs so there is a part defining how the main scene is structured. Move the details of viewports there instead of flooding this subheading -->
 ### Shaders
 todo 
