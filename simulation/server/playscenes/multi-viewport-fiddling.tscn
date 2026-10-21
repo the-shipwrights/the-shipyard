@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://d35ccpwhhpp4y"]
+
+[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="1_jh1kh"]
+
+[sub_resource type="Environment" id="Environment_idhyn"]
+background_mode = 1
+background_color = Color(0.29952836, 0.57290006, 0.971517, 1)
+fog_density = 0.0
+fog_sky_affect = 0.399
+
+[sub_resource type="TorusMesh" id="TorusMesh_nla5k"]
+
+[node name="MultiViewportFiddling" type="Node2D" unique_id=1575132475]
+editor_description = "I tested things out here."
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1594137672]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer" unique_id=1447812116]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport1" type="SubViewport" parent="MarginContainer/SubViewportContainer" unique_id=812487990]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="MainCamera" type="Camera3D" parent="MarginContainer/SubViewportContainer/SubViewport1" unique_id=465052139]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67190135, 1.1398962)
+cull_mask = 1048573
+script = ExtResource("1_jh1kh")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="MarginContainer/SubViewportContainer/SubViewport1/MainCamera" unique_id=1853106095]
+editor_description = "Allows SecCamera to move with MainCamera"
+remote_path = NodePath("../../../../../MarginContainer2/SubViewportContainer/SubViewport2/SecCamera")
+
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=1204558353]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer2" unique_id=1912740822]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport2" type="SubViewport" parent="MarginContainer2/SubViewportContainer" unique_id=1274978317]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="SecCamera" type="Camera3D" parent="MarginContainer2/SubViewportContainer/SubViewport2" unique_id=882237929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67190135, 1.1398962)
+cull_mask = 1048574
+
+[node name="Scene" type="Node" parent="." unique_id=49366492]
+
+[node name="Layer1Light" type="DirectionalLight3D" parent="Scene" unique_id=138245898]
+transform = Transform3D(1, 0, 0, 0, 0.55176306, 0.83400095, 0, -0.83400095, 0.55176306, 0, 1.2924743, 0.28166306)
+
+[node name="Layer2Light" type="DirectionalLight3D" parent="Scene" unique_id=1185190022]
+transform = Transform3D(1, 0, 0, 0, 0.5984768, 0.8011402, 0, -0.8011402, 0.5984768, 0, 2.240521, 0.43093002)
+layers = 2
+light_color = Color(1, 0.2901961, 0.2627451, 1)
+light_cull_mask = 4294967294
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Scene" unique_id=948391321]
+environment = SubResource("Environment_idhyn")
+
+[node name="bigTorus" type="MeshInstance3D" parent="Scene" unique_id=2128908891]
+transform = Transform3D(1, 0, 0, 0, 0.71741354, -0.6966475, 0, 0.6966475, 0.71741354, 0, 0, -1.9434041)
+mesh = SubResource("TorusMesh_nla5k")
+
+[node name="smallTorus" type="MeshInstance3D" parent="Scene" unique_id=700548722]
+transform = Transform3D(0.5208397, 0, 0, 0, 0.029805183, -0.4888609, 0, 1.0145719, 0.014361307, 0, 0.19627231, -3.1778347)
+layers = 2
+mesh = SubResource("TorusMesh_nla5k")

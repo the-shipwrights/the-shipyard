@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://c5ca2hs6laa2r"]
+
+[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="1_xqcjc"]
+[ext_resource type="PackedScene" uid="uid://x17nnuoxnafl" path="res://packedscenes/clouds.tscn" id="2_f5u4c"]
+[ext_resource type="Script" uid="uid://dt3gs4pofh84v" path="res://assets/shaders/post_process_shader.gd" id="2_r58rt"]
+
+[sub_resource type="CompositorEffect" id="CompositorEffect_tiej0"]
+resource_local_to_scene = false
+resource_name = ""
+enabled = true
+effect_callback_type = 4
+needs_motion_vectors = false
+needs_normal_roughness = false
+script = ExtResource("2_r58rt")
+metadata/_custom_type_script = "uid://dt3gs4pofh84v"
+
+[sub_resource type="Compositor" id="Compositor_r58rt"]
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_tiej0")])
+
+[sub_resource type="Environment" id="Environment_idhyn"]
+background_mode = 1
+background_color = Color(0.29952836, 0.57290006, 0.971517, 1)
+fog_density = 0.0
+fog_sky_affect = 0.399
+
+[sub_resource type="TorusMesh" id="TorusMesh_nla5k"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nla5k"]
+albedo_color = Color(0.09803922, 0.40392157, 0.5568628, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_m6kmv"]
+material = SubResource("StandardMaterial3D_nla5k")
+size = Vector2(128, 96)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_m6kmv"]
+top_radius = 1.54
+bottom_radius = 4.0
+height = 1.3790274
+
+[node name="CloudTestScene" type="Node2D" unique_id=1575132475]
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1594137672]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer" unique_id=1447812116]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport1" type="SubViewport" parent="MarginContainer/SubViewportContainer" unique_id=812487990]
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="MainCamera" type="Camera3D" parent="MarginContainer/SubViewportContainer/SubViewport1" unique_id=465052139]
+transform = Transform3D(1, 0, 0, 0, 0.8177527, 0.57556975, 0, -0.57556975, 0.8177527, 0, 9.351442, 4.7090282)
+cull_mask = 1048573
+script = ExtResource("1_xqcjc")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="MarginContainer/SubViewportContainer/SubViewport1/MainCamera" unique_id=1853106095]
+editor_description = "Allows SecCamera to move with MainCamera"
+remote_path = NodePath("../../../../../MarginContainer2/SubViewportContainer/SubViewport2/SecCamera")
+
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=1204558353]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer2" unique_id=1912740822]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport2" type="SubViewport" parent="MarginContainer2/SubViewportContainer" unique_id=1274978317]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="SecCamera" type="Camera3D" parent="MarginContainer2/SubViewportContainer/SubViewport2" unique_id=882237929]
+transform = Transform3D(1, 0, 0, 0, 0.8177527, 0.57556975, 0, -0.57556975, 0.8177527, 0, 9.351442, 4.7090282)
+cull_mask = 1048574
+compositor = SubResource("Compositor_r58rt")
+
+[node name="Scene" type="Node" parent="." unique_id=49366492]
+
+[node name="Layer1Light" type="DirectionalLight3D" parent="Scene" unique_id=138245898]
+transform = Transform3D(1, 0, 0, 0, 0.55176306, 0.83400095, 0, -0.83400095, 0.55176306, 0, 1.2924743, 0.28166306)
+
+[node name="Layer2Light" type="DirectionalLight3D" parent="Scene" unique_id=1185190022]
+transform = Transform3D(1, 0, 0, 0, 0.5984768, 0.8011402, 0, -0.8011402, 0.5984768, 0, 2.240521, 0.43093002)
+layers = 2
+light_color = Color(1, 0.2901961, 0.2627451, 1)
+light_cull_mask = 4294967294
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Scene" unique_id=948391321]
+environment = SubResource("Environment_idhyn")
+
+[node name="bigTorus" type="MeshInstance3D" parent="Scene" unique_id=2128908891]
+transform = Transform3D(1, 0, 0, 0, 0.71741354, -0.6966475, 0, 0.6966475, 0.71741354, 0, 0, -0.3714441)
+mesh = SubResource("TorusMesh_nla5k")
+
+[node name="smallTorus" type="MeshInstance3D" parent="Scene" unique_id=700548722]
+transform = Transform3D(0.5208397, 0, 0, 0, 0.029805183, -0.4888609, 0, 1.0145719, 0.014361307, 0, -0.12055594, -1.4388037)
+layers = 2
+mesh = SubResource("TorusMesh_nla5k")
+
+[node name="Clouds" parent="Scene" unique_id=739357004 instance=ExtResource("2_f5u4c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.688218, 0)
+
+[node name="Ocean(placeholder)" type="MeshInstance3D" parent="Scene" unique_id=1735147758]
+mesh = SubResource("PlaneMesh_m6kmv")
+
+[node name="Terrain(placeholder)" type="Node3D" parent="Scene" unique_id=856521510]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=732969663]
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=1585224509]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7586293, 0, -13.172163)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=1404140103]
+transform = Transform3D(0.9889695, 0, 0, 0, 1, 0, 0, 0, 1.0711632, 15.445028, -0.16927147, -6.5267906)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=1630274247]
+transform = Transform3D(0.9889695, 0, 0, 0, 1, 0, 0, 0, 1.0711632, -21.462551, -0.16927147, -31.804913)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=554784018]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.29829, -0.16927147, -14.888889)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=965525211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.108153, -0.5827851, -7.4763803)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=912161373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.91077, -0.5827851, -42.898457)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D11" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=1500805805]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.451588, -0.5827851, -42.530704)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D12" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=611324466]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.793148, -0.5827851, -41.062275)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=156723667]
+transform = Transform3D(2.194509, 0, 0, 0, 1, 0, 0, 0, 2.1258268, 13.227888, -0.5827851, -40.13992)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=1152598590]
+transform = Transform3D(-0.9888471, 0, 0.016849969, 0, 1, 0, -0.015557018, 0, -1.0710306, 34.929546, -0.16927147, -33.98145)
+mesh = SubResource("CylinderMesh_m6kmv")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Scene/Terrain(placeholder)" unique_id=1051332378]
+transform = Transform3D(-2.1942375, 0, 0.033440392, 0, 1, 0, -0.034520797, 0, -2.1255636, 0.1122818, -0.5827851, -26.193172)
+mesh = SubResource("CylinderMesh_m6kmv")
