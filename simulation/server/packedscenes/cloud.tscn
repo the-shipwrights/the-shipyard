@@ -16,9 +16,10 @@ editor_description = "Handles cloud generation and animation, perhaps also other
 
 [node name="Placeholder (delete me)" type="MeshInstance3D" parent="." unique_id=1230811381]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+visible = false
 layers = 2
 mesh = SubResource("TextMesh_m6kmv")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=893149861]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1.0000002, 0, -1.0000002, -4.37114e-08, 0, 0, 0)
 mesh = ExtResource("1_6t0eo")

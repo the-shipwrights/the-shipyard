@@ -7,6 +7,7 @@
 render_priority = 0
 shader = ExtResource("1_27e6r")
 shader_parameter/image = ExtResource("2_27e6r")
+shader_parameter/border_thickness = 0.0
 
 [resource]
 material = SubResource("ShaderMaterial_27e6r")
