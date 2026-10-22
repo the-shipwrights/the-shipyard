@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bjh6fltiqg06l"]
+
+[ext_resource type="PackedScene" uid="uid://byq5rntwor60o" path="res://packedscenes/terrain_world.tscn" id="1_ow82c"]
+[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="1_tcpg2"]
+[ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="3_b2ror"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sif7b"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u3m7n"]
+transparency = 1
+blend_mode = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.20784314, 0.5411765, 0.70980394, 0.4862745)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_3w1fm"]
+panorama = ExtResource("3_b2ror")
+energy_multiplier = 0.8
+
+[sub_resource type="Sky" id="Sky_6mxlk"]
+sky_material = SubResource("PanoramaSkyMaterial_3w1fm")
+
+[sub_resource type="Environment" id="Environment_246sb"]
+background_mode = 2
+background_energy_multiplier = 0.8
+sky = SubResource("Sky_6mxlk")
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_cn77b"]
+
+[sub_resource type="Compositor" id="Compositor_0rbmw"]
+
+[node name="TerrainSandbox" type="Node3D" unique_id=1424718891]
+
+[node name="TerrainWorld" parent="." unique_id=510233500 instance=ExtResource("1_ow82c")]
+mountain_height_m = 1.0
+
+[node name="PretendOcean" type="MeshInstance3D" parent="." unique_id=1053934560]
+transform = Transform3D(382.10413, 0, 0, 0, 1, 0, 0, 0, 382.10413, 0, 0, 0)
+mesh = SubResource("PlaneMesh_sif7b")
+surface_material_override/0 = SubResource("StandardMaterial3D_u3m7n")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=49082075]
+transform = Transform3D(1, 0, 0, 0, 0.9299067, 0.3677955, 0, -0.3677955, 0.9299067, 9, 15, 46.800186)
+script = ExtResource("1_tcpg2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1768807157]
+transform = Transform3D(0.8660253, -0.25000033, 0.43301278, 0, 0.8660252, 0.50000036, -0.50000024, -0.43301296, 0.7499997, 0, 14.195905, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1576072529]
+environment = SubResource("Environment_246sb")
+camera_attributes = SubResource("CameraAttributesPractical_cn77b")
+compositor = SubResource("Compositor_0rbmw")
