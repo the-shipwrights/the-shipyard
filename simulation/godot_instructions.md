@@ -61,7 +61,14 @@ Why keep boat constructor and client interaction seperate? umm SOLID or somethin
 ![](simulation-diagram.png)
 
 ## Boat reconstruction
-todo
+
+### Modular Meshes
+Each boat is composed of a modular set of meshes. Further more, Each mesh is split into a set of three meshes: Primary mesh, Secondary mesh, and details mesh. Each mesh is assigned its own material, which dictates the color of that mesh. See figure below. 
+
+![](boat_mesh_diagram.png)
+
+### Putting pieces together 
+TODO
 
 ## Terrain Generation
 todo
