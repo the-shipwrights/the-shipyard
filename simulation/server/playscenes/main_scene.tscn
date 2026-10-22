@@ -37,7 +37,7 @@ size = Vector3(3.3925781, 2.1102295, 2.487793)
 [node name="NetworkManager" type="Node" parent="." unique_id=1849556459]
 script = ExtResource("3_316dy")
 
-[node name="Boats" type="Node3D" parent="." unique_id=968204350]
+[node name="BoatSpawner" type="Node3D" parent="." unique_id=968204350]
 script = ExtResource("boat_spawner")
 boat_scene = ExtResource("2_316dy")
 

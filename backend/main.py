@@ -8,14 +8,13 @@ import string
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
-from scanning.Boat import Boat, Piece
+from scanning.boat import Boat, Piece
 
 DB_PATH = Path(__file__).with_name("boats.db")
 ALPHABET = string.ascii_uppercase
 
 class PiecePayload(BaseModel):
     id: int
-    type_id: int
     x: int
     y: int
     flipped: bool = False
@@ -36,12 +35,10 @@ class BoatPayload(BaseModel):
         return self
 
 def payload_to_boat(payload: BoatPayload) -> Boat:
-    return Boat(
-        pieces=[
-            Piece(**piece.model_dump())
-            for piece in payload.pieces
-        ]
-    )
+    return Boat(pieces=[
+        Piece(**piece.model_dump())
+        for piece in payload.pieces
+    ])
 
 class ColorPatch(BaseModel):
     color: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
