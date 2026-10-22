@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://x17nnuoxnafl"]
 
+[ext_resource type="QuadMesh" uid="uid://c8b2pqj5iecng" path="res://packedscenes/cloud_particle.tres" id="1_6t0eo"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kexmb"]
 shading_mode = 0
 
@@ -16,3 +18,7 @@ editor_description = "Handles cloud generation and animation, perhaps also other
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
 layers = 2
 mesh = SubResource("TextMesh_m6kmv")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=893149861]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+mesh = ExtResource("1_6t0eo")

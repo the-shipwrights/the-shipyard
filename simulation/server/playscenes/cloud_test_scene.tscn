@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c5ca2hs6laa2r"]
 
 [ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="1_xqcjc"]
-[ext_resource type="PackedScene" uid="uid://x17nnuoxnafl" path="res://packedscenes/clouds.tscn" id="2_f5u4c"]
+[ext_resource type="PackedScene" uid="uid://x17nnuoxnafl" path="res://packedscenes/cloud.tscn" id="2_f5u4c"]
 [ext_resource type="Script" uid="uid://dt3gs4pofh84v" path="res://assets/shaders/post_process_shader.gd" id="2_r58rt"]
 
 [sub_resource type="CompositorEffect" id="CompositorEffect_tiej0"]
