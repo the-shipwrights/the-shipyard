@@ -229,6 +229,7 @@ def model_predict_cam(
                 print(f"Original snapshot saved to {original_path}")
 
             elif key == ord("q"):
+                camera.release()
                 break
     finally:
         try:
