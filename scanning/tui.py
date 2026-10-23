@@ -5,6 +5,11 @@ so everyone else should be able to easily interact with it!
 
 NOTICE: AI was used to generate parts of the code, but it is part-human written,
 and everything has been thoroughly tested by a human. (Sep 19, 2026)
+
+TODO: tui.py should be runnable from project root.
+TODO: model_interface.py should correctly drop camera.
+TODO: snapshot should send an image along with the latest prediction
+TODO: parse workflow should integrate into predict workflow via prompt
 """
 
 # ---------------------------------------------------------------------------
