@@ -3,7 +3,11 @@
 extends Node3D
 class_name TerrainWorld
 
+# TODO: Terrain bounding box should not depend on Cell size, Resolution should specify
+# Terrain size in metric units rather than the number of cells.
+
 var _resolution := 101
+## TODO: Documentation
 @export_range(3, 1025, 2) var resolution: int:
 	get:
 		return _resolution
@@ -16,6 +20,7 @@ var _resolution := 101
 
 
 var _terrain_seed := 2026
+## TODO: Documentation
 @export var terrain_seed: int:
 	get:
 		return _terrain_seed
@@ -25,6 +30,7 @@ var _terrain_seed := 2026
 
 
 var _sea_level := 0.0
+## TODO: Documentation
 @export var sea_level: float:
 	get:
 		return _sea_level
@@ -34,6 +40,7 @@ var _sea_level := 0.0
 
 
 var _ocean_depth_m := 5.0
+## TODO: Documentation
 @export var ocean_depth_m: float:
 	get:
 		return _ocean_depth_m
@@ -43,6 +50,7 @@ var _ocean_depth_m := 5.0
 
 
 var _cell_size := 1.0
+## TODO: Documentation
 @export var CELL_SIZE: float:
 	get:
 		return _cell_size
@@ -54,6 +62,7 @@ var _cell_size := 1.0
 @export_group("Landscape settings")
 
 var _ocean_to_land_ratio := 6.0
+## TODO: Documentation
 @export_range(1, 20.0, 0.1) var ocean_to_land_ratio: float:
 	get:
 		return _ocean_to_land_ratio
@@ -63,6 +72,7 @@ var _ocean_to_land_ratio := 6.0
 
 
 var _minimum_channel_width_m := 2.0
+## TODO: Documentation
 @export_range(2.0, 20.0, 0.5) var minimum_channel_width_m: float:
 	get:
 		return _minimum_channel_width_m
@@ -72,6 +82,7 @@ var _minimum_channel_width_m := 2.0
 
 
 var _coast_shelf_width_m := 12.0
+## TODO: Documentation
 @export_range(2.0, 40.0, 0.5) var coast_shelf_width_m: float:
 	get:
 		return _coast_shelf_width_m
@@ -81,6 +92,7 @@ var _coast_shelf_width_m := 12.0
 
 
 var _island_scale_m := 60
+## TODO: Documentation
 @export_range(16.0, 120.0, 1.0) var island_scale_m: float:
 	get:
 		return _island_scale_m
@@ -90,6 +102,7 @@ var _island_scale_m := 60
 
 
 var _mountain_scale_m := 40
+## TODO: Documentation
 @export_range(8.0, 100.0, 1.0) var mountain_scale_m: float:
 	get:
 		return _mountain_scale_m
@@ -98,6 +111,7 @@ var _mountain_scale_m := 40
 		_request_terrain_regeneration()
 
 var _mountain_height_m := 30.0
+## TODO: Documentation
 @export_range(0.0, 60.0, 0.5) var mountain_height_m: float:
 	get:
 		return _mountain_height_m
@@ -106,6 +120,9 @@ var _mountain_height_m := 30.0
 		if is_node_ready():
 			call_deferred("_regenerate_terrain")
 
+# NITPICK: these should be @exports. implementing node hierarchies in this fashion makes
+# this node less modular, as it requires a specific configuration of child nodes to work.
+# we can let this pass due to deadline.
 @onready var terrain_mesh: MeshInstance3D = $TerrainMesh
 @onready var collision_shape: CollisionShape3D = $TerrainBody/CollisionShape3D
 
@@ -126,6 +143,8 @@ func _run_queued_terrain_regeneration() -> void:
 func _ready() -> void:
 	_regenerate_terrain()
 
+# NITPICK: Consider moving TerrainGenerator to a child Node of TerrainWorld.
+# Nodes are much more traceable than script chains, and the engine overhead for this operation is negligible.
 func _regenerate_terrain() -> void:
 	var generator := TerrainGenerator.new()
 	generator.configure(
