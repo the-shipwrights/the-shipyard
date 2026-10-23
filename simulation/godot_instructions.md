@@ -68,7 +68,11 @@ Each boat is composed of a modular set of meshes. Further more, Each mesh is spl
 ![](boat_mesh_diagram.png)
 
 ### Putting pieces together 
-TODO
+Although the mesh constructor is responsible for putting together the Boat, should it also be responsible for editing texture colors? Unsure... Maybe though! 
+
+Naming of different surfaces is consistent. Should we have one resource per boat containing a trio of materials that are unique to each boat then? Yea probably. 
+
+uhhhrrrrr yea
 
 ## Terrain Generation
 todo
