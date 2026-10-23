@@ -31,7 +31,15 @@ sky = SubResource("Sky_6mxlk")
 [node name="TerrainSandbox" type="Node3D" unique_id=1424718891]
 
 [node name="TerrainWorld" parent="." unique_id=510233500 instance=ExtResource("1_ow82c")]
-mountain_height_m = 1.0
+resolution = 203
+terrain_seed = 2026
+ocean_depth_m = 5.0
+CELL_SIZE = 1.0
+ocean_to_land_ratio = 6.0
+minimum_channel_width_m = 2.0
+coast_shelf_width_m = 12.0
+island_scale_m = 40.0
+mountain_height_m = 30.0
 
 [node name="PretendOcean" type="MeshInstance3D" parent="." unique_id=1053934560]
 transform = Transform3D(382.10413, 0, 0, 0, 1, 0, 0, 0, 382.10413, 0, 0, 0)
