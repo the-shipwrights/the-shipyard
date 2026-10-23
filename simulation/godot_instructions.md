@@ -72,7 +72,7 @@ Although the mesh constructor is responsible for putting together the Boat, shou
 
 Naming of different surfaces is consistent. Should we have one resource per boat containing a trio of materials that are unique to each boat then? Yea probably. 
 
-uhhhrrrrr yea
+It would probably be best for the mesh constructor to handle colors as well. I will need to toy around with it some more later. 
 
 ## Terrain Generation
 todo
