@@ -6,9 +6,6 @@ so everyone else should be able to easily interact with it!
 NOTICE: AI was used to generate parts of the code, but it is part-human written,
 and everything has been thoroughly tested by a human. (Sep 19, 2026)
 
-TODO: snapshot should send an image along with the latest prediction
-TODO: parse workflow should integrate into predict workflow via prompt
-
 god i fucking hate writing python when the library im working with is so bad that Ty (lsp) keeps
 flagging everything it does as errors (I CANT FIX THEM, LEAVE ME ALONE, TY. ITS NOT IN MY HANDS)
 """
@@ -40,17 +37,17 @@ else:
 # Application configuration
 # ---------------------------------------------------------------------------
 
-DEFAULT_MODEL = "yolo26n.pt"
-SCANNING_DIRECTORY = Path(__file__).resolve().parent
-RUNS_DIRECTORY = SCANNING_DIRECTORY / "runs/detect"
-PREDICTION_RUNS_DIRECTORY = SCANNING_DIRECTORY / "runs/predict"
-TRAINING_DATA_DIRECTORY = SCANNING_DIRECTORY / "training_data"
-DEFAULT_IMAGE_PATH = (
+DEFAULT_MODEL               = "yolo26n.pt"
+SCANNING_DIRECTORY          = Path(__file__).resolve().parent
+RUNS_DIRECTORY              = SCANNING_DIRECTORY / "runs/detect"
+PREDICTION_RUNS_DIRECTORY   = SCANNING_DIRECTORY / "runs/predict"
+TRAINING_DATA_DIRECTORY     = SCANNING_DIRECTORY / "training_data"
+DEFAULT_IMAGE_PATH          = (
     TRAINING_DATA_DIRECTORY
     / "wooden_block_symbols/images/train/scene_00010.jpg"
 )
 
-MAIN_MENU_OPTIONS = (
+MAIN_MENU_OPTIONS           = (
     "🕮  PRACTICE BOAT-VISION (train)",
     "👁  BEAR WITNESS TO BOATS (predict)",
     "🖾  FATHOM OBSERVATION (parse)",
@@ -89,42 +86,43 @@ class App:
     def __init__(
         self,
         *,
-        options: Sequence[str] = MAIN_MENU_OPTIONS,
-        menu_factory: Callable[[Sequence[str]], TerminalMenu] = TerminalMenu,
-        current_weights: str | Path | None = None,
-        runs_directory: str | Path = RUNS_DIRECTORY,
-        training_data_directory: str | Path = TRAINING_DATA_DIRECTORY,
-        latest_prediction: dict | None = None,
-        latest_boat: Boat | None = None,
+        options                 : Sequence[str] = MAIN_MENU_OPTIONS,
+        menu_factory            : Callable[..., TerminalMenu] = TerminalMenu,
+        current_weights         : str  | Path | None = None,
+        runs_directory          : str  | Path = RUNS_DIRECTORY,
+        train_data_dir          : str  | Path = TRAINING_DATA_DIRECTORY,
+        latest_prediction       : dict | None = None,
+        latest_boat             : Boat | None = None,
 
         # New dataclass here!
-        latest: Latest | None = None
+        latest                  : Latest | None = None
     ) -> None:
-        self.state = State.MENU
-        self.options = tuple(options)
-        self._menu_factory = menu_factory
-        self.current_weights = (
+        self.state              = State.MENU
+        self.options            = tuple(options)
+        self._menu_factory      = menu_factory
+        self.current_weights    = (
             Path(current_weights) if current_weights is not None else None
         )
-        self.runs_directory = Path(runs_directory)
-        self.training_data_directory = Path(training_data_directory)
-        self.latest_prediction = latest_prediction
-        self.latest_boat = latest_boat
+        self.runs_directory     = Path(runs_directory)
+        self.train_data_dir     = Path(train_data_dir)
+        self.latest_prediction  = latest_prediction
+        self.latest_boat        = latest_boat
 
         # new dataclass here!
-        self.latest = latest
-
-
+        self.latest             = latest
+        self._parse_snapshots   = False
 
 
 
     def _on_snapshot(self, detections: list[dict], image_frame, image_height) -> None:
-        """Store the latest non-empty camera prediction snapshot."""
+        """Store a snapshot and optionally parse and handle its boat."""
 
         self.latest_prediction = {"detections": detections, "image_height": image_height}
 
         # We send detections, image_frame, and image_height.
         self.latest = Latest(detections=detections, image_frame=image_frame, image_height=image_height)
+        if self._parse_snapshots:
+            self._parse_snapshot_and_choose()
 
 
 
@@ -237,12 +235,12 @@ class App:
     def _select_dataset(self) -> Path | None:
         """Select a dataset, or return to model selection."""
         datasets = sorted(
-            path for path in self.training_data_directory.iterdir()
+            path for path in self.train_data_dir.iterdir()
             if path.is_dir()
-        ) if self.training_data_directory.is_dir() else []
+        ) if self.train_data_dir.is_dir() else []
         if not datasets:
             raise FileNotFoundError(
-                f"No training datasets found in {self.training_data_directory}.\nPlease Download one that is formatted for YOLO, and put in the directory."
+                f"No training datasets found in {self.train_data_dir}.\nPlease Download one that is formatted for YOLO, and put in the directory."
             )
 
         options = [str(path) for path in datasets] + ["GO BACK"]
@@ -315,6 +313,10 @@ class App:
                 self.state = State.MENU
                 return
 
+            parse_predictions = self._select_parsing()
+            if parse_predictions is None:
+                continue
+
             threshold = self._select_thresholding()
             if threshold is None:
                 continue
@@ -328,25 +330,80 @@ class App:
                     image_path = self._select_prediction_image()
                     if image_path is None:
                         continue
-                    model_predict_single(
-                        model,
-                        image_path,
-                        self._on_snapshot,
-                        threshold=threshold
-                    )
+                    self._parse_snapshots = parse_predictions
+                    try:
+                        model_predict_single(
+                            model,
+                            image_path,
+                            self._on_snapshot,
+                            threshold=threshold
+                        )
+                    finally:
+                        self._parse_snapshots = False
                 else:
                     camera_index = self._select_camera_index()
                     if camera_index is None:
                         continue
-                    model_predict_cam(
-                        model,
-                        camera_index,
-                        self._on_snapshot,
-                        threshold=threshold,
-                    )
+                    self._parse_snapshots = parse_predictions
+                    try:
+                        model_predict_cam(
+                            model,
+                            camera_index,
+                            self._on_snapshot,
+                            threshold=threshold,
+                        )
+                    finally:
+                        self._parse_snapshots = False
+
+                if self.state is State.PARSING:
+                    return
 
                 self.state = State.MENU
                 return
+
+    def _select_parsing(self) -> bool | None:
+        """Choose whether prediction snapshots should be parsed automatically."""
+        options = (
+            "YES - PARSE AND REVIEW SNAPSHOTS",
+            "NO - PREDICT ONLY",
+        )
+        selection = self._menu_factory(
+            options,
+            title="PARSE PREDICTION SNAPSHOTS?",
+        ).show()
+        if selection is None:
+            return None
+        if selection == 0:
+            return True
+        if selection == 1:
+            return False
+        raise RuntimeError(f"Parsing selection menu returned invalid selection: {selection!r}")
+
+    def _parse_snapshot_and_choose(self) -> None:
+        """Parse the latest snapshot and submit the boat or discard it."""
+        if self.latest_prediction is None:
+            raise RuntimeError("Snapshot callback did not store a prediction")
+
+        self.latest_boat = parse(self.latest_prediction)
+        options = (
+            "SUBMIT PARSED BOAT",
+            "DISCARD PARSED BOAT",
+        )
+        selection = self._menu_factory(options).show()
+
+        if selection == 0:
+            if self.latest_boat is None or not self.latest_boat.pieces:
+                print("NO PARSED BOAT TO SUBMIT.")
+            else:
+                boat_id = submit_scanned_boat(self.latest_boat)
+                print(f"Boat submitted successfully with ID: {boat_id}")
+            self.latest_boat = None
+        elif selection == 1 or selection is None:
+            self.latest_boat = None
+        else:
+            raise RuntimeError(f"Snapshot decision menu returned invalid selection: {selection!r}")
+
+        self.state = State.PARSING
 
     def _select_thresholding(self) -> bool | None:
         """Ask whether prediction inputs should be thresholded."""
@@ -354,7 +411,10 @@ class App:
             "YES - APPLY OTSU THRESHOLDING",
             "NO - USE ORIGINAL IMAGES",
         )
-        selection = self._menu_factory(options).show()
+        selection = self._menu_factory(
+            options,
+            title="APPLY OTSU THRESHOLDING TO PREDICTION INPUTS?",
+        ).show()
         if selection is None:
             return None
         if selection == 0:
@@ -373,9 +433,9 @@ class App:
             "GO BACK",
         )
         selection = self._menu_factory(options).show()
-        if selection is None or selection == 3:
+        if selection is None or selection == 2:
             return None
-        if not isinstance(selection, int) or not 0 <= selection < 3:
+        if not isinstance(selection, int) or not 0 <= selection < 2:
             raise RuntimeError(
                 f"Prediction mode menu returned invalid selection: {selection!r}"
             )
