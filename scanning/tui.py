@@ -21,16 +21,10 @@ from pathlib import Path
 from numpy import ndarray
 from simple_term_menu import TerminalMenu
 
-if __package__:
-    from .boat import Boat
-    from .model_interface import model_predict_cam, model_predict_single, model_train
-    from .parse_prediction import parse
-    from .submit_boat import submit_scanned_boat
-else:
-    from boat import Boat
-    from model_interface import model_predict_cam, model_predict_single, model_train
-    from parse_prediction import parse
-    from submit_boat import submit_scanned_boat
+from .boat import Boat
+from .model_interface import model_predict_cam, model_predict_single, model_train
+from .parse_prediction import parse
+from .submit_boat import submit_scanned_boat
 
 # ---------------------------------------------------------------------------
 # Application configuration

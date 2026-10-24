@@ -8,7 +8,7 @@ TODO:
 - Image feedback
 """
 
-import boat
+from . import boat
 
 symbol_ratio_threshold = 1
 scale_threshold = 0.1

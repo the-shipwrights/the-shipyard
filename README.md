@@ -47,7 +47,7 @@ Leave this terminal running.
 - Alternative API docs: [localhost:8000/redoc](http://localhost:8000/redoc)
 
 #### "Scan" (create) boats:
-run `python3 scanning/submit_boat.py` to submit a boat without the scanning procedure.
+run `python3 -m scanning.submit_boat` to submit a boat without the scanning procedure.
 
 Generated boat is available at `localhost:5173/boat/ABCD`
 
