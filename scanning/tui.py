@@ -6,10 +6,11 @@ so everyone else should be able to easily interact with it!
 NOTICE: AI was used to generate parts of the code, but it is part-human written,
 and everything has been thoroughly tested by a human. (Sep 19, 2026)
 
-TODO: tui.py should be runnable from project root.
-TODO: model_interface.py should correctly drop camera.
 TODO: snapshot should send an image along with the latest prediction
 TODO: parse workflow should integrate into predict workflow via prompt
+
+god i fucking hate writing python when the library im working with is so bad that Ty (lsp) keeps
+flagging everything it does as errors (I CANT FIX THEM, LEAVE ME ALONE, TY. ITS NOT IN MY HANDS)
 """
 
 # ---------------------------------------------------------------------------
@@ -17,24 +18,37 @@ TODO: parse workflow should integrate into predict workflow via prompt
 # ---------------------------------------------------------------------------
 
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from enum import Enum, auto
 from pathlib import Path
 
-from boat import Boat
-from model_interface import model_predict_cam, model_predict_single, model_train
-from parse_prediction import parse
+from numpy import ndarray
 from simple_term_menu import TerminalMenu
-from submit_boat import submit_scanned_boat
+
+if __package__:
+    from .boat import Boat
+    from .model_interface import model_predict_cam, model_predict_single, model_train
+    from .parse_prediction import parse
+    from .submit_boat import submit_scanned_boat
+else:
+    from boat import Boat
+    from model_interface import model_predict_cam, model_predict_single, model_train
+    from parse_prediction import parse
+    from submit_boat import submit_scanned_boat
 
 # ---------------------------------------------------------------------------
 # Application configuration
 # ---------------------------------------------------------------------------
 
 DEFAULT_MODEL = "yolo26n.pt"
-RUNS_DIRECTORY = Path("runs/detect")
-PREDICTION_RUNS_DIRECTORY = Path("runs/predict")
-TRAINING_DATA_DIRECTORY = Path("training_data")
-DEFAULT_IMAGE_PATH = Path("training_data/wooden_block_symbols/images/train/scene_00010.jpg")
+SCANNING_DIRECTORY = Path(__file__).resolve().parent
+RUNS_DIRECTORY = SCANNING_DIRECTORY / "runs/detect"
+PREDICTION_RUNS_DIRECTORY = SCANNING_DIRECTORY / "runs/predict"
+TRAINING_DATA_DIRECTORY = SCANNING_DIRECTORY / "training_data"
+DEFAULT_IMAGE_PATH = (
+    TRAINING_DATA_DIRECTORY
+    / "wooden_block_symbols/images/train/scene_00010.jpg"
+)
 
 MAIN_MENU_OPTIONS = (
     "🕮  PRACTICE BOAT-VISION (train)",
@@ -57,6 +71,14 @@ class State(Enum):
     PARSING = auto()
     QUIT = auto()
 
+@dataclass
+class Latest:
+    """dataclass for all things related to prediction. contains everything needed. no boats because that is handled by parser"""
+    detections  : list      | None = None  # list of predictions from results. It's basically a dict I think.
+    image_frame : ndarray   | None = None  # the image itself. Sorta nice to send along. might not get anything done to it.
+    image_height: int       | None = None   # image height, as requested by Filip
+
+
 
 # ---------------------------------------------------------------------------
 # TUI application
@@ -73,7 +95,10 @@ class App:
         runs_directory: str | Path = RUNS_DIRECTORY,
         training_data_directory: str | Path = TRAINING_DATA_DIRECTORY,
         latest_prediction: dict | None = None,
-        latest_boat: Boat | None = None
+        latest_boat: Boat | None = None,
+
+        # New dataclass here!
+        latest: Latest | None = None
     ) -> None:
         self.state = State.MENU
         self.options = tuple(options)
@@ -86,9 +111,22 @@ class App:
         self.latest_prediction = latest_prediction
         self.latest_boat = latest_boat
 
-    def _on_snapshot(self, detections: list[dict], image_height) -> None:
+        # new dataclass here!
+        self.latest = latest
+
+
+
+
+
+    def _on_snapshot(self, detections: list[dict], image_frame, image_height) -> None:
         """Store the latest non-empty camera prediction snapshot."""
+
         self.latest_prediction = {"detections": detections, "image_height": image_height}
+
+        # We send detections, image_frame, and image_height.
+        self.latest = Latest(detections=detections, image_frame=image_frame, image_height=image_height)
+
+
 
 
     # ------------------------------------------------------------------
@@ -145,7 +183,12 @@ class App:
         """Select model weights, optionally including the default model."""
         model_paths = self._available_model_paths()
         options = ([f"USE DEFAULT MODEL ({DEFAULT_MODEL})"] if include_default else [])
-        options += [str(path) for path in model_paths] + ["GO BACK"]
+        project_root = SCANNING_DIRECTORY.parent
+        options += [
+            str(path.relative_to(project_root)) if path.is_relative_to(project_root)
+            else str(path)
+            for path in model_paths
+        ] + ["GO BACK"]
         selection = self._menu_factory(options).show()
 
         if selection is None or selection == len(options) - 1:
