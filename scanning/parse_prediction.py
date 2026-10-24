@@ -8,7 +8,7 @@ TODO:
 - Image feedback
 """
 
-import boat
+from . import boat
 
 symbol_ratio_threshold = 1
 scale_threshold = 0.1
@@ -30,10 +30,14 @@ symbol_positions = [
 ]
 
 
-def parse(prediction: dict) -> boat.Boat:
+def parse(prediction: dict) -> boat.Boat | None:
 
     detections = prediction["detections"]
     image_height = prediction["image_height"]
+    if not detections:
+        print("No detections found, Returning None")
+        return None
+
     scanned_boat = boat.Boat(pieces=[])
 
     "{ class: int, width: float, height: float, x_position: float, y_position: float, scale: float }"
