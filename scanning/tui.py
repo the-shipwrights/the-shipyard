@@ -275,12 +275,6 @@ class App:
 
             return epochs
 
-    def _run_training(self, model: str | Path | None, dataset: Path, epochs: int) -> None:
-        self.current_weights = Path(
-            model_train(model=model, dataset=dataset, epochs=epochs)
-        )
-        self.state = State.MENU
-
     def _confirm_training(self,model: str | Path | None, dataset: Path, epochs: int) -> bool:
         model_name = model or DEFAULT_MODEL
         options = (
@@ -295,6 +289,12 @@ class App:
                 f"Confirmation menu returned invalid selection: {selection!r}"
             )
         return True
+
+    def _run_training(self, model: str | Path | None, dataset: Path, epochs: int) -> None:
+        self.current_weights = Path(
+            model_train(model=model, dataset=dataset, epochs=epochs)
+        )
+        self.state = State.MENU
 
     # ------------------------------------------------------------------
     # Prediction workflow
