@@ -6,6 +6,7 @@ and **everything** has been thoroughly tested by a human[1]
 
 [1]: (its python: if its not thoroughly tested, it will break)
 """
+import select
 import shutil
 import sys
 import tempfile
@@ -78,6 +79,14 @@ def _prepare_terminal_output(*, scroll: bool = False) -> None:
             sys.stdout.write("\n" * shutil.get_terminal_size().lines)
         sys.stdout.write("\033[0m")
         sys.stdout.flush()
+
+
+def _terminal_key() -> int | None:
+    """Read a pending terminal p/q command without blocking the camera loop."""
+    if not sys.stdin.isatty() or not select.select([sys.stdin], [], [], 0)[0]:
+        return None
+    command = sys.stdin.readline().strip().lower()
+    return ord(command) if command in {"p", "q"} else None
 
 
 def _dataset_yaml(dataset: str | Path) -> Path:
@@ -271,6 +280,9 @@ def model_predict_cam(
             frame = result.plot()  # ty: ignore[unresolved-attribute]
             cv.imshow("Camera prediction", frame)
             key = cv.waitKey(1) & 0xFF
+            terminal_key = _terminal_key()
+            if terminal_key is not None:
+                key = terminal_key
             _prepare_terminal_output(scroll=not terminal_scrolled)
             terminal_scrolled = True
             summary = result.summary()  # ty: ignore[unresolved-attribute]
