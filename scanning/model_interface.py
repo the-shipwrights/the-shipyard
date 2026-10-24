@@ -306,8 +306,8 @@ def model_predict_cam(
                     raise OSError(
                         f"Failed to save original camera snapshot to {original_path}"
                     )
-                on_snapshot(snapshot, frame, frame.shape[0])
                 print(format_detections(snapshot))
+                on_snapshot(snapshot, frame, frame.shape[0])
                 print(f"\033[90mAnnotated snapshot saved to {_display_path(annotated_path)}\033[0m")
                 print(f"Original snapshot saved to {_display_path(original_path)}")
 
