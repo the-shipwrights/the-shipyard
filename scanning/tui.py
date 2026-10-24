@@ -13,7 +13,6 @@ flagging everything it does as errors (I CANT FIX THEM, LEAVE ME ALONE, TY. ITS 
 # ---------------------------------------------------------------------------
 # Imports
 # ---------------------------------------------------------------------------
-
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import Enum, auto
@@ -36,7 +35,6 @@ else:
 # ---------------------------------------------------------------------------
 # Application configuration
 # ---------------------------------------------------------------------------
-
 DEFAULT_MODEL               = "yolo26n.pt"
 SCANNING_DIRECTORY          = Path(__file__).resolve().parent
 RUNS_DIRECTORY              = SCANNING_DIRECTORY / "runs/detect"
@@ -58,7 +56,6 @@ MAIN_MENU_OPTIONS           = (
 # ---------------------------------------------------------------------------
 # Application state
 # ---------------------------------------------------------------------------
-
 class State(Enum):
     """The screens handled by the application event loop."""
 
@@ -77,12 +74,10 @@ class Latest:
 
 
 
-# ---------------------------------------------------------------------------
-# TUI application
-# ---------------------------------------------------------------------------
-
 class App:
-    """Own application state and coordinate the terminal event loop."""
+    # ------------------------------------------------------------------
+    # App Life cycle
+    # ------------------------------------------------------------------
     def __init__(
         self,
         *,
@@ -112,8 +107,6 @@ class App:
         self.latest             = latest
         self._parse_snapshots   = False
 
-
-
     def _on_snapshot(self, detections: list[dict], image_frame, image_height) -> None:
         """Store a snapshot and optionally parse and handle its boat."""
 
@@ -123,13 +116,6 @@ class App:
         self.latest = Latest(detections=detections, image_frame=image_frame, image_height=image_height)
         if self._parse_snapshots:
             self._parse_snapshot_and_choose()
-
-
-
-
-    # ------------------------------------------------------------------
-    # Main event loop
-    # ------------------------------------------------------------------
 
     def run(self) -> None:
         """Run until the user explicitly selects Quit.
@@ -148,9 +134,9 @@ class App:
             elif self.state is State.PARSING:
                 self._show_parsing_menu()
 
-    # ------------------------------------------------------------------
-    # Main menu
-    # ------------------------------------------------------------------
+    def quit(self) -> None:
+        self.state = State.QUIT
+        raise SystemExit
 
     def _show_main_menu(self) -> None:
         """Display the main menu and transition to the selected screen."""
@@ -173,10 +159,10 @@ class App:
         else:
             raise RuntimeError(f"Menu option has no action: {selection}")
 
+
     # ------------------------------------------------------------------
     # model selection
     # ------------------------------------------------------------------
-
     def _select_model(self, *, include_default: bool) -> tuple[str | Path | None, bool]:
         """Select model weights, optionally including the default model."""
         model_paths = self._available_model_paths()
@@ -206,10 +192,10 @@ class App:
         paths.extend(self.runs_directory.glob("train*/weights/best.pt"))
         return sorted({path for path in paths if path.is_file()})
 
+
     # ------------------------------------------------------------------
     # Training workflow
     # ------------------------------------------------------------------
-
     def _show_train_menu(self) -> None:
         """Run model selection, dataset selection, and training confirmation."""
         while True:
@@ -296,10 +282,10 @@ class App:
         )
         self.state = State.MENU
 
+
     # ------------------------------------------------------------------
     # Prediction workflow
     # ------------------------------------------------------------------
-
     def _show_prediction_menu(self) -> None:
         """Select weights and a prediction mode, then return to the main menu."""
         while True:
@@ -478,7 +464,6 @@ class App:
     # ------------------------------------------------------------------
     # Parsing workflow
     # ------------------------------------------------------------------
-
     def _show_parsing_menu(self) -> None:
         """Parse latest prediciton, then return to the main menu."""
         while True:
@@ -516,16 +501,10 @@ class App:
             self.state = State.MENU
             return
 
-    # ------------------------------------------------------------------
-    # Application lifecycle
-    # ------------------------------------------------------------------
 
-    def quit(self) -> None:
-        self.state = State.QUIT
-        raise SystemExit
-
-
-
+# ------------------------------------------------------------------
+# Entry point
+# ------------------------------------------------------------------
 def main() -> None:
     App().run()
 
