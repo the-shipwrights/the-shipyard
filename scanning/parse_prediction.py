@@ -30,7 +30,7 @@ symbol_positions = [
 ]
 
 
-def parse(prediction: dict) -> boat.Boat:
+def parse(prediction: dict) -> boat.Boat | None:
 
     detections = prediction["detections"]
     image_height = prediction["image_height"]
