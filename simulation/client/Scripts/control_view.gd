@@ -11,8 +11,11 @@ var is_connected := false
 @onready var boat_title: Label = $BoatTitle
 @onready var info_label: Label = $InfoLabel
 @onready var rotate_button: Button = $RotateButton
+@onready var speed_button: Button = $ThrottleButton
 
 func _ready() -> void:
+	speed_button.button_down.connect(_on_speed_pressed)
+	speed_button.button_up.connect(_on_speed_released)
 	rotate_button.button_down.connect(_on_rotate_pressed)
 	rotate_button.button_up.connect(_on_rotate_released)
 
@@ -51,6 +54,12 @@ func _on_rotate_pressed() -> void:
 
 func _on_rotate_released() -> void:
 	_send_control_command("rotate", false)
+
+func _on_speed_pressed() -> void:
+	_send_control_command("accelerate", true)
+
+func _on_speed_released() -> void:
+	_send_control_command("accelerate", false)
 
 func _send_control_command(command: String, active: bool) -> void:
 	if ws.get_ready_state() != WebSocketPeer.STATE_OPEN:

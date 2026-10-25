@@ -77,3 +77,11 @@ text = "Build a boat"
 visible = false
 layout_mode = 2
 horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=1387494718]
+layout_mode = 0
+offset_left = 345.0
+offset_top = 9.0
+offset_right = 363.0
+offset_bottom = 40.0
+text = "X"

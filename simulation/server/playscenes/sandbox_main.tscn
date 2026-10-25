@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://b7uypgueg7b2h"]
+
+[ext_resource type="Script" uid="uid://di8a0hlree2w6" path="res://scripts/network_manager.gd" id="1_nwbs8"]
+[ext_resource type="Script" uid="uid://c0ccfpadd8ft4" path="res://scripts/boat_spawner.gd" id="2_56ww4"]
+[ext_resource type="PackedScene" uid="uid://cxa4wyqnbm02s" path="res://packedscenes/boat.tscn" id="3_bdqx7"]
+[ext_resource type="Material" uid="uid://bx52y43l6c23x" path="res://assets/shaders/water.tres" id="4_oimm0"]
+[ext_resource type="Script" uid="uid://di8a3j0twck4" path="res://scripts/water_surface.gd" id="5_bdqx7"]
+[ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="5_v0nif"]
+[ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="6_hmybg"]
+[ext_resource type="PackedScene" uid="uid://byq5rntwor60o" path="res://packedscenes/terrain_world.tscn" id="6_oimm0"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_v0nif"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hlqd2"]
+panorama = ExtResource("6_hmybg")
+energy_multiplier = 0.8
+
+[sub_resource type="Sky" id="Sky_6mxlk"]
+sky_material = SubResource("PanoramaSkyMaterial_hlqd2")
+
+[sub_resource type="Environment" id="Environment_laaxe"]
+background_mode = 2
+background_energy_multiplier = 0.8
+sky = SubResource("Sky_6mxlk")
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_c2iha"]
+
+[sub_resource type="Compositor" id="Compositor_hcif4"]
+
+[node name="MainScene" type="Node3D" unique_id=383862652]
+
+[node name="NetworkManager" type="Node" parent="." unique_id=1849556459]
+script = ExtResource("1_nwbs8")
+
+[node name="BoatSpawner" type="Node3D" parent="." unique_id=968204350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+script = ExtResource("2_56ww4")
+boat_scene = ExtResource("3_bdqx7")
+
+[node name="World" type="Node" parent="." unique_id=233776155]
+
+[node name="Ocean" type="Node3D" parent="World" unique_id=1162286959]
+
+[node name="OceanMesh" type="MeshInstance3D" parent="World/Ocean" unique_id=955107884 node_paths=PackedStringArray("terrain")]
+transform = Transform3D(382.10413, 0, 0, 0, 1, 0, 0, 0, 382.10413, 0, 0, 0)
+mesh = SubResource("PlaneMesh_v0nif")
+surface_material_override/0 = ExtResource("4_oimm0")
+script = ExtResource("5_bdqx7")
+terrain = NodePath("../../Terrain/TerrainWorld")
+
+[node name="Terrain" type="Node3D" parent="World" unique_id=1992012816]
+
+[node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_oimm0")]
+resolution = 203
+terrain_seed = 2026
+ocean_depth_m = 5.0
+CELL_SIZE = 1.0
+ocean_to_land_ratio = 6.0
+minimum_channel_width_m = 2.0
+coast_shelf_width_m = 12.0
+island_scale_m = 40.0
+mountain_height_m = 30.0
+
+[node name="ShrubberyMultiMesh" type="MultiMeshInstance3D" parent="World/Terrain" unique_id=465128265]
+
+[node name="BuildingsMultiMesh" type="MultiMeshInstance3D" parent="World/Terrain" unique_id=1550905449]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1614344467]
+transform = Transform3D(1, 0, 0, 0, 0.8660253, 0.50000024, 0, -0.50000024, 0.8660253, 9, 3, 12)
+script = ExtResource("5_v0nif")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1224911466]
+transform = Transform3D(0.8660253, -0.25000033, 0.43301278, 0, 0.8660252, 0.50000036, -0.50000024, -0.43301296, 0.7499997, 0, 14.195905, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1821364644]
+environment = SubResource("Environment_laaxe")
+camera_attributes = SubResource("CameraAttributesPractical_c2iha")
+compositor = SubResource("Compositor_hcif4")

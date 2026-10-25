@@ -9,6 +9,7 @@ var load_request := HTTPRequest.new()
 @onready var builder_view: Control = $ViewContainer/BuilderView
 @onready var customize_view: Control = $ViewContainer/CustomizeView
 @onready var control_view: Control = $ViewContainer/ControlView
+@onready var home_button: Button = $Button
 
 func get_server_host() -> String:
 	if OS.has_feature("web"):
@@ -25,6 +26,7 @@ func _ready() -> void:
 
 	builder_view.boat_created.connect(_on_boat_created)
 	customize_view.boat_launched.connect(_on_boat_launched)
+	home_button.pressed.connect(_show_landing)
 
 	$LandingScreen/CenterContainer/VBoxContainer/LoadBoatButton.pressed.connect(_submit_boat_id)
 	$LandingScreen/CenterContainer/VBoxContainer/BuilderButton.pressed.connect(_show_builder)
@@ -70,6 +72,7 @@ func _show_builder() -> void:
 	customize_view.hide()
 	control_view.hide()
 	builder_view.clear_builder()
+	home_button.show()
 	builder_view.show()
 
 func _route_state(boat_data: Dictionary) -> void:
@@ -81,10 +84,12 @@ func _route_state(boat_data: Dictionary) -> void:
 		customize_view.hide()
 		control_view.setup(boat_data)
 		control_view.show()
+		home_button.show()
 	else:
 		control_view.hide()
 		customize_view.setup(boat_data)
 		customize_view.show()
+		home_button.show()
 
 func _on_boat_loaded(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	if response_code == 404:
@@ -110,6 +115,7 @@ func _show_landing(message: String = "") -> void:
 	builder_view.hide()
 	customize_view.hide()
 	control_view.hide()
+	home_button.hide()
 
 	message_label.text = message
 	message_label.visible = not message.is_empty()
