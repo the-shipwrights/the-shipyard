@@ -169,6 +169,7 @@ def model_train(
         if temporary_directory is not None:
             temporary_directory.cleanup()
 
+    # TODO: this is returning incorrectly. make it match with project string.
     return Path(results.save_dir) / "weights" / "best.pt"
 
 
