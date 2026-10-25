@@ -49,7 +49,7 @@ def main():
                 launched_at = excluded.launched_at
             """,
             (
-                "ABCD",
+                "BOAT",
                 json.dumps(myBoat.to_dict()),
                 "#2f7fff",
                 "customizing",
@@ -63,7 +63,7 @@ def main():
     finally:
         connection.close()
 
-    print("Seeded boat ABCD")
+    print("Seeded boat BOAT")
 
 
 if __name__ == "__main__":
