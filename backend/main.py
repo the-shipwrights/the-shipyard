@@ -375,6 +375,12 @@ async def boat_control_ws(websocket: WebSocket, boat_id: str):
             command = payload.get("command", "")
             active = bool(payload.get("active", False))
 
+            print(
+                f"[WS Control] boat={normalized_id} "
+                f"command={command} active={active} "
+                f"simulation_clients={len(simulation_manager.active_connections)}"
+            )
+
             # Broadcast control command to the archipelago simulation
             await simulation_manager.broadcast({
                 "event": "boat_control",
@@ -386,9 +392,10 @@ async def boat_control_ws(websocket: WebSocket, boat_id: str):
     except WebSocketDisconnect:
         print(f"[WS Control] Controller disconnected for boat: {normalized_id}")
         # Failsafe: stop active commands if client drops connection
-        await simulation_manager.broadcast({
-            "event": "boat_control",
-            "boat_id": normalized_id,
-            "command": "rotate",
-            "active": False
-        })
+        for command in ("rotate", "accelerate"):
+            await simulation_manager.broadcast({
+                "event": "boat_control",
+                "boat_id": normalized_id,
+                "command": command,
+                "active": False,
+            })

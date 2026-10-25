@@ -2,7 +2,9 @@ extends Control
 
 signal boat_launched(boat_data: Dictionary)
 
-const API_BASE := "http://localhost:8000"
+@export var server_api_base := "http://127.0.0.1:8000"
+@export var web_api_base := ""
+
 const COLOR_FIELDS := ["primary", "secondary", "accent"]
 
 var boat_data: Dictionary = {}
@@ -55,6 +57,16 @@ func setup(data: Dictionary) -> void:
 	launch_button.show()
 	status_label.text = ""
 
+func _get_api_base() -> String:
+	if OS.has_feature("web"):
+		if not web_api_base.is_empty():
+			return web_api_base.trim_suffix("/")
+
+		var window = JavaScriptBridge.get_interface("window")
+		var scheme := "https" if str(window.location.protocol) == "https:" else "http"
+		return "%s://%s:8000" % [scheme, str(window.location.hostname)]
+
+	return server_api_base.trim_suffix("/")
 
 func _random_palette_color() -> Color:
 	if palette.palette_colors.is_empty():
@@ -151,7 +163,7 @@ func launch_boat() -> void:
 	var headers := PackedStringArray(["Content-Type: application/json"])
 
 	var error := launch_request.request(
-		API_BASE + "/api/boats/" + str(boat_data.get("id")) + "/launch",
+		_get_api_base() + "/api/boats/" + str(boat_data.get("id")) + "/launch",
 		headers,
 		HTTPClient.METHOD_POST,
 		body

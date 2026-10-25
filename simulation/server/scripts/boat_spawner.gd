@@ -47,8 +47,11 @@ func _on_boat_control_received(
 	active: bool
 ) -> void:
 	var boat := spawned_boats.get(boat_id) as Boat
-	if is_instance_valid(boat):
-		boat.apply_control(command, active)
+	if not is_instance_valid(boat):
+		push_warning("[BoatSpawner] No spawned boat for control ID %s" % boat_id)
+		return
+
+	boat.apply_control(command, active)
 
 
 func _spawn_or_update_boat(boat_data: Dictionary) -> void:
