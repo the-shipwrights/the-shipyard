@@ -10,6 +10,7 @@ var selected_colors: Dictionary = {}
 var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
 
+@onready var boat_preview: BoatPreview2D = $BoatPreview2D
 @onready var launch_button: Button = $LaunchButton
 @onready var status_label: Label = $StatusLabel
 @onready var boat_label: Label = $Label
@@ -34,6 +35,8 @@ func _ready() -> void:
 
 func setup(data: Dictionary) -> void:
 	boat_data = data
+	boat_preview.set_boat(data)
+
 	boat_label.text = "Boat #" + str(boat_data.get("id", ""))
 
 	var customization: Dictionary = boat_data.get("customization", {})

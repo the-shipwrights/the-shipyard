@@ -2,12 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b6umuy4r1jmgh" path="res://Scripts/customize_view.gd" id="1_ukjbo"]
 [ext_resource type="Script" uid="uid://yhts4vgshkss" path="res://Scripts/palette.gd" id="2_6jt7g"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_74186"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ct0er"]
-bg_color = Color(0, 0, 0, 0)
+[ext_resource type="PackedScene" uid="uid://d3pp0kklmyfy6" path="res://Views/BoatPreview2D.tscn" id="2_ct0er"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4vjqg"]
 bg_color = Color(0, 0, 0, 0)
@@ -51,6 +46,12 @@ bg_color = Color(0, 0, 0, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ejna"]
 bg_color = Color(0, 0, 0, 0)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_va1iu"]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ypgn"]
+bg_color = Color(0, 0, 0, 0)
+
 [node name="Control" type="Control" unique_id=783958750]
 layout_mode = 3
 anchors_preset = 15
@@ -60,11 +61,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ukjbo")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1101034234]
+[node name="Background" type="ColorRect" parent="." unique_id=2049834259]
 layout_mode = 0
 offset_right = 375.0
 offset_bottom = 812.0
 color = Color(0, 0.5415405, 0.54309857, 1)
+
+[node name="BoatPreview2D" parent="." instance=ExtResource("2_ct0er")]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 60.0
+offset_right = -24.0
+offset_bottom = 300.0
 
 [node name="Palette" type="GridContainer" parent="." unique_id=1606151572]
 layout_mode = 0
@@ -76,309 +86,309 @@ columns = 4
 script = ExtResource("2_6jt7g")
 palette_colors = Array[Color]([Color(0.90588236, 0.25882354, 0.2627451, 1), Color(0.92156863, 0.5568628, 0.3529412, 1), Color(0.9137255, 0.8, 0.38039216, 1), Color(0.81960785, 0.8901961, 0.4627451, 1), Color(0.654902, 0.73333335, 0.4509804, 1), Color(0.49803922, 0.8235294, 0.3764706, 1), Color(0.25882354, 0.79607844, 0.42745098, 1), Color(0.29411766, 0.7176471, 0.6039216, 1), Color(0.27450982, 0.69411767, 0.76862746, 1), Color(0.30980393, 0.57254905, 0.95686275, 1), Color(0.43137255, 0.45882353, 0.7882353, 1), Color(0.69803923, 0.33333334, 0.43529412, 1), Color(0.09795057, 0.09661385, 0.029443337, 1), Color(0.78039217, 0.654902, 0.5372549, 1), Color(0.69411767, 0.62352943, 0.59607846, 1), Color(0.8352941, 0.827451, 0.83137256, 1)])
 
-[node name="PaletteSwatch" type="Control" parent="Palette" unique_id=720895362]
+[node name="PaletteSwatch" type="Control" parent="Palette" unique_id=730085078]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/PaletteSwatch" unique_id=395355541]
+[node name="Color" type="ColorRect" parent="Palette/PaletteSwatch" unique_id=1475123131]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
 color = Color(0.90588236, 0.25882354, 0.2627451, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/PaletteSwatch" unique_id=40008301]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_74186")
-
-[node name="@Control@81673" type="Control" parent="Palette" unique_id=1499885263]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-mouse_filter = 2
-metadata/_palette_generated = true
-
-[node name="Color" type="ColorRect" parent="Palette/@Control@81673" unique_id=826389914]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.92156863, 0.5568628, 0.3529412, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81673" unique_id=1006429828]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ct0er")
-
-[node name="@Control@81674" type="Control" parent="Palette" unique_id=893276131]
-custom_minimum_size = Vector2(70, 70)
-layout_mode = 2
-mouse_filter = 2
-metadata/_palette_generated = true
-
-[node name="Color" type="ColorRect" parent="Palette/@Control@81674" unique_id=1101026368]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.9137255, 0.8, 0.38039216, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81674" unique_id=667570456]
+[node name="SelectionBorder" type="Panel" parent="Palette/PaletteSwatch" unique_id=916194151]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4vjqg")
 
-[node name="@Control@81675" type="Control" parent="Palette" unique_id=1855895624]
+[node name="@Control@129854" type="Control" parent="Palette" unique_id=478406253]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81675" unique_id=688662263]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129854" unique_id=289999730]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.81960785, 0.8901961, 0.4627451, 1)
+color = Color(0.92156863, 0.5568628, 0.3529412, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81675" unique_id=912980906]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129854" unique_id=1682587921]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_v02wf")
 
-[node name="@Control@81676" type="Control" parent="Palette" unique_id=369472174]
+[node name="@Control@129855" type="Control" parent="Palette" unique_id=975641743]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81676" unique_id=701330705]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129855" unique_id=1385285503]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.654902, 0.73333335, 0.4509804, 1)
+color = Color(0.9137255, 0.8, 0.38039216, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81676" unique_id=754120817]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129855" unique_id=42361651]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e28wa")
 
-[node name="@Control@81677" type="Control" parent="Palette" unique_id=668553780]
+[node name="@Control@129856" type="Control" parent="Palette" unique_id=428711256]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81677" unique_id=280110567]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129856" unique_id=1767421031]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.49803922, 0.8235294, 0.3764706, 1)
+color = Color(0.81960785, 0.8901961, 0.4627451, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81677" unique_id=30248866]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129856" unique_id=89674169]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_xmlon")
 
-[node name="@Control@81678" type="Control" parent="Palette" unique_id=766963490]
+[node name="@Control@129857" type="Control" parent="Palette" unique_id=732087167]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81678" unique_id=864689504]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129857" unique_id=991887563]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.25882354, 0.79607844, 0.42745098, 1)
+color = Color(0.654902, 0.73333335, 0.4509804, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81678" unique_id=1768370657]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129857" unique_id=1206273969]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_t30ng")
 
-[node name="@Control@81679" type="Control" parent="Palette" unique_id=172066453]
+[node name="@Control@129858" type="Control" parent="Palette" unique_id=1706828917]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81679" unique_id=2044195401]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129858" unique_id=16684368]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.29411766, 0.7176471, 0.6039216, 1)
+color = Color(0.49803922, 0.8235294, 0.3764706, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81679" unique_id=1410482115]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129858" unique_id=98423816]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_s5p5q")
 
-[node name="@Control@81680" type="Control" parent="Palette" unique_id=1735233832]
+[node name="@Control@129859" type="Control" parent="Palette" unique_id=772892776]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81680" unique_id=1058714123]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129859" unique_id=37214384]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.27450982, 0.69411767, 0.76862746, 1)
+color = Color(0.25882354, 0.79607844, 0.42745098, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81680" unique_id=1489252980]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129859" unique_id=657920229]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_d1irj")
 
-[node name="@Control@81681" type="Control" parent="Palette" unique_id=1463776803]
+[node name="@Control@129860" type="Control" parent="Palette" unique_id=1584097853]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81681" unique_id=953792583]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129860" unique_id=671570413]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.30980393, 0.57254905, 0.95686275, 1)
+color = Color(0.29411766, 0.7176471, 0.6039216, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81681" unique_id=1967690025]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129860" unique_id=1962692944]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_dxypb")
 
-[node name="@Control@81682" type="Control" parent="Palette" unique_id=1021962793]
+[node name="@Control@129861" type="Control" parent="Palette" unique_id=1788993628]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81682" unique_id=1146520054]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129861" unique_id=1803763759]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.43137255, 0.45882353, 0.7882353, 1)
+color = Color(0.27450982, 0.69411767, 0.76862746, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81682" unique_id=2054333339]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129861" unique_id=636924974]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ya4qn")
 
-[node name="@Control@81683" type="Control" parent="Palette" unique_id=1569374411]
+[node name="@Control@129862" type="Control" parent="Palette" unique_id=1601939093]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81683" unique_id=1435777123]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129862" unique_id=721891647]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.69803923, 0.33333334, 0.43529412, 1)
+color = Color(0.30980393, 0.57254905, 0.95686275, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81683" unique_id=918895680]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129862" unique_id=1768203427]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_uqxm3")
 
-[node name="@Control@81684" type="Control" parent="Palette" unique_id=1957579604]
+[node name="@Control@129863" type="Control" parent="Palette" unique_id=1008321089]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81684" unique_id=517037482]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129863" unique_id=1334563083]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.09795057, 0.09661385, 0.029443337, 1)
+color = Color(0.43137255, 0.45882353, 0.7882353, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81684" unique_id=292240269]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129863" unique_id=121956852]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_rt7dm")
 
-[node name="@Control@81685" type="Control" parent="Palette" unique_id=1186861086]
+[node name="@Control@129864" type="Control" parent="Palette" unique_id=11543599]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81685" unique_id=1480679842]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129864" unique_id=724308825]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.78039217, 0.654902, 0.5372549, 1)
+color = Color(0.69803923, 0.33333334, 0.43529412, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81685" unique_id=351412352]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129864" unique_id=363487508]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_4tu2b")
 
-[node name="@Control@81686" type="Control" parent="Palette" unique_id=530590533]
+[node name="@Control@129865" type="Control" parent="Palette" unique_id=2114004559]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81686" unique_id=210286410]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129865" unique_id=1851432481]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.69411767, 0.62352943, 0.59607846, 1)
+color = Color(0.09795057, 0.09661385, 0.029443337, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81686" unique_id=810438960]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129865" unique_id=1741314238]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5krvr")
 
-[node name="@Control@81687" type="Control" parent="Palette" unique_id=1194522717]
+[node name="@Control@129866" type="Control" parent="Palette" unique_id=1860711589]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@81687" unique_id=726947841]
+[node name="Color" type="ColorRect" parent="Palette/@Control@129866" unique_id=1287249102]
 layout_mode = 0
 offset_right = 70.0
 offset_bottom = 70.0
-color = Color(0.8352941, 0.827451, 0.83137256, 1)
+color = Color(0.78039217, 0.654902, 0.5372549, 1)
 
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@81687" unique_id=1225962816]
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129866" unique_id=88656755]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1ejna")
+
+[node name="@Control@129867" type="Control" parent="Palette" unique_id=1949050972]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@129867" unique_id=1191593033]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.69411767, 0.62352943, 0.59607846, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129867" unique_id=2054294960]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_va1iu")
+
+[node name="@Control@129868" type="Control" parent="Palette" unique_id=1184206263]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+mouse_filter = 2
+metadata/_palette_generated = true
+
+[node name="Color" type="ColorRect" parent="Palette/@Control@129868" unique_id=1827393738]
+layout_mode = 0
+offset_right = 70.0
+offset_bottom = 70.0
+color = Color(0.8352941, 0.827451, 0.83137256, 1)
+
+[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129868" unique_id=1909931208]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ypgn")
 
 [node name="LaunchButton" type="Button" parent="." unique_id=369057098]
 layout_mode = 0

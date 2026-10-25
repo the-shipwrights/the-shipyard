@@ -1,9 +1,7 @@
 extends Control
+class_name BoatBuilderView
 
 signal boat_created(boat_data: Dictionary)
-
-const SCALE_PREVIEW := 15.0  # Scales boat.py coordinates into the preview panel
-const CANVAS_ORIGIN := Vector2(20, 240) # Bottom-left baseline in the canvas
 
 # Piece metadata matching boat.py definitions[cite: 1]
 const PIECE_CONFIGS := {
@@ -13,11 +11,15 @@ const PIECE_CONFIGS := {
 	3: {"name": "cabin", "width": 4, "height": 3, "category": "middle", "color": Color(0.8, 0.6, 0.3)},
 }
 
+const HULL_BOW := 0
+const HULL_SECTION := 1
+const HULL_STERN := 2
+const CABIN := 3
+
 var piece_instances: Array[Dictionary] = []
 var next_piece_id: int = 0
 var submit_request := HTTPRequest.new()
 
-@onready var pieces_container: Control = $CanvasPanel/PiecesContainer
 @onready var status_label: Label = $StatusLabel
 @onready var submit_button: Button = $ActionsContainer/SubmitButton
 @onready var reset_button: Button = $ActionsContainer/ResetButton
@@ -27,6 +29,7 @@ var submit_request := HTTPRequest.new()
 @onready var btn_section: Button = $PaletteGrid/AddHullSection
 @onready var btn_stern: Button = $PaletteGrid/AddHullStern
 @onready var btn_cabin: Button = $PaletteGrid/AddCabin
+@onready var boat_preview: BoatPreview2D = $CanvasPanel/BoatPreview2D
 
 func _ready() -> void:
 	add_child(submit_request)
@@ -35,7 +38,9 @@ func _ready() -> void:
 	btn_bow.pressed.connect(func(): _add_piece(0))
 	btn_section.pressed.connect(func(): _add_piece(1))
 	btn_stern.pressed.connect(func(): _add_piece(2))
-	btn_cabin.pressed.connect(func(): _add_piece(3))
+
+	btn_cabin.pressed.connect(_begin_cabin_placement)
+	boat_preview.cabin_location_selected.connect(_on_cabin_location_selected)
 
 	reset_button.pressed.connect(clear_builder)
 	submit_button.pressed.connect(submit_boat)
@@ -43,17 +48,56 @@ func _ready() -> void:
 func clear_builder() -> void:
 	piece_instances.clear()
 	status_label.text = ""
-	for child in pieces_container.get_children():
-		child.queue_free()
+	boat_preview.clear_boat()
 
 func _add_piece(id: int) -> void:
 	var config: Dictionary = PIECE_CONFIGS.get(id, {})
 	if config.is_empty():
+		status_label.text = "Unknown piece type."
+		return
+
+	var validation_error := _get_add_error(id)
+	if not validation_error.is_empty():
+		status_label.text = validation_error
 		return
 
 	var x_pos := 0
 	var y_pos := 0
 
+	if id == CABIN:
+		var body := _body_pieces()
+		y_pos = 4
+
+		if body.size() == 1:
+			# The cabin's 4-wide connector aligns with the section's
+			# two 2-wide middle attachment points.
+			x_pos = int(body[0].get("x", 0))
+		if (
+			body.size() == 2
+			and int(body[0].get("id", -1)) == HULL_STERN
+			and int(body[1].get("id", -1)) == HULL_BOW
+		):
+			# Stern and bow each contribute one 2-wide attachment.
+			# Their combined 4-wide span starts at stern.x + 2.
+			x_pos = int(body[1].get("x", 0)) - 2
+		var section_piece = _find_first_piece_by_type(HULL_SECTION)
+		if section_piece != null:
+			# Align the cabin's 4-wide connector with the section's
+			# two 2-wide middle attachment points.
+			x_pos = int(section_piece.get("x", 0))
+		else:
+			# Validation guarantees this is exactly stern followed by bow.
+			# Center the cabin on the divide between them.
+			var stern_piece: Dictionary = _body_pieces()[0]
+			var stern_x := int(stern_piece.get("x", 0))
+			var stern_width: int = PIECE_CONFIGS[HULL_STERN]["width"]
+			var cabin_width: int = PIECE_CONFIGS[CABIN]["width"]
+			var divide_x := stern_x + stern_width
+
+			x_pos = divide_x - int(cabin_width / 2)
+
+
+			
 	# Standard snapping matching boat.py layout rules[cite: 1, 8]
 	if config["category"] == "hull":
 		y_pos = 0
@@ -79,8 +123,7 @@ func _add_piece(id: int) -> void:
 		"colors": []
 	}
 	piece_instances.append(piece)
-
-	_render_preview_piece(piece, config)
+	boat_preview.set_boat({"pieces": piece_instances})
 	status_label.text = "Added " + config["name"]
 
 func _find_first_piece_by_type(target_id: int):
@@ -89,21 +132,6 @@ func _find_first_piece_by_type(target_id: int):
 			return p
 	return null
 
-func _render_preview_piece(piece: Dictionary, config: Dictionary) -> void:
-	var rect := ColorRect.new()
-	rect.name = "Piece_" + str(piece["id"])
-	rect.color = config["color"]
-
-	var width: float = float(config["width"]) * SCALE_PREVIEW
-	var height: float = float(config["height"]) * SCALE_PREVIEW
-	rect.size = Vector2(width, height)
-
-	# Invert Godot GUI Y axis to match boat.py bottom-up coordinates[cite: 1]
-	var screen_x: float = CANVAS_ORIGIN.x + (float(piece["x"]) * SCALE_PREVIEW)
-	var screen_y: float = CANVAS_ORIGIN.y - (float(piece["y"]) * SCALE_PREVIEW) - height
-
-	rect.position = Vector2(screen_x, screen_y)
-	pieces_container.add_child(rect)
 
 func submit_boat() -> void:
 	if piece_instances.is_empty():
@@ -129,17 +157,177 @@ func submit_boat() -> void:
 func _on_submit_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	submit_button.disabled = false
 
-	if response_code == 200 or response_code == 201:
-		var response = JSON.parse_string(body.get_string_from_utf8())
-		if response is Dictionary:
-			status_label.text = "Boat created: " + str(response.get("id", ""))
-			boat_created.emit(response)
-	else:
+	if response_code != 200 and response_code != 201:
 		status_label.text = "Submission failed (" + str(response_code) + ")"
 		push_error("Backend rejected boat: " + body.get_string_from_utf8())
+		return
+
+	var response = JSON.parse_string(body.get_string_from_utf8())
+	if not (response is Dictionary) or str(response.get("id", "")).is_empty():
+		status_label.text = "Invalid response while creating boat."
+		return
+
+	status_label.text = "Boat created: " + str(response["id"])
+	boat_created.emit(response)
 
 func _get_api_base() -> String:
 	if OS.has_feature("web"):
 		var window = JavaScriptBridge.get_interface("window")
 		return "http://" + str(window.location.hostname) + ":8000"
 	return "http://127.0.0.1:8000"
+
+## Validation helpers
+
+func _body_pieces() -> Array[Dictionary]:
+	var body: Array[Dictionary] = []
+
+	for piece in piece_instances:
+		if int(piece.get("id", -1)) != CABIN:
+			body.append(piece)
+
+	return body
+
+
+func _has_cabin() -> bool:
+	for piece in piece_instances:
+		if int(piece.get("id", -1)) == CABIN:
+			return true
+
+	return false
+
+
+func _get_add_error(id: int) -> String:
+	if not PIECE_CONFIGS.has(id):
+		return "Unknown piece type."
+
+	var body := _body_pieces()
+
+	if id == CABIN:
+		for piece in body:
+			if int(piece.get("id", -1)) == HULL_SECTION:
+				return ""
+
+		if body.size() == 1 and int(body[0].get("id", -1)) == HULL_SECTION:
+			return ""
+
+		if (
+			body.size() == 2
+			and int(body[0].get("id", -1)) == HULL_STERN
+			and int(body[1].get("id", -1)) == HULL_BOW
+		):
+			return ""
+
+		return "A cabin needs one hull section or a stern followed by a bow."
+
+	if id not in [HULL_BOW, HULL_SECTION, HULL_STERN]:
+		return "This piece cannot be added to the boat body."
+
+	# Treat the cabin as the last build step. Adding more body pieces after
+	# it would invalidate the cabin's attachment arrangement.
+	if _has_cabin():
+		return "Finish the boat body before adding the cabin."
+
+	# The first body piece may be a stern, hull section, or bow.
+	if body.is_empty():
+		return ""
+
+	var last_id := int(body.back().get("id", -1))
+
+	match last_id:
+		HULL_STERN, HULL_SECTION:
+			if id == HULL_SECTION or id == HULL_BOW:
+				return ""
+			return "A stern or hull can be followed by a hull or bow."
+
+		HULL_BOW:
+			return "The bow must be the last body piece."
+
+	return "Invalid boat body."
+
+func _get_open_cabin_locations() -> Array[Vector2i]:
+	var body := _body_pieces()
+	var candidates: Array[Vector2i] = []
+	var has_section := false
+
+	for piece in body:
+		if int(piece.get("id", -1)) != HULL_SECTION:
+			continue
+
+		has_section = true
+		var config: Dictionary = PIECE_CONFIGS[HULL_SECTION]
+		var location := Vector2i(
+			int(piece.get("x", 0)),
+			int(piece.get("y", 0)) + int(config["height"])
+		)
+
+		if not _cabin_position_occupied(location):
+			candidates.append(location)
+
+	# The stern-and-bow bridge is a candidate only when there are no sections
+	# and the body consists of exactly those two pieces.
+	if not has_section and _is_stern_bow_body(body):
+		var stern: Dictionary = body[0]
+		var stern_x := int(stern.get("x", 0))
+		var stern_width: int = PIECE_CONFIGS[HULL_STERN]["width"]
+		var cabin_width: int = PIECE_CONFIGS[CABIN]["width"]
+		var divide_x := stern_x + stern_width
+		var location := Vector2i(divide_x - int(cabin_width / 2), 4)
+
+		if not _cabin_position_occupied(location):
+			candidates.append(location)
+
+	return candidates
+
+
+func _is_stern_bow_body(body: Array[Dictionary]) -> bool:
+	return (
+		body.size() == 2
+		and int(body[0].get("id", -1)) == HULL_STERN
+		and int(body[1].get("id", -1)) == HULL_BOW
+	)
+
+
+func _cabin_position_occupied(location: Vector2i) -> bool:
+	for piece in piece_instances:
+		if int(piece.get("id", -1)) != CABIN:
+			continue
+
+		if (
+			int(piece.get("x", 0)) == location.x
+			and int(piece.get("y", 0)) == location.y
+		):
+			return true
+
+	return false
+
+func _begin_cabin_placement() -> void:
+	var locations := _get_open_cabin_locations()
+
+	if locations.is_empty():
+		status_label.text = "No open cabin attachment locations."
+		boat_preview.set_cabin_candidates([])
+		return
+
+	boat_preview.set_cabin_candidates(locations)
+	status_label.text = "Select a highlighted cabin location."
+
+
+func _on_cabin_location_selected(location: Vector2i) -> void:
+	# Recheck occupancy in case the available locations changed.
+	if _cabin_position_occupied(location):
+		status_label.text = "That cabin location is already occupied."
+		_begin_cabin_placement()
+		return
+
+	var cabin := {
+		"id": CABIN,
+		"x": location.x,
+		"y": location.y,
+		"flipped": false,
+		"colors": []
+	}
+
+	piece_instances.append(cabin)
+	boat_preview.set_cabin_candidates([])
+	boat_preview.set_boat({"pieces": piece_instances})
+	status_label.text = "Added cabin."

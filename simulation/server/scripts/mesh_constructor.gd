@@ -151,7 +151,7 @@ func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 			w = 1.5; h = 1.0; d = 1.5
 			mesh = PrismMesh.new() # Using prism for angled hull
 			mesh.size = Vector3(w, h, d)
-			mesh.left_to_right = 1.0
+			mesh.left_to_right = 0.0
 			mesh_instance.rotation_degrees.x = 180.0
 		1: # HULL_SECTION (w=4, h=4)
 			w = 1.0; h = 1.0; d = 1.5
@@ -161,7 +161,7 @@ func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 			w = 1.0; h = 1.0; d = 1.5
 			mesh = PrismMesh.new() # Using prism for angled hull
 			mesh.size = Vector3(w, h, d)
-			mesh.left_to_right = 0.0
+			mesh.left_to_right = 1.0
 			mesh_instance.rotation_degrees.x = 180.0
 		3: # CABIN (w=4, h=3)
 			w = 1.0; h = 0.75; d = 1.0

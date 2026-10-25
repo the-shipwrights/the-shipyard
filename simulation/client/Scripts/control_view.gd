@@ -7,6 +7,7 @@ var boat_id: String = ""
 var ws := WebSocketPeer.new()
 var is_connected := false
 
+@onready var boat_preview: BoatPreview2D = $BoatPreview2D
 @onready var boat_title: Label = $BoatTitle
 @onready var info_label: Label = $InfoLabel
 @onready var rotate_button: Button = $RotateButton
@@ -17,6 +18,8 @@ func _ready() -> void:
 
 func setup(data: Dictionary) -> void:
 	boat_data = data
+	boat_preview.set_boat(data)
+
 	boat_id = str(boat_data.get("id", "")).to_upper()
 	boat_title.text = "Piloting Boat #" + boat_id
 	info_label.text = "Hold the button below to turn your boat in the archipelago."
