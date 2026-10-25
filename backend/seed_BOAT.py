@@ -34,24 +34,32 @@ def main():
             INSERT INTO boats (
                 id,
                 structure_json,
-                color,
+                primary_color,
+                secondary_color,
+                accent_color,
                 status,
                 created_at,
                 updated_at,
                 launched_at
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(id) DO UPDATE SET
                 structure_json = excluded.structure_json,
-                color = excluded.color,
+                primary_color = excluded.primary_color,
+                secondary_color = excluded.secondary_color,
+                accent_color = excluded.accent_color,
                 status = excluded.status,
                 updated_at = excluded.updated_at,
                 launched_at = excluded.launched_at
             """,
             (
                 "BOAT",
-                json.dumps(myBoat.to_dict()),
-                "#2f7fff",
+                json.dumps({
+                    "pieces": [piece.to_dict() for piece in myBoat.pieces]
+                }),
+                "#2f7fff",  # primary
+                "#ffffff",  # secondary
+                "#ff8800",  # accent
                 "customizing",
                 now,
                 now,
