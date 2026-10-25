@@ -183,7 +183,7 @@ class App:
         paths = (
             [self.current_weights] if self.current_weights is not None else []
         )
-        paths.extend(self.runs_directory.glob("train*/weights/best.pt"))
+        paths.extend(self.runs_directory.glob("*/weights/best.pt"))
         return sorted({path for path in paths if path.is_file()})
 
 
