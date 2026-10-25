@@ -181,6 +181,9 @@ class Boat:
     """
     pieces: list[Piece] = field(default_factory=list)
 
+    def to_dict(self) -> dict:
+        return {"pieces": [piece.to_dict() for piece in self.pieces]}
+
     @classmethod
     def from_list(cls, data: list[Piece]) -> "Boat":
         return cls(
