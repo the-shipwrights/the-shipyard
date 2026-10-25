@@ -33,6 +33,12 @@ func build_from_data(data: Dictionary) -> void:
 	var primary_material := StandardMaterial3D.new()
 	primary_material.albedo_color = primary_color
 
+	var secondary_material := StandardMaterial3D.new()
+	secondary_material.albedo_color = secondary_color
+
+	var accent_material := StandardMaterial3D.new()
+	accent_material.albedo_color = accent_color
+
 	var boat_data: Dictionary = data.get("boat", {})
 	var pieces: Array = boat_data.get("pieces", [])
 
@@ -46,7 +52,17 @@ func build_from_data(data: Dictionary) -> void:
 
 		var piece_x := float(piece.get("x", 0)) * SCALE_FACTOR
 		var piece_y := float(piece.get("y", 0)) * SCALE_FACTOR
-		var piece_node := _create_piece_node(piece, primary_material)
+		
+		# Coloring
+		var piece_id := int(piece.get("id", -1))
+		var material := primary_material
+		match piece_id:
+			3, 4:
+				material = secondary_material
+			11:
+				material = accent_material
+
+		var piece_node := _create_piece_node(piece, material)
 
 		if piece_node == null:
 			continue
@@ -62,21 +78,6 @@ func build_from_data(data: Dictionary) -> void:
 		add_child(piece_node)
 
 	boat_footprint = Vector3(max_x, max_y, max_depth)
-
-	# Display the two non-primary colors to the right of the boat.
-	var swatch_x := max_x + 0.65
-	var swatch_center_y := max_y / 2.0
-
-	_create_color_placeholder(
-		"Secondary",
-		secondary_color,
-		Vector3(swatch_x, swatch_center_y + 0.35, 0.0)
-	)
-	_create_color_placeholder(
-		"Accent",
-		accent_color,
-		Vector3(swatch_x, swatch_center_y - 0.35, 0.0)
-	)
 
 func _create_color_placeholder(
 	label_text: String,

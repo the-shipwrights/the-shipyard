@@ -11,39 +11,48 @@ const PADDING := 16.0
 const OUTLINE_COLOR := Color("#15232a")
 
 const PIECE_TYPES := {
-	0: {
-		"width": 6.0, "height": 4.0, "shape": "bow",
-		"color": Color("#4c83a8")
-	},
-	1: {
-		"width": 4.0, "height": 4.0, "shape": "rect",
-		"color": Color("#598bad")
-	},
-	2: {
-		"width": 4.0, "height": 4.0, "shape": "stern",
-		"color": Color("#416f91")
-	},
-	3: {
-		"width": 4.0, "height": 3.0, "shape": "rect",
-		"color": Color("#c99554")
-	},
-	4: {
-		"width": 4.0, "height": 6.0, "shape": "rect",
-		"color": Color("#b77b3e")
-	},
-	11: {
-		"width": 1.0, "height": 4.0, "shape": "chimney",
-		"color": Color("#e54b4b")
-	},
+	0: {"width": 6.0, "height": 4.0, "shape": "bow", "color_field": "primary"},
+	1: {"width": 4.0, "height": 4.0, "shape": "rect", "color_field": "primary"},
+	2: {"width": 4.0, "height": 4.0, "shape": "stern", "color_field": "primary"},
+	3: {"width": 4.0, "height": 3.0, "shape": "rect", "color_field": "secondary"},
+	4: {"width": 4.0, "height": 6.0, "shape": "rect", "color_field": "secondary"},
+	11: {"width": 1.0, "height": 4.0, "shape": "chimney", "color_field": "accent"},
 }
 
 var _pieces: Array = []
 
+var _customization := {
+	"primary": Color("#2f7fff"),
+	"secondary": Color("#ffffff"),
+	"accent": Color("#ff8800"),
+}
+
+func set_customization(colors: Dictionary) -> void:
+	for field in ["primary", "secondary", "accent"]:
+		if not colors.has(field):
+			continue
+
+		var value: Variant = colors[field]
+		if value is Color:
+			_customization[field] = value
+		else:
+			_customization[field] = Color.from_string(
+				str(value),
+				_customization[field]
+			)
+
+	queue_redraw()
 
 func set_boat(data: Dictionary) -> void:
 	var structure: Dictionary = data.get("boat", data)
 	var raw_pieces: Variant = structure.get("pieces", [])
 	_pieces = raw_pieces if raw_pieces is Array else []
+	_customization = {
+		"primary": Color("#2f7fff"),
+		"secondary": Color("#ffffff"),
+		"accent": Color("#ff8800"),
+	}
+	set_customization(data.get("customization", {}))
 	queue_redraw()
 
 
@@ -214,7 +223,7 @@ func _draw_piece(
 		)
 		screen_points.append(screen_point)
 
-	draw_colored_polygon(screen_points, config["color"])
+	draw_colored_polygon(screen_points, _customization[config["color_field"]])
 
 	for i in range(screen_points.size()):
 		draw_line(

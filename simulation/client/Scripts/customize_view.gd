@@ -42,9 +42,14 @@ func setup(data: Dictionary) -> void:
 	var customization: Dictionary = boat_data.get("customization", {})
 
 	for field in COLOR_FIELDS:
-		selected_colors[field] = _random_palette_color()
+		var fallback_color := _random_palette_color()
+		selected_colors[field] = Color.from_string(
+			str(customization.get(field, "")),
+			fallback_color
+		) if customization.has(field) else fallback_color
 
 	_update_color_buttons()
+	boat_preview.set_customization(selected_colors)
 
 	launch_button.disabled = false
 	launch_button.show()
@@ -68,6 +73,7 @@ func _on_color_field_selected(field: String) -> void:
 func _on_palette_color_selected(color: Color) -> void:
 	selected_colors[active_color_field] = color
 	_update_color_buttons()
+	boat_preview.set_customization(selected_colors)
 
 
 func _update_color_buttons() -> void:
