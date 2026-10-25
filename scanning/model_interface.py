@@ -20,6 +20,7 @@ from numpy import ndarray
 from ultralytics import YOLO
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+TRAINING_RUNS_DIRECTORY = Path(__file__).resolve().parent / "runs" / "detect"
 PREDICTION_RUNS_DIRECTORY = Path(__file__).resolve().parent / "runs" / "predict"
 
 
@@ -162,6 +163,7 @@ def model_train(
             data=str(portable_data_file),
             epochs=epochs,
             imgsz=imgsz,
+            project=str(TRAINING_RUNS_DIRECTORY)
         )
     finally:
         if temporary_directory is not None:
