@@ -6,7 +6,7 @@ var load_request := HTTPRequest.new()
 @onready var landing_screen: Control = $LandingScreen
 @onready var boat_id_input: LineEdit = $LandingScreen/CenterContainer/VBoxContainer/BoatIdInput
 @onready var message_label: Label = $LandingScreen/CenterContainer/VBoxContainer/MessageLabel
-@onready var builder_view: BoatBuilderView = $ViewContainer/BuilderView
+@onready var builder_view: Control = $ViewContainer/BuilderView
 @onready var customize_view: Control = $ViewContainer/CustomizeView
 @onready var control_view: Control = $ViewContainer/ControlView
 

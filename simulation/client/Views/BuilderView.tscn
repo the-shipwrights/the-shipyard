@@ -71,6 +71,14 @@ text = "+ Hull Bow"
 layout_mode = 2
 text = "+ Cabin"
 
+[node name="AddBigCabin" type="Button" parent="PaletteGrid" unique_id=1845691165]
+layout_mode = 2
+text = "+ Big cabin"
+
+[node name="AddChimney" type="Button" parent="PaletteGrid" unique_id=480473204]
+layout_mode = 2
+text = "+ Chimney"
+
 [node name="ActionsContainer" type="HBoxContainer" parent="." unique_id=1049875227]
 layout_mode = 0
 offset_left = 20.0

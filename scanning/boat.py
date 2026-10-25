@@ -103,6 +103,17 @@ CABIN = PieceType(
     ),
 )
 
+# TODO define attachmentpoints better @fra ?
+BIG_CABIN = PieceType(
+    id=4, name="big_cabin", category="middle", width=4, height=6,
+    attachmentPoints=(
+        AttachmentPoint("from_middle", 0, 0),
+        AttachmentPoint("to_accessory", 0, 2),
+        AttachmentPoint("to_accessory", 1, 2),
+        AttachmentPoint("to_accessory", 2, 2)
+    ),
+)
+
 TARP = PieceType(
     id=1000, name="tarp", category="middle", width=100, height=80,
     attachmentPoints=(
@@ -110,15 +121,16 @@ TARP = PieceType(
     ),
 )
 
+# Accessories have IDs starting from 10
 FLAG = PieceType(
-    id=1000, name="flag", category="accessory", width=100, height=100,
+    id=10, name="flag", category="accessory", width=10, height=100,
     attachmentPoints=(
         
     ),
 )
 
 CHIMNEY = PieceType(
-    id=1000, name="chimney", category="accessory", width=100, height=100,
+    id=11, name="chimney", category="accessory", width=100, height=100,
     attachmentPoints=(
         
     ),
@@ -132,6 +144,9 @@ PIECE_TYPES: dict[int, PieceType] = {
     HULL_SECTION.id: HULL_SECTION,
     HULL_STERN.id: HULL_STERN,
     CABIN.id: CABIN,
+    BIG_CABIN.id: BIG_CABIN,
+    FLAG.id: FLAG,
+    CHIMNEY.id: CHIMNEY,
 }
 
 # ------------------------------------------------------------------
@@ -165,6 +180,8 @@ PIECE_TEXT: dict[str, list[str]] = {
     "hull_section": ["└──────┘", "│      │", "│      │", "┌──────┐"],
     "hull_stern": [" ──────┘", "╲      │", "│      │", "┌──────┐"],
     "cabin": ["└──────┘", "│  []  │", "┌──────┐"],
+    "big_cabin":["┌──────┐","│      │","│      │","│      │","│      │","└──────┘"],
+    "chimney":["┌───┐", "│   │", "│   │", "│   │"],
 }
 
 # ------------------------------------------------------------------

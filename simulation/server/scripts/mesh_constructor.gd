@@ -6,6 +6,8 @@ const SCALE_FACTOR := 0.25
 
 var use_custom_models := false # Toggle this to true when final models are ready
 
+var boat_footprint := Vector3.ZERO
+
 # func _ready() -> void:
 
 ## Build directly from a provided data dictionary
@@ -36,6 +38,7 @@ func build_from_data(data: Dictionary) -> void:
 
 	var max_x := 0.0
 	var max_y := 0.0
+	var max_depth := 0.0
 
 	for piece in pieces:
 		if not (piece is Dictionary):
@@ -43,12 +46,22 @@ func build_from_data(data: Dictionary) -> void:
 
 		var piece_x := float(piece.get("x", 0)) * SCALE_FACTOR
 		var piece_y := float(piece.get("y", 0)) * SCALE_FACTOR
-		max_x = maxf(max_x, piece_x + 1.5)
-		max_y = maxf(max_y, piece_y + 1.0)
-
 		var piece_node := _create_piece_node(piece, primary_material)
-		if piece_node:
-			add_child(piece_node)
+
+		if piece_node == null:
+			continue
+
+		var piece_width := float(piece_node.get_meta("width", 1.0))
+		var piece_height := float(piece_node.get_meta("height", 1.0))
+		var piece_depth := float(piece_node.get_meta("depth", 1.0))
+
+		max_x = maxf(max_x, piece_x + piece_width)
+		max_y = maxf(max_y, piece_y + piece_height)
+		max_depth = maxf(max_depth, piece_depth)
+
+		add_child(piece_node)
+
+	boat_footprint = Vector3(max_x, max_y, max_depth)
 
 	# Display the two non-primary colors to the right of the boat.
 	var swatch_x := max_x + 0.65
@@ -167,6 +180,23 @@ func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 			w = 1.0; h = 0.75; d = 1.0
 			mesh = BoxMesh.new()
 			mesh.size = Vector3(w, h, d)
+		4: # BIG_CABIN (4 × 6 grid units)
+			w = 1.0
+			h = 1.5
+			d = 1.0
+			mesh = BoxMesh.new()
+			mesh.size = Vector3(w, h, d)
+		11: # CHIMNEY
+			w = SCALE_FACTOR
+			h = 4.0 * SCALE_FACTOR
+			d = SCALE_FACTOR
+
+			var chimney_mesh := CylinderMesh.new()
+			chimney_mesh.top_radius = w * 0.4
+			chimney_mesh.bottom_radius = w * 0.45
+			chimney_mesh.height = h
+			chimney_mesh.radial_segments = 8
+			mesh = chimney_mesh
 		_:
 			push_warning("Unknown piece type: ", id)
 			return null

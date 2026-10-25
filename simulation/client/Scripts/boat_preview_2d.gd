@@ -1,9 +1,10 @@
 extends Control
 class_name BoatPreview2D
 
-signal cabin_location_selected(location: Vector2i)
+signal placement_selected(piece_id: int, location: Vector2i)
 
-var _cabin_candidates: Array[Vector2i] = []
+var _candidate_piece_id := -1
+var _placement_candidates: Array[Vector2i] = []
 var _candidate_rects: Array[Rect2] = []
 
 const PADDING := 16.0
@@ -26,6 +27,14 @@ const PIECE_TYPES := {
 		"width": 4.0, "height": 3.0, "shape": "rect",
 		"color": Color("#c99554")
 	},
+	4: {
+		"width": 4.0, "height": 6.0, "shape": "rect",
+		"color": Color("#b77b3e")
+	},
+	11: {
+		"width": 1.0, "height": 4.0, "shape": "chimney",
+		"color": Color("#e54b4b")
+	},
 }
 
 var _pieces: Array = []
@@ -38,12 +47,17 @@ func set_boat(data: Dictionary) -> void:
 	queue_redraw()
 
 
-func set_cabin_candidates(locations: Array[Vector2i]) -> void:
-	_cabin_candidates = locations.duplicate()
+func set_placement_candidates(piece_id: int, locations: Array[Vector2i]) -> void:
+	_placement_candidates = locations.duplicate()
+	_candidate_piece_id = piece_id if not locations.is_empty() else -1
+	_candidate_rects.clear()
 	queue_redraw()
 
 func clear_boat() -> void:
 	_pieces.clear()
+	_candidate_piece_id = -1
+	_placement_candidates.clear()
+	_candidate_rects.clear()
 	queue_redraw()
 
 
@@ -87,32 +101,25 @@ func _draw() -> void:
 		if piece is Dictionary:
 			_draw_piece(piece, world_center, center, scale_factor)
 	
-	# Cabin config
-	var cabin_config: Dictionary = PIECE_TYPES[3]
+	# Candidate config
+	var candidate_config: Dictionary = PIECE_TYPES.get(_candidate_piece_id, {})
+	if candidate_config.is_empty():
+		return
 
-	for location in _cabin_candidates:
-		min_x = minf(min_x, location.x)
-		min_y = minf(min_y, location.y)
-		max_x = maxf(max_x, location.x + cabin_config["width"])
-		max_y = maxf(max_y, location.y + cabin_config["height"])
-	
-	_candidate_rects.clear()
+	var candidate_width := float(candidate_config["width"])
+	var candidate_height := float(candidate_config["height"])
 
-	var cabin_width: float = PIECE_TYPES[3]["width"]
-	var cabin_height: float = PIECE_TYPES[3]["height"]
-
-	for location in _cabin_candidates:
+	for location in _placement_candidates:
 		var top_left := _world_to_screen(
-			Vector2(location.x, location.y + cabin_height),
+			Vector2(location.x, location.y + candidate_height),
 			world_center,
 			center,
 			scale_factor
 		)
 		var rect := Rect2(
 			top_left,
-			Vector2(cabin_width * scale_factor, cabin_height * scale_factor)
+			Vector2(candidate_width * scale_factor, candidate_height * scale_factor)
 		)
-
 		_candidate_rects.append(rect)
 		draw_rect(rect, Color(0.8, 0.6, 0.3, 0.35), true)
 		draw_rect(rect, Color("#ffd166"), false, 2.0)
@@ -157,6 +164,20 @@ func _shape_points(shape: String, width: float, height: float) -> PackedVector2A
 				Vector2(width*0.8, 0),
 				Vector2(width*0.8, height*1.5),
 				Vector2(0, height*1.5),
+			])
+		"big_cabin":
+			return PackedVector2Array([
+				Vector2(0, 0),
+				Vector2(width, 0),
+				Vector2(width, height*2),
+				Vector2(0, height*2),
+			])
+		"chimney":
+			return PackedVector2Array([
+				Vector2(0, 0),
+				Vector2(width, 0),
+				Vector2(width, height),
+				Vector2(0, height),
 			])
 		_:
 			return PackedVector2Array([
@@ -211,6 +232,6 @@ func _gui_input(event: InputEvent) -> void:
 
 	for i in range(_candidate_rects.size() - 1, -1, -1):
 		if _candidate_rects[i].has_point(event.position):
-			cabin_location_selected.emit(_cabin_candidates[i])
+			placement_selected.emit(_candidate_piece_id, _placement_candidates[i])
 			accept_event()
 			return
