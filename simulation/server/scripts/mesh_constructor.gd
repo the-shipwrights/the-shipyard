@@ -79,34 +79,6 @@ func build_from_data(data: Dictionary) -> void:
 
 	boat_footprint = Vector3(max_x, max_y, max_depth)
 
-func _create_color_placeholder(
-	label_text: String,
-	color: Color,
-	placeholder_position: Vector3
-) -> void:
-	var placeholder := MeshInstance3D.new()
-	placeholder.name = label_text + "ColorPlaceholder"
-
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.22
-	sphere.height = 0.44
-	placeholder.mesh = sphere
-	placeholder.position = placeholder_position
-
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	placeholder.material_override = material
-
-	add_child(placeholder)
-
-	var label := Label3D.new()
-	label.text = label_text
-	label.position = Vector3(0.0, 0.35, 0.0)
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.font_size = 20
-	label.outline_size = 4
-	placeholder.add_child(label)
-
 func _clear_existing_meshes() -> void:
 	# Removes existing pieces so the constructor can be reused/updated safely
 	for child in get_children():
