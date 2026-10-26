@@ -4,26 +4,13 @@ render_mode unshaded;
 
 uniform sampler2D image : source_color;
 uniform float border_thickness;
-varying vec3 some_color;
 
-// float new_pos = old_pos * (1 + (border_thickness/width))
+uniform int particle_count;
+uniform vec3[256] particle_positions;
+uniform float[256] particle_radiuses;
 
 void vertex() {
-	some_color = VERTEX;
-	vec3 new_vertex = VERTEX;
-
-	if (new_vertex.x > 0.0) {
-		new_vertex.x += border_thickness;
-	}
-	else new_vertex.x -= border_thickness;
-
-	if (new_vertex.y > 0.0) {
-		new_vertex.y += border_thickness;
-	}
-	else new_vertex.y -= border_thickness;
-
-	VERTEX = new_vertex;
-	// Called for every vertex the material is visible on.
+	VERTEX *= border_thickness + 1.0;
 }
 
 void fragment() {
@@ -32,16 +19,30 @@ void fragment() {
 	vec2 pos_pixel = UV;
 	vec4 color = texture(image, pos_pixel);
 	ALBEDO = vec3(0.0, 0.0, 0.0);
-	// ALBEDO = color.rgb;
 	ALPHA = color[3];
 	
-	vec3 scaled_pos = VERTEX / (1.0 + border_thickness/0.5);
-	vec2 scaled_uv = vec2(scaled_pos.x + 0.5, scaled_pos.z + 0.5);
-	vec4 scaled_color = texture(image, scaled_uv, 0);
-	ALBEDO += scaled_color.rgb * scaled_color[3];
+	vec2 scaled_uv = (UV - 0.5) * (border_thickness + 1.0) + 0.5;// / (1.0 + border_thickness/0.5);
+	if (
+		scaled_uv.x >= 0.0 &&
+		scaled_uv.x <= 1.0 &&
+		scaled_uv.y >= 0.0 &&
+		scaled_uv.y <= 1.0
+	) {
+		vec4 scaled_color = texture(image, scaled_uv);
+		ALBEDO += scaled_color.rgb * scaled_color[3];
+	}
+
+	/*
+	for (int i = 0; i < 1; i++) {
+		vec4 projection = PROJECTION_MATRIX * VIEW_MATRIX * vec4(particle_positions[i], 1.0);
+		projection = projection /= projection.w;
+		vec2 screen_pos = vec2(projection.x * 0.5 + 0.5, projection.y * -0.5 + 0.5);
+		float screen_radius = particle_radiuses[i] * mult;
+		ALBEDO = vec3(screen_pos, screen_radius);
+	}
+	*/
 }
 
-//void light() {
-//	// Called for every pixel for every light affecting the material.
-//	// Uncomment to replace the default light processing function with this one.
-//}
+void outline() {
+
+}

@@ -34,8 +34,8 @@ void main() {
 
 	vec4 color = imageLoad(color_image, uv);
 
-	#COMPUTE_CODE
+	#COMPUTE_CODE	
 
-	imageStore(color_image, uv, color);
+	imageStore(color_image, uv, color / 2.0);
 }
 """
