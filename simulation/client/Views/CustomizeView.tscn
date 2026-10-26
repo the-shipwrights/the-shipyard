@@ -3,54 +3,10 @@
 [ext_resource type="Script" uid="uid://b6umuy4r1jmgh" path="res://Scripts/customize_view.gd" id="1_ukjbo"]
 [ext_resource type="Script" uid="uid://yhts4vgshkss" path="res://Scripts/palette.gd" id="2_6jt7g"]
 [ext_resource type="PackedScene" uid="uid://d3pp0kklmyfy6" path="res://Views/BoatPreview2D.tscn" id="2_ct0er"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4vjqg"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v02wf"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e28wa"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xmlon"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t30ng"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s5p5q"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d1irj"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxypb"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ya4qn"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uqxm3"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rt7dm"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4tu2b"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5krvr"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1ejna"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_va1iu"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ypgn"]
-bg_color = Color(0, 0, 0, 0)
+[ext_resource type="Texture2D" uid="uid://pho0r3iw0neo" path="res://Assets/log.png" id="3_xmlon"]
+[ext_resource type="Texture2D" uid="uid://bqpwnnq5pcko4" path="res://Assets/sidelog.png" id="4_t30ng"]
+[ext_resource type="PackedScene" uid="uid://td0gj7dyee5a" path="res://UI/palette_bucket.tscn" id="4_v02wf"]
+[ext_resource type="Script" uid="uid://bl1o5umm2gewx" path="res://palette_bucket.gd" id="5_e28wa"]
 
 [node name="Control" type="Control" unique_id=783958750]
 layout_mode = 3
@@ -65,345 +21,241 @@ script = ExtResource("1_ukjbo")
 layout_mode = 0
 offset_right = 375.0
 offset_bottom = 812.0
-color = Color(0, 0.5415405, 0.54309857, 1)
+color = Color(0.11979788, 0.5071407, 0.70213145, 1)
 
-[node name="BoatPreview2D" parent="." instance=ExtResource("2_ct0er")]
+[node name="Background2" type="ColorRect" parent="." unique_id=939362185]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 335.0
+offset_right = 343.0
+offset_bottom = 663.0
+color = Color(0.62054855, 0.41861945, 0.2738671, 1)
+
+[node name="BoatPreview2D" parent="." unique_id=1671172727 instance=ExtResource("2_ct0er")]
 layout_mode = 1
 anchors_preset = 10
-anchor_right = 1.0
+anchor_bottom = 0.0
 offset_left = 24.0
 offset_top = 60.0
 offset_right = -24.0
 offset_bottom = 300.0
+grow_vertical = 1
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=545828411]
+layout_mode = 0
+offset_left = 5.0
+offset_right = 45.0
+offset_bottom = 812.0
+texture = ExtResource("3_xmlon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=549153111]
+texture_filter = 1
+layout_mode = 0
+offset_left = 330.0
+offset_right = 370.0
+offset_bottom = 812.0
+texture = ExtResource("3_xmlon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SideLog1" type="TextureRect" parent="." unique_id=401046097]
+texture_filter = 1
+layout_mode = 0
+offset_left = -2.0
+offset_top = 1.0
+offset_right = 378.0
+offset_bottom = 171.0
+texture = ExtResource("4_t30ng")
+expand_mode = 1
+
+[node name="SideLog2" type="TextureRect" parent="." unique_id=1276817347]
+texture_filter = 1
+layout_mode = 0
+offset_left = -2.0
+offset_top = 292.0
+offset_right = 378.0
+offset_bottom = 462.0
+texture = ExtResource("4_t30ng")
+expand_mode = 1
+
+[node name="SideLog3" type="TextureRect" parent="." unique_id=1536666269]
+texture_filter = 1
+layout_mode = 0
+offset_left = -2.0
+offset_top = 647.0
+offset_right = 378.0
+offset_bottom = 817.0
+texture = ExtResource("4_t30ng")
+expand_mode = 1
 
 [node name="Palette" type="GridContainer" parent="." unique_id=1606151572]
-layout_mode = 0
-offset_left = 43.0
-offset_top = 319.0
-offset_right = 335.0
-offset_bottom = 611.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.615
+anchor_right = 0.5
+anchor_bottom = 0.615
+offset_left = -146.0
+offset_top = -146.00006
+offset_right = 146.0
+offset_bottom = 145.99994
+grow_horizontal = 2
+grow_vertical = 2
 columns = 4
 script = ExtResource("2_6jt7g")
 palette_colors = Array[Color]([Color(0.90588236, 0.25882354, 0.2627451, 1), Color(0.92156863, 0.5568628, 0.3529412, 1), Color(0.9137255, 0.8, 0.38039216, 1), Color(0.81960785, 0.8901961, 0.4627451, 1), Color(0.654902, 0.73333335, 0.4509804, 1), Color(0.49803922, 0.8235294, 0.3764706, 1), Color(0.25882354, 0.79607844, 0.42745098, 1), Color(0.29411766, 0.7176471, 0.6039216, 1), Color(0.27450982, 0.69411767, 0.76862746, 1), Color(0.30980393, 0.57254905, 0.95686275, 1), Color(0.43137255, 0.45882353, 0.7882353, 1), Color(0.69803923, 0.33333334, 0.43529412, 1), Color(0.09795057, 0.09661385, 0.029443337, 1), Color(0.78039217, 0.654902, 0.5372549, 1), Color(0.69411767, 0.62352943, 0.59607846, 1), Color(0.8352941, 0.827451, 0.83137256, 1)])
 
-[node name="PaletteSwatch" type="Control" parent="Palette" unique_id=730085078]
+[node name="PaletteBucket" type="TextureButton" parent="Palette" unique_id=16959192 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.90588236, 0.25882354, 0.2627451, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/PaletteSwatch" unique_id=1475123131]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.90588236, 0.25882354, 0.2627451, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/PaletteSwatch" unique_id=916194151]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4vjqg")
-
-[node name="@Control@129854" type="Control" parent="Palette" unique_id=478406253]
+[node name="@TextureButton@81062" type="TextureButton" parent="Palette" unique_id=813461353 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.92156863, 0.5568628, 0.3529412, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129854" unique_id=289999730]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.92156863, 0.5568628, 0.3529412, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129854" unique_id=1682587921]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_v02wf")
-
-[node name="@Control@129855" type="Control" parent="Palette" unique_id=975641743]
+[node name="@TextureButton@81063" type="TextureButton" parent="Palette" unique_id=369692459 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.9137255, 0.8, 0.38039216, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129855" unique_id=1385285503]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.9137255, 0.8, 0.38039216, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129855" unique_id=42361651]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_e28wa")
-
-[node name="@Control@129856" type="Control" parent="Palette" unique_id=428711256]
+[node name="@TextureButton@81064" type="TextureButton" parent="Palette" unique_id=2097494705 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.81960785, 0.8901961, 0.4627451, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129856" unique_id=1767421031]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.81960785, 0.8901961, 0.4627451, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129856" unique_id=89674169]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_xmlon")
-
-[node name="@Control@129857" type="Control" parent="Palette" unique_id=732087167]
+[node name="@TextureButton@81065" type="TextureButton" parent="Palette" unique_id=1197935115 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.654902, 0.73333335, 0.4509804, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129857" unique_id=991887563]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.654902, 0.73333335, 0.4509804, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129857" unique_id=1206273969]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_t30ng")
-
-[node name="@Control@129858" type="Control" parent="Palette" unique_id=1706828917]
+[node name="@TextureButton@81066" type="TextureButton" parent="Palette" unique_id=1616027598 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.49803922, 0.8235294, 0.3764706, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129858" unique_id=16684368]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.49803922, 0.8235294, 0.3764706, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129858" unique_id=98423816]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_s5p5q")
-
-[node name="@Control@129859" type="Control" parent="Palette" unique_id=772892776]
+[node name="@TextureButton@81067" type="TextureButton" parent="Palette" unique_id=1254723422 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.25882354, 0.79607844, 0.42745098, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129859" unique_id=37214384]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.25882354, 0.79607844, 0.42745098, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129859" unique_id=657920229]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_d1irj")
-
-[node name="@Control@129860" type="Control" parent="Palette" unique_id=1584097853]
+[node name="@TextureButton@81068" type="TextureButton" parent="Palette" unique_id=1535535646 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.29411766, 0.7176471, 0.6039216, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129860" unique_id=671570413]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.29411766, 0.7176471, 0.6039216, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129860" unique_id=1962692944]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_dxypb")
-
-[node name="@Control@129861" type="Control" parent="Palette" unique_id=1788993628]
+[node name="@TextureButton@81069" type="TextureButton" parent="Palette" unique_id=786038748 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.27450982, 0.69411767, 0.76862746, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129861" unique_id=1803763759]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.27450982, 0.69411767, 0.76862746, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129861" unique_id=636924974]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_ya4qn")
-
-[node name="@Control@129862" type="Control" parent="Palette" unique_id=1601939093]
+[node name="@TextureButton@81070" type="TextureButton" parent="Palette" unique_id=1121072730 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.30980393, 0.57254905, 0.95686275, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129862" unique_id=721891647]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.30980393, 0.57254905, 0.95686275, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129862" unique_id=1768203427]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_uqxm3")
-
-[node name="@Control@129863" type="Control" parent="Palette" unique_id=1008321089]
+[node name="@TextureButton@81071" type="TextureButton" parent="Palette" unique_id=519968163 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.43137255, 0.45882353, 0.7882353, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129863" unique_id=1334563083]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.43137255, 0.45882353, 0.7882353, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129863" unique_id=121956852]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_rt7dm")
-
-[node name="@Control@129864" type="Control" parent="Palette" unique_id=11543599]
+[node name="@TextureButton@81072" type="TextureButton" parent="Palette" unique_id=1162415620 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.69803923, 0.33333334, 0.43529412, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129864" unique_id=724308825]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.69803923, 0.33333334, 0.43529412, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129864" unique_id=363487508]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_4tu2b")
-
-[node name="@Control@129865" type="Control" parent="Palette" unique_id=2114004559]
+[node name="@TextureButton@81073" type="TextureButton" parent="Palette" unique_id=457905810 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.09795057, 0.09661385, 0.029443337, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129865" unique_id=1851432481]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.09795057, 0.09661385, 0.029443337, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129865" unique_id=1741314238]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_5krvr")
-
-[node name="@Control@129866" type="Control" parent="Palette" unique_id=1860711589]
+[node name="@TextureButton@81074" type="TextureButton" parent="Palette" unique_id=447595494 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.78039217, 0.654902, 0.5372549, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129866" unique_id=1287249102]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.78039217, 0.654902, 0.5372549, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129866" unique_id=88656755]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1ejna")
-
-[node name="@Control@129867" type="Control" parent="Palette" unique_id=1949050972]
+[node name="@TextureButton@81075" type="TextureButton" parent="Palette" unique_id=1579620474 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.69411767, 0.62352943, 0.59607846, 1)
 metadata/_palette_generated = true
 
-[node name="Color" type="ColorRect" parent="Palette/@Control@129867" unique_id=1191593033]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.69411767, 0.62352943, 0.59607846, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129867" unique_id=2054294960]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_va1iu")
-
-[node name="@Control@129868" type="Control" parent="Palette" unique_id=1184206263]
+[node name="@TextureButton@81076" type="TextureButton" parent="Palette" unique_id=472231631 instance=ExtResource("4_v02wf")]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
-mouse_filter = 2
+action_mode = 0
+script = ExtResource("5_e28wa")
+paint_color = Color(0.8352941, 0.827451, 0.83137256, 1)
 metadata/_palette_generated = true
-
-[node name="Color" type="ColorRect" parent="Palette/@Control@129868" unique_id=1827393738]
-layout_mode = 0
-offset_right = 70.0
-offset_bottom = 70.0
-color = Color(0.8352941, 0.827451, 0.83137256, 1)
-
-[node name="SelectionBorder" type="Panel" parent="Palette/@Control@129868" unique_id=1909931208]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8ypgn")
 
 [node name="LaunchButton" type="Button" parent="." unique_id=369057098]
-layout_mode = 0
-offset_left = 130.0
-offset_top = 745.0
-offset_right = 239.0
-offset_bottom = 776.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -67.0
+offset_top = -55.0
+offset_right = 67.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "Launch boat!"
 
 [node name="ColorSelector" type="HBoxContainer" parent="." unique_id=425388945]
 layout_mode = 0
 offset_left = 27.0
-offset_top = 646.0
-offset_right = 348.0
-offset_bottom = 686.0
+offset_top = 703.0
+offset_right = 350.0
+offset_bottom = 743.0
 
 [node name="Primary" type="Button" parent="ColorSelector" unique_id=1561980904]
 custom_minimum_size = Vector2(105, 40)
@@ -421,19 +273,30 @@ layout_mode = 2
 text = "Accent"
 
 [node name="StatusLabel" type="Label" parent="." unique_id=1826761783]
-layout_mode = 0
-offset_left = 160.0
-offset_top = 693.0
-offset_right = 200.0
-offset_bottom = 716.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -0.5
+offset_top = -147.0
+offset_right = 0.5
+offset_bottom = -124.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="Label" type="Label" parent="." unique_id=355979904]
-layout_mode = 0
-offset_left = 124.0
-offset_top = 18.0
-offset_right = 238.0
-offset_bottom = 41.0
-text = "Editing boat { }"
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -41.0
+offset_top = 19.0
+offset_right = 41.0
+offset_bottom = 42.0
+grow_horizontal = 2
+text = "Paint shop"
 
 [node name="NoBoatScreen" type="Control" parent="." unique_id=933621215]
 visible = false

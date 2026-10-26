@@ -11,6 +11,7 @@ var boat_data: Dictionary = {}
 var selected_colors: Dictionary = {}
 var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
+var default_launch_text := ""
 
 @onready var boat_preview: BoatPreview2D = $BoatPreview2D
 @onready var launch_button: Button = $LaunchButton
@@ -23,6 +24,7 @@ var launch_request := HTTPRequest.new()
 
 
 func _ready() -> void:
+	default_launch_text = launch_button.text
 	add_child(launch_request)
 	launch_request.request_completed.connect(_on_launch_completed)
 
@@ -53,6 +55,7 @@ func setup(data: Dictionary) -> void:
 	_update_color_buttons()
 	boat_preview.set_customization(selected_colors)
 
+	launch_button.text = default_launch_text
 	launch_button.disabled = false
 	launch_button.show()
 	status_label.text = ""
@@ -152,8 +155,9 @@ func _color_to_hex(color: Color) -> String:
 
 
 func launch_boat() -> void:
-	status_label.text = "Sending boat..."
+	launch_button.text = "Sending boat..."
 	launch_button.disabled = true
+	status_label.text = ""
 
 	var body := JSON.stringify({
 		"primary": _color_to_hex(selected_colors["primary"]),
@@ -170,23 +174,28 @@ func launch_boat() -> void:
 	)
 
 	if error != OK:
+		_reset_launch_button()
 		status_label.text = "Could not send launch request"
-		launch_button.disabled = false
 
 
 func _on_launch_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	launch_button.disabled = false
-
 	if response_code == 200:
-		status_label.text = "Boat launched!"
-		launch_button.hide()
+		launch_button.text = "Boat sent!"
+		launch_button.disabled = true
 		var updated_data = JSON.parse_string(body.get_string_from_utf8())
 		if updated_data is Dictionary:
 			boat_launched.emit(updated_data)
 	elif response_code == 409:
-		status_label.text = "Boat already launched!"
+		launch_button.text = "Boat already sent!"
+		launch_button.disabled = true
 		boat_data["status"] = "launched"
 		boat_launched.emit(boat_data)
 	else:
+		_reset_launch_button()
 		status_label.text = "Launch failed (" + str(response_code) + ")"
 		push_error("Launch failed with code: " + str(response_code))
+
+
+func _reset_launch_button() -> void:
+	launch_button.text = default_launch_text
+	launch_button.disabled = false
