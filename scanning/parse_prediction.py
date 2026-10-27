@@ -7,8 +7,6 @@ TODO:
 - Cleanup
 - Image feedback
 """
-from numpy.f2py.auxfuncs import throw_error
-
 from . import boat
 
 symbol_ratio_threshold = 1
