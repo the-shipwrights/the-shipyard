@@ -19,6 +19,23 @@ const PIECE_TYPES := {
 	11: {"width": 1.0, "height": 4.0, "shape": "chimney", "color_field": "accent"},
 }
 
+const BACK_WAVE_COLOR := Color("#3f86b5")
+const FRONT_WAVE_COLOR := Color("#5aa9d6")
+const BOB_AMPLITUDE := 3.0
+const BOB_SPEED := 1.1
+const WAVE_STEP := 4.0
+const WAVE_MARGIN := 40.0
+const STEEPNESS := 0.5  # peaked crests; keep the sum of amp*k*steepness below 1
+
+# amplitude (px), wavelength (px), heave speed (rad/s), phase
+const SWELLS := [
+	[5.0, 280.0, 0.7, 0.0],
+	[6.0, 220.0, 0.9, 2.1],
+	[4.0, 140.0, 1.0, 3.0],
+]
+
+var _time := 0.0
+
 var _pieces: Array = []
 
 var _customization := {
@@ -71,6 +88,7 @@ func clear_boat() -> void:
 
 
 func _draw() -> void:
+	_candidate_rects.clear()
 	if _pieces.is_empty():
 		return
 
@@ -99,17 +117,28 @@ func _draw() -> void:
 
 	var boat_size := Vector2(max_x - min_x, max_y - min_y)
 	var available := size - Vector2(PADDING * 2.0, PADDING * 2.0)
+	available.y *= 0.75  # leave room for water below the boat
 	var scale_factor := minf(
 		available.x / maxf(boat_size.x, 1.0),
 		available.y / maxf(boat_size.y, 1.0)
 	)
-	var center := size / 2.0
+
+	var base_center := size / 2.0 - Vector2(0.0, size.y * 0.1)
+	var bob := _wave_offset(size.x * 0.5, 1.0, 1.0, 0.0).y * 0.6
+	var center := base_center + Vector2(0.0, bob)
 	var world_center := Vector2((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
+
+	# The waterline sits a quarter of the way up from the bottom of the boat.
+	var waterline := base_center.y + boat_size.y * scale_factor * 0.25
+
+	_draw_wave(waterline - 12.0, 0.75, 0.8, 1.0, BACK_WAVE_COLOR)
 
 	for piece in _pieces:
 		if piece is Dictionary:
 			_draw_piece(piece, world_center, center, scale_factor)
-	
+
+	_draw_wave(waterline, 1.0, 1.0, 0.0, FRONT_WAVE_COLOR)
+
 	# Candidate config
 	var candidate_config: Dictionary = PIECE_TYPES.get(_candidate_piece_id, {})
 	if candidate_config.is_empty():
@@ -244,3 +273,54 @@ func _gui_input(event: InputEvent) -> void:
 			placement_selected.emit(_candidate_piece_id, _placement_candidates[i])
 			accept_event()
 			return
+			
+
+func _ready() -> void:
+	clip_contents = true
+	
+func _process(delta: float) -> void:
+	_time += delta
+	queue_redraw()
+	
+
+
+func _wave_offset(
+	x0: float,
+	amp_scale: float,
+	speed_scale: float,
+	phase_offset: float
+) -> Vector2:
+	var offset := Vector2.ZERO
+
+	for w in SWELLS:
+		var amp: float = w[0] * amp_scale
+		var spatial: float = x0 * TAU / w[1] + w[3] + phase_offset + _time * 0.05
+		var heave: float = _time * w[2] * speed_scale + w[3] * 1.7 + phase_offset
+		# Fixed shape in x, pulsing in time: up and down, not sliding sideways.
+		offset.y -= amp * sin(spatial) * sin(heave)
+
+	return offset
+
+
+func _draw_wave(
+	base_y: float,
+	amp_scale: float,
+	speed_scale: float,
+	phase_offset: float,
+	color: Color
+) -> void:
+	var span := size.x + WAVE_MARGIN * 2.0
+	var steps := int(ceil(span / WAVE_STEP))
+	var crest := PackedVector2Array()
+
+	for i in range(steps + 1):
+		var x0 := -WAVE_MARGIN + span * float(i) / float(steps)
+		var o := _wave_offset(x0, amp_scale, speed_scale, phase_offset)
+		crest.append(Vector2(x0 + o.x, base_y + o.y))
+
+	var polygon := crest.duplicate()
+	polygon.append(Vector2(crest[-1].x, size.y + 10.0))
+	polygon.append(Vector2(crest[0].x, size.y + 10.0))
+
+	draw_colored_polygon(polygon, color)
+	draw_polyline(crest, color.lightened(0.35), 2.0)

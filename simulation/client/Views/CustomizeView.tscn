@@ -21,9 +21,17 @@ script = ExtResource("1_ukjbo")
 layout_mode = 0
 offset_right = 375.0
 offset_bottom = 812.0
-color = Color(0.11979788, 0.5071407, 0.70213145, 1)
+color = Color(0.6477073, 0.29233834, 0.30535814, 1)
 
-[node name="Background2" type="ColorRect" parent="." unique_id=939362185]
+[node name="BoatBackground" type="ColorRect" parent="." unique_id=449605585]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 77.0
+offset_right = 338.0
+offset_bottom = 307.0
+color = Color(0.33307213, 0.6583796, 0.8923493, 1)
+
+[node name="PaletteBackground" type="ColorRect" parent="." unique_id=939362185]
 layout_mode = 0
 offset_left = 33.0
 offset_top = 335.0
@@ -35,13 +43,13 @@ color = Color(0.62054855, 0.41861945, 0.2738671, 1)
 layout_mode = 1
 anchors_preset = 10
 anchor_bottom = 0.0
-offset_left = 24.0
-offset_top = 60.0
-offset_right = -24.0
-offset_bottom = 300.0
+offset_left = 41.0
+offset_top = 86.0
+offset_right = -41.0625
+offset_bottom = 301.0
 grow_vertical = 1
 
-[node name="TextureRect" type="TextureRect" parent="." unique_id=545828411]
+[node name="LeftLog" type="TextureRect" parent="." unique_id=545828411]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 45.0
@@ -50,7 +58,7 @@ texture = ExtResource("3_xmlon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="TextureRect2" type="TextureRect" parent="." unique_id=549153111]
+[node name="RightLog" type="TextureRect" parent="." unique_id=549153111]
 texture_filter = 1
 layout_mode = 0
 offset_left = 330.0
@@ -64,9 +72,9 @@ stretch_mode = 5
 texture_filter = 1
 layout_mode = 0
 offset_left = -2.0
-offset_top = 1.0
+offset_top = 34.0
 offset_right = 378.0
-offset_bottom = 171.0
+offset_bottom = 204.0
 texture = ExtResource("4_t30ng")
 expand_mode = 1
 
@@ -292,9 +300,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -41.0
-offset_top = 19.0
+offset_top = 52.0
 offset_right = 41.0
-offset_bottom = 42.0
+offset_bottom = 75.0
 grow_horizontal = 2
 text = "Paint shop"
 

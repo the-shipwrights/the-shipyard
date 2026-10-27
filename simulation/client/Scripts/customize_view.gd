@@ -59,6 +59,7 @@ func setup(data: Dictionary) -> void:
 	launch_button.disabled = false
 	launch_button.show()
 	status_label.text = ""
+	palette.select_color(selected_colors[active_color_field])
 
 func _get_api_base() -> String:
 	if OS.has_feature("web"):
@@ -82,6 +83,7 @@ func _random_palette_color() -> Color:
 
 func _on_color_field_selected(field: String) -> void:
 	active_color_field = field
+	palette.select_color(selected_colors[field])
 	_update_color_buttons()
 
 
@@ -199,3 +201,5 @@ func _on_launch_completed(result: int, response_code: int, headers: PackedString
 func _reset_launch_button() -> void:
 	launch_button.text = default_launch_text
 	launch_button.disabled = false
+	
+	
