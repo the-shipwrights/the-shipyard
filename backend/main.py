@@ -40,10 +40,16 @@ def payload_to_boat(payload: BoatPayload) -> Boat:
         for piece in payload.pieces
     ])
 
-class ColorPatch(BaseModel):
-    color: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
+class BoatColors(BaseModel):
+    primary: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
+    secondary: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
+    accent: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
 
-DEFAULT_BOAT_COLOR = "#2f7fff"
+DEFAULT_BOAT_COLORS = {
+    "primary": "#2f7fff",
+    "secondary": "#ffffff",
+    "accent": "#ff8800",
+}
 STATUS_CUSTOMIZING = "customizing"
 STATUS_LAUNCHED = "launched"
 BOAT_ID_LENGTH = 4
@@ -88,7 +94,9 @@ def initialize_database():
             CREATE TABLE IF NOT EXISTS boats (
                 id TEXT PRIMARY KEY,
                 structure_json TEXT NOT NULL,
-                color TEXT NOT NULL,
+                primary_color TEXT NOT NULL DEFAULT '#2f7fff',
+                secondary_color TEXT NOT NULL DEFAULT '#ffffff',
+                accent_color TEXT NOT NULL DEFAULT '#ff8800',
                 status TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
@@ -135,7 +143,9 @@ def serialize_boat(row):
         "id": row["id"],
         "boat": json.loads(row["structure_json"]),
         "customization": {
-            "color": row["color"],
+            "primary": row["primary_color"],
+            "secondary": row["secondary_color"],
+            "accent": row["accent_color"],
         },
         "status": row["status"],
         "created_at": row["created_at"],
@@ -166,18 +176,22 @@ def create_boat(payload: BoatPayload):
             INSERT INTO boats (
                 id,
                 structure_json,
-                color,
+                primary_color,
+                secondary_color,
+                accent_color,
                 status,
                 created_at,
                 updated_at
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 boat_id,
                 json.dumps(structure),
-                "#2f7fff",
-                "customizing",
+                DEFAULT_BOAT_COLORS["primary"],
+                DEFAULT_BOAT_COLORS["secondary"],
+                DEFAULT_BOAT_COLORS["accent"],
+                STATUS_CUSTOMIZING,
                 now,
                 now,
             ),
@@ -200,7 +214,7 @@ def get_boat(boat_id: str):
 
 
 @app.patch("/api/boats/{boat_id}")
-def update_boat(boat_id: str, patch: ColorPatch):
+def update_boat(boat_id: str, colors: BoatColors):
     boat_id = boat_id.upper()
     now = timestamp()
 
@@ -219,8 +233,21 @@ def update_boat(boat_id: str, patch: ColorPatch):
             )
 
         connection.execute(
-            "UPDATE boats SET color = ?, updated_at = ? WHERE id = ?",
-            (patch.color, now, boat_id),
+            """
+            UPDATE boats
+            SET primary_color = ?,
+                secondary_color = ?,
+                accent_color = ?,
+                updated_at = ?
+            WHERE id = ?
+            """,
+            (
+                colors.primary,
+                colors.secondary,
+                colors.accent,
+                now,
+                boat_id,
+            ),
         )
         connection.commit()
     finally:
@@ -281,7 +308,7 @@ async def simulation_ws(websocket: WebSocket):
 
 # --- 3. Async Launch Endpoint with Broadcast ---
 @app.post("/api/boats/{boat_id}/launch")
-async def launch_boat(boat_id: str, patch: ColorPatch):
+async def launch_boat(boat_id: str, colors: BoatColors):
     boat_id = boat_id.upper()
     now = timestamp()
 
@@ -302,10 +329,23 @@ async def launch_boat(boat_id: str, patch: ColorPatch):
         connection.execute(
             """
             UPDATE boats
-            SET color = ?, status = ?, launched_at = ?, updated_at = ?
+            SET primary_color = ?,
+                secondary_color = ?,
+                accent_color = ?,
+                status = ?,
+                launched_at = ?,
+                updated_at = ?
             WHERE id = ?
             """,
-            (patch.color, STATUS_LAUNCHED, now, now, boat_id),
+            (
+                colors.primary,
+                colors.secondary,
+                colors.accent,
+                STATUS_LAUNCHED,
+                now,
+                now,
+                boat_id,
+            ),
         )
         connection.commit()
     finally:
@@ -316,7 +356,7 @@ async def launch_boat(boat_id: str, patch: ColorPatch):
     # Broadcast single launch event
     await simulation_manager.broadcast({
         "event": "boat_launched",
-        "data": boat_data
+        "data": boat_data,
     })
 
     return boat_data
@@ -335,6 +375,12 @@ async def boat_control_ws(websocket: WebSocket, boat_id: str):
             command = payload.get("command", "")
             active = bool(payload.get("active", False))
 
+            print(
+                f"[WS Control] boat={normalized_id} "
+                f"command={command} active={active} "
+                f"simulation_clients={len(simulation_manager.active_connections)}"
+            )
+
             # Broadcast control command to the archipelago simulation
             await simulation_manager.broadcast({
                 "event": "boat_control",
@@ -346,9 +392,10 @@ async def boat_control_ws(websocket: WebSocket, boat_id: str):
     except WebSocketDisconnect:
         print(f"[WS Control] Controller disconnected for boat: {normalized_id}")
         # Failsafe: stop active commands if client drops connection
-        await simulation_manager.broadcast({
-            "event": "boat_control",
-            "boat_id": normalized_id,
-            "command": "rotate",
-            "active": False
-        })
+        for command in ("rotate", "accelerate"):
+            await simulation_manager.broadcast({
+                "event": "boat_control",
+                "boat_id": normalized_id,
+                "command": command,
+                "active": False,
+            })

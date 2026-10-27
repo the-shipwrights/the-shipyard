@@ -102,3 +102,11 @@ func _handle_network_message(json_text: String) -> void:
 				str(message.get("command", "")),
 				bool(message.get("active", false))
 			)
+			print(
+				"[WS] boat_control id=%s command=%s active=%s"
+				% [
+					str(message.get("boat_id", "")),
+					str(message.get("command", "")),
+					str(message.get("active", false))
+				]
+			)

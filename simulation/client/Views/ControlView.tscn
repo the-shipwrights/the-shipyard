@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c0rck3dp1p2sw"]
 
 [ext_resource type="Script" uid="uid://bm5u5olpv6sfl" path="res://Scripts/control_view.gd" id="1_vcfef"]
+[ext_resource type="PackedScene" uid="uid://d3pp0kklmyfy6" path="res://Views/BoatPreview2D.tscn" id="2_bbeor"]
 
 [node name="ControlView" type="Control" unique_id=1945440094]
 layout_mode = 3
@@ -31,6 +32,16 @@ theme_override_font_sizes/font_size = 22
 text = "Piloting Boat"
 horizontal_alignment = 1
 
+[node name="BoatPreview2D" parent="." unique_id=829975880 instance=ExtResource("2_bbeor")]
+layout_mode = 1
+anchors_preset = 10
+anchor_bottom = 0.0
+offset_left = 24.0
+offset_top = 70.0
+offset_right = -24.0
+offset_bottom = 360.0
+grow_vertical = 1
+
 [node name="InfoLabel" type="Label" parent="." unique_id=1826761783]
 layout_mode = 1
 anchors_preset = 14
@@ -46,7 +57,7 @@ text = "Boat is active in the archipelago simulation."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="RotateButton" type="Button" parent="." unique_id=1582910401]
+[node name="ThrottleButton" type="Button" parent="." unique_id=1899277753]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -54,9 +65,27 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -110.0
-offset_top = 20.0
+offset_top = 32.0
 offset_right = 110.0
-offset_bottom = 90.0
+offset_bottom = 102.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Hold to throttle
+🛥️💨💨💨"
+
+[node name="RotateButton" type="Button" parent="." unique_id=1582910401]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = 129.0
+offset_right = 110.0
+offset_bottom = 199.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 20

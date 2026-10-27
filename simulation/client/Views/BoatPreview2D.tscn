@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://d3pp0kklmyfy6"]
+
+[ext_resource type="Script" uid="uid://6kua813jbywf" path="res://Scripts/boat_preview_2d.gd" id="1"]
+
+[node name="BoatPreview2D" type="Control" unique_id=1814931078]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
