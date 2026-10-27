@@ -162,7 +162,7 @@ func _on_submit_completed(result: int, response_code: int, headers: PackedString
 func _get_api_base() -> String:
 	if OS.has_feature("web"):
 		var window = JavaScriptBridge.get_interface("window")
-		return "http://" + str(window.location.hostname) + ":8000"
+		return str(window.location.origin)
 	return "http://127.0.0.1:8000"
 
 ## Validation helpers

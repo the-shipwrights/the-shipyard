@@ -121,7 +121,7 @@ func _get_control_ws_base() -> String:
 
 		var window = JavaScriptBridge.get_interface("window")
 		var scheme := "wss" if str(window.location.protocol) == "https:" else "ws"
-		return "%s://%s:8000" % [scheme, str(window.location.hostname)]
+		return "%s://%s" % [scheme, str(window.location.host)]
 
 	# For a native mobile build, set this to the backend's reachable LAN address.
 	return server_ws_base.trim_suffix("/")
