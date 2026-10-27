@@ -3,11 +3,13 @@ extends Control
 var boat_id := ""
 var load_request := HTTPRequest.new()
 
-@onready var no_boat_screen: Control = $NoBoatScreen
-@onready var no_boat_label: Label = $NoBoatScreen/CenterContainer/NoBoatLabel
+@onready var landing_screen: Control = $LandingScreen
+@onready var boat_id_input: LineEdit = $LandingScreen/CenterContainer/VBoxContainer/BoatIdInput
+@onready var message_label: Label = $LandingScreen/CenterContainer/VBoxContainer/MessageLabel
 @onready var builder_view: Control = $ViewContainer/BuilderView
 @onready var customize_view: Control = $ViewContainer/CustomizeView
 @onready var control_view: Control = $ViewContainer/ControlView
+@onready var home_button: Button = $Button
 
 func get_server_host() -> String:
 	if OS.has_feature("web"):
@@ -24,54 +26,83 @@ func _ready() -> void:
 
 	builder_view.boat_created.connect(_on_boat_created)
 	customize_view.boat_launched.connect(_on_boat_launched)
+	home_button.pressed.connect(_show_landing)
+
+	$LandingScreen/CenterContainer/VBoxContainer/LoadBoatButton.pressed.connect(_submit_boat_id)
+	$LandingScreen/CenterContainer/VBoxContainer/BuilderButton.pressed.connect(_show_builder)
+	boat_id_input.text_submitted.connect(_submit_boat_id)
 
 	boat_id = get_boat_id_from_query()
 	if boat_id.is_empty():
-		# Route to builder view if no boat ID was provided in URL query[cite: 4]
-		_show_builder()
+		_show_landing()
+		return
+
+	if not _is_valid_boat_id(boat_id):
+		_show_landing("no boat with this id")
 		return
 
 	var error := load_request.request(get_api_base() + "/api/boats/" + boat_id)
 	if error != OK:
-		_show_error("Could not connect to the boat server")
+		_show_landing("Could not connect to the boat server")
+
+func _is_valid_boat_id(value: String) -> bool:
+	var regex := RegEx.new()
+	regex.compile("^[A-Z]{4}$")
+	return regex.search(value.to_upper()) != null
+
+
+func _submit_boat_id(_submitted_text: String = "") -> void:
+	boat_id = boat_id_input.text.strip_edges().to_upper()
+	boat_id_input.text = boat_id
+
+	if not _is_valid_boat_id(boat_id):
+		_show_landing("Enter a 4-letter boat ID")
+		return
+
+	var error := load_request.request(get_api_base() + "/api/boats/" + boat_id)
+	if error != OK:
+		_show_landing("Could not connect to the boat server")
 
 func _on_boat_created(new_boat_data: Dictionary) -> void:
 	boat_id = str(new_boat_data.get("id", "")).to_upper()
 	_route_state(new_boat_data)
 
 func _show_builder() -> void:
-	no_boat_screen.hide()
+	landing_screen.hide()
 	customize_view.hide()
 	control_view.hide()
 	builder_view.clear_builder()
+	home_button.show()
 	builder_view.show()
 
 func _route_state(boat_data: Dictionary) -> void:
-	no_boat_screen.hide()
+	landing_screen.hide()
 	builder_view.hide()
 
-	var status: String = boat_data.get("status", "customizing")
+	var status := str(boat_data.get("status", "customizing"))
 	if status == "launched":
 		customize_view.hide()
 		control_view.setup(boat_data)
 		control_view.show()
+		home_button.show()
 	else:
 		control_view.hide()
 		customize_view.setup(boat_data)
 		customize_view.show()
+		home_button.show()
 
 func _on_boat_loaded(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	if response_code == 404:
-		_show_error("No boat found")
+		_show_landing("no boat with this id")
 		return
 
 	if response_code != 200:
-		_show_error("Boat load failed (" + str(response_code) + ")")
+		_show_landing("Boat load failed (" + str(response_code) + ")")
 		return
 
 	var boat_data = JSON.parse_string(body.get_string_from_utf8())
 	if boat_data == null or not (boat_data is Dictionary):
-		_show_error("Invalid response from server")
+		_show_landing("Invalid response from server")
 		return
 
 	_route_state(boat_data)
@@ -80,12 +111,15 @@ func _on_boat_launched(updated_boat_data: Dictionary) -> void:
 	_route_state(updated_boat_data)
 
 
-func _show_error(msg: String) -> void:
+func _show_landing(message: String = "") -> void:
 	builder_view.hide()
 	customize_view.hide()
 	control_view.hide()
-	no_boat_label.text = msg
-	no_boat_screen.show()
+	home_button.hide()
+
+	message_label.text = message
+	message_label.visible = not message.is_empty()
+	landing_screen.show()
 
 
 func get_boat_id_from_query() -> String:
