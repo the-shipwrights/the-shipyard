@@ -13,99 +13,145 @@ grow_vertical = 2
 script = ExtResource("1_builder")
 
 [node name="Background" type="ColorRect" parent="." unique_id=65098483]
-layout_mode = 0
-offset_right = 375.0
-offset_bottom = 812.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0.5415405, 0.54309857, 1)
 
-[node name="TitleLabel" type="Label" parent="." unique_id=1972078011]
+[node name="SafeArea" type="MarginContainer" parent="." unique_id=521977535]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_top = 20.0
-offset_bottom = 50.0
+anchor_bottom = 1.0
+offset_left = 29.0
+offset_top = 63.0
+offset_right = -26.0
+offset_bottom = -49.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="SafeArea" unique_id=698298697]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="SafeArea/Content" unique_id=1972078011]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 22
 text = "Boat Assembly Bay"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="CanvasPanel" type="Panel" parent="." unique_id=815269901]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 70.0
-offset_right = 355.0
-offset_bottom = 370.0
+[node name="CanvasPanel" type="PanelContainer" parent="SafeArea/Content" unique_id=815269901]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="BoatPreview2D" parent="CanvasPanel" unique_id=1814931078 instance=ExtResource("2_1ydyr")]
-layout_mode = 1
+[node name="BoatPreview2D" parent="SafeArea/Content/CanvasPanel" unique_id=1814931078 instance=ExtResource("2_1ydyr")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="PaletteLabel" type="Label" parent="." unique_id=1505453266]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 385.0
-offset_right = 200.0
-offset_bottom = 410.0
+[node name="PieceLabel" type="Label" parent="SafeArea/Content" unique_id=1505453266]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Add Piece:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PaletteGrid" type="GridContainer" parent="." unique_id=1945780921]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 415.0
-offset_right = 355.0
-offset_bottom = 540.0
+[node name="PieceGrid" type="GridContainer" parent="SafeArea/Content" unique_id=1945780921]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
 columns = 3
 
-[node name="AddHullStern" type="Button" parent="PaletteGrid" unique_id=1963991755]
+[node name="AddHullStern" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1963991755]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "+ Hull Stern"
+size_flags_horizontal = 3
+text = "◥"
 
-[node name="AddHullSection" type="Button" parent="PaletteGrid" unique_id=2032002444]
+[node name="AddHullSection" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=2032002444]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "+ Hull Section"
+size_flags_horizontal = 3
+text = "■"
 
-[node name="AddHullBow" type="Button" parent="PaletteGrid" unique_id=1565472805]
+[node name="AddHullBow" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1565472805]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "+ Hull Bow"
+size_flags_horizontal = 3
+text = "◤"
 
-[node name="AddCabin" type="Button" parent="PaletteGrid" unique_id=973140402]
+[node name="AddCabin" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=973140402]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "+ Cabin"
+size_flags_horizontal = 3
+text = "⧇"
 
-[node name="AddBigCabin" type="Button" parent="PaletteGrid" unique_id=1845691165]
+[node name="AddChimney" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=480473204]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "+ Big cabin"
+size_flags_horizontal = 3
+text = "⩎"
 
-[node name="AddChimney" type="Button" parent="PaletteGrid" unique_id=480473204]
+[node name="AddSail" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=112311726]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
-text = "+ Chimney"
+size_flags_horizontal = 3
+text = "◭"
 
-[node name="ActionsContainer" type="HBoxContainer" parent="." unique_id=1049875227]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 560.0
-offset_right = 355.0
-offset_bottom = 600.0
+[node name="AddBigCabinLeft" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1824628514]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "▨"
+
+[node name="AddBigCabin" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1845691165]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "▢"
+
+[node name="AddBigCabinRight" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=422604071]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "▧"
+
+[node name="ActionsContainer" type="HBoxContainer" parent="SafeArea/Content" unique_id=1049875227]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
 alignment = 1
 
-[node name="ResetButton" type="Button" parent="ActionsContainer" unique_id=1812570055]
+[node name="ResetButton" type="Button" parent="SafeArea/Content/ActionsContainer" unique_id=1812570055]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear"
 
-[node name="SubmitButton" type="Button" parent="ActionsContainer" unique_id=2038188520]
+[node name="SubmitButton" type="Button" parent="SafeArea/Content/ActionsContainer" unique_id=2038188520]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Create Boat"
 
-[node name="StatusLabel" type="Label" parent="." unique_id=679492794]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -180.0
-offset_bottom = -150.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="StatusLabel" type="Label" parent="SafeArea/Content" unique_id=679492794]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
 horizontal_alignment = 1
 autowrap_mode = 2

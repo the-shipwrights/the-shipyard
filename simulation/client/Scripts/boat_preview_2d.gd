@@ -3,22 +3,14 @@ class_name BoatPreview2D
 
 signal placement_selected(piece_id: int, location: Vector2i)
 
-var _candidate_piece_id := -1
-var _placement_candidates: Array[Vector2i] = []
-var _candidate_rects: Array[Rect2] = []
-
 const PADDING := 16.0
 const OUTLINE_COLOR := Color("#15232a")
 
-const PIECE_TYPES := {
-	0: {"width": 6.0, "height": 4.0, "shape": "bow", "color_field": "primary"},
-	1: {"width": 4.0, "height": 4.0, "shape": "rect", "color_field": "primary"},
-	2: {"width": 4.0, "height": 4.0, "shape": "stern", "color_field": "primary"},
-	3: {"width": 4.0, "height": 3.0, "shape": "rect", "color_field": "secondary"},
-	4: {"width": 4.0, "height": 6.0, "shape": "rect", "color_field": "secondary"},
-	11: {"width": 1.0, "height": 4.0, "shape": "chimney", "color_field": "accent"},
-}
-
+const PIECE_CATALOG := preload("res://Scripts/piece_catalog.gd")
+var _piece_configs: Dictionary = PIECE_CATALOG.PIECE_CONFIGS
+var _candidate_piece_id := -1
+var _placement_candidates: Array[Vector2i] = []
+var _candidate_rects: Array[Rect2] = []
 var _pieces: Array = []
 
 var _customization := {
@@ -71,6 +63,8 @@ func clear_boat() -> void:
 
 
 func _draw() -> void:
+	_candidate_rects.clear()
+
 	if _pieces.is_empty():
 		return
 
@@ -83,16 +77,20 @@ func _draw() -> void:
 		if not (piece is Dictionary):
 			continue
 
-		var config: Dictionary = PIECE_TYPES.get(int(piece.get("id", -1)), {})
+		var piece_id := int(piece.get("id", -1))
+		var config: Dictionary = _piece_configs.get(piece_id, {})
 		if config.is_empty():
 			continue
 
 		var x := float(piece.get("x", 0))
 		var y := float(piece.get("y", 0))
+		var width := float(config["width"])
+		var height := float(config["height"])
+
 		min_x = minf(min_x, x)
 		min_y = minf(min_y, y)
-		max_x = maxf(max_x, x + config["width"])
-		max_y = maxf(max_y, y + config["height"])
+		max_x = maxf(max_x, x + width)
+		max_y = maxf(max_y, y + height)
 
 	if min_x == INF:
 		return
@@ -103,26 +101,33 @@ func _draw() -> void:
 		available.x / maxf(boat_size.x, 1.0),
 		available.y / maxf(boat_size.y, 1.0)
 	)
-	var center := size / 2.0
+	var screen_center := size / 2.0
 	var world_center := Vector2((min_x + max_x) / 2.0, (min_y + max_y) / 2.0)
 
 	for piece in _pieces:
 		if piece is Dictionary:
-			_draw_piece(piece, world_center, center, scale_factor)
-	
-	# Candidate config
-	var candidate_config: Dictionary = PIECE_TYPES.get(_candidate_piece_id, {})
-	if candidate_config.is_empty():
+			_draw_piece(piece, world_center, screen_center, scale_factor)
+
+	_draw_placement_candidates(world_center, screen_center, scale_factor)
+
+
+func _draw_placement_candidates(
+	world_center: Vector2,
+	screen_center: Vector2,
+	scale_factor: float
+) -> void:
+	var config: Dictionary = _piece_configs.get(_candidate_piece_id, {})
+	if config.is_empty():
 		return
 
-	var candidate_width := float(candidate_config["width"])
-	var candidate_height := float(candidate_config["height"])
+	var candidate_width := float(config["width"])
+	var candidate_height := float(config["height"])
 
 	for location in _placement_candidates:
 		var top_left := _world_to_screen(
 			Vector2(location.x, location.y + candidate_height),
 			world_center,
-			center,
+			screen_center,
 			scale_factor
 		)
 		var rect := Rect2(
@@ -188,6 +193,12 @@ func _shape_points(shape: String, width: float, height: float) -> PackedVector2A
 				Vector2(width, height),
 				Vector2(0, height),
 			])
+		"sail":
+			return PackedVector2Array([
+				Vector2(-2, 0),
+				Vector2(width-2, height),
+				Vector2(width-2, 0),
+			])
 		_:
 			return PackedVector2Array([
 				Vector2(0, 0),
@@ -202,16 +213,20 @@ func _draw_piece(
 	screen_center: Vector2,
 	scale_factor: float
 ) -> void:
-	var config: Dictionary = PIECE_TYPES.get(int(piece.get("id", -1)), {})
+	var piece_id := int(piece.get("id", -1))
+	var config: Dictionary = _piece_configs.get(piece_id, {})
 	if config.is_empty():
 		return
 
-	var width: float = config["width"]
-	var height: float = config["height"]
+	var width := float(config["width"])
+	var height := float(config["height"])
 	var piece_x := float(piece.get("x", 0))
 	var piece_y := float(piece.get("y", 0))
 	var flipped := bool(piece.get("flipped", false))
-	var local_points := _shape_points(config["shape"], width, height)
+	var shape := str(config.get("shape", "rect"))
+	var color_field := str(config.get("color_field", "primary"))
+
+	var local_points := _shape_points(shape, width, height)
 	var screen_points := PackedVector2Array()
 
 	for point in local_points:
@@ -223,7 +238,11 @@ func _draw_piece(
 		)
 		screen_points.append(screen_point)
 
-	draw_colored_polygon(screen_points, _customization[config["color_field"]])
+	var piece_color: Color = _customization.get(
+		color_field,
+		_customization["primary"]
+	)
+	draw_colored_polygon(screen_points, piece_color)
 
 	for i in range(screen_points.size()):
 		draw_line(
