@@ -7,6 +7,7 @@ TODO:
 - Cleanup
 - Image feedback
 """
+from numpy.f2py.auxfuncs import throw_error
 
 from . import boat
 
@@ -186,3 +187,28 @@ def parse(prediction: dict) -> boat.Boat | None:
 def piece_size(piece_index: int) -> tuple[int, int]:
     piece_type = boat.PIECE_TYPES[piece_index]
     return (piece_type.width, piece_type.height)
+
+# NEW! CLASS TO PIECE ID MAPPER!!!
+def map_class_to_id(class_id : int) -> int:
+    """maps class id to piece id in boat.py."""
+    match class_id:
+        case 0 | 1:     # Bow
+            return 0
+        case 2 | 3:     # Bow DOWN
+            return 20
+        case 4:         # Hull Section
+            return 1
+        case 5:         # Hull Section DOWN
+            return 21
+        case 6 | 7:     # Stern
+            return 2
+        case 8 | 9:     # Stern DOWN
+            return 22
+        case 10:        # Cabin
+            return 3
+        case 11:        # Chimney
+            return 10
+        case 12 | 13:   # Sail
+            return 11
+        case _:
+            raise ValueError(f"dude wtf are you doing? you CANNOT map {class_id} to a boat piece. don't. even. try.")
