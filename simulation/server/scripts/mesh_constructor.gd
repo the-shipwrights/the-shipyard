@@ -160,48 +160,63 @@ func _clear_existing_meshes() -> void:
 		child.queue_free()
 
 func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) -> Node3D:
-	var id: int = piece.get("id", -1)
-	var pos_x: float = float(piece.get("x", 0)) * SCALE_FACTOR
-	var pos_y: float = float(piece.get("y", 0)) * SCALE_FACTOR
-	var flipped: bool = piece.get("flipped", false)
-	
+	var id := int(piece.get("id", -1))
+	var pos_x := float(piece.get("x", 0)) * SCALE_FACTOR
+	var pos_y := float(piece.get("y", 0)) * SCALE_FACTOR
+	var flipped := bool(piece.get("flipped", false))
+
 	var piece_node: Node3D
+	var is_custom_model := false
 
 	if use_custom_models:
 		var packed_scene := _custom_scene_for_piece(id)
 		if packed_scene != null:
 			piece_node = packed_scene.instantiate() as Node3D
-			if piece_node != null:
-				piece_node.scale *= SCALE_FACTOR
+			is_custom_model = piece_node != null
+
+	if is_custom_model:
+		piece_node.scale *= SCALE_FACTOR
+
+		var grid_size := _grid_size_for_piece(id)
+		piece_node.set_meta("width", grid_size.x * SCALE_FACTOR)
+		piece_node.set_meta("height", grid_size.y * SCALE_FACTOR)
+		piece_node.set_meta("depth", (6.0 if id <= 2 else 4.0) * SCALE_FACTOR)
+	else:
+		piece_node = _generate_primitive(id, base_material)
 
 	if piece_node == null:
-		piece_node = _generate_primitive(id, base_material)
-	else:
-		# CURRENT IMPLEMENTATION: Procedural primitive shapes based on boat.py[cite: 1]
-		piece_node = _generate_primitive(id, base_material)
-	
-	if not piece_node:
 		return null
-		
-	# Godot primitives are centered. We offset by half the width/height 
-	# to match the bottom-left coordinate system used in Boat.py.
-	var visual_width := 1.0 # Default fallback
-	var visual_height := 1.0
-	
-	if piece_node.has_meta("width"): visual_width = piece_node.get_meta("width")
-	if piece_node.has_meta("height"): visual_height = piece_node.get_meta("height")
-	
+
+	var visual_width := float(piece_node.get_meta("width", 1.0))
+	var visual_height := float(piece_node.get_meta("height", 1.0))
+
 	piece_node.position = Vector3(
-		pos_x + (visual_width / 2.0),
-		pos_y + (visual_height / 2.0),
+		pos_x + visual_width / 2.0,
+		pos_y + visual_height / 2.0,
 		0.0
 	)
-	
-	# Apply flipping
+
 	if flipped:
-		piece_node.scale.x = -1.0
-		
+		piece_node.scale.x *= -1.0
+
+	
+	print(
+		"piece=%d data_x=%.2f root_x=%.2f"
+		% [id, pos_x, piece_node.position.x]
+	)
 	return piece_node
+
+
+func _grid_size_for_piece(id: int) -> Vector2:
+	match id:
+		0:
+			return Vector2(6, 4) # bow
+		1, 2:
+			return Vector2(4, 4) # hull section and stern
+		3:
+			return Vector2(4, 3) # cabin
+		_:
+			return Vector2.ONE
 
 func _custom_scene_for_piece(id: int) -> PackedScene:
 	match id:

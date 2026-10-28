@@ -110,6 +110,7 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_tje3e")
 
 [node name="HullSection" type="Node3D" unique_id=1763578813]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 
 [node name="hull-body" type="MeshInstance3D" parent="." unique_id=61145864]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)

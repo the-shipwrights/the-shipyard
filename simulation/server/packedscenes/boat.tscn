@@ -14,6 +14,7 @@ script = ExtResource("1_q5874")
 [node name="MeshConstructor" type="Node3D" parent="." unique_id=1407592588]
 script = ExtResource("2_q5874")
 show_editor_preview = true
+use_custom_models = true
 
 [node name="IDLabel" type="Label3D" parent="." unique_id=1612036051]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 2.6, -2)

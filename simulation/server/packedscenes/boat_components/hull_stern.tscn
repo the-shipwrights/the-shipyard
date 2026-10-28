@@ -114,13 +114,13 @@ shadow_mesh = SubResource("ArrayMesh_7kido")
 [node name="HullStern" type="Node3D" unique_id=1252799705]
 
 [node name="hull-rail" type="MeshInstance3D" parent="." unique_id=2115027871]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3702607, 0.99595004)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 1.0087597, 2.3702607, 0)
 mesh = SubResource("ArrayMesh_qeotm")
 
 [node name="stern-body" type="MeshInstance3D" parent="." unique_id=665392947]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.09139525, 0.10714281)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 1.897567, -0.09139526, 0)
 mesh = SubResource("ArrayMesh_foerv")
 
 [node name="stern-floor" type="MeshInstance3D" parent="." unique_id=540286409]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9892241, 0.125)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 1.8797097, 1.9892241, 0)
 mesh = SubResource("ArrayMesh_m2v4g")
