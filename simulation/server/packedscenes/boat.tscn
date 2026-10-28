@@ -25,7 +25,7 @@ outline_size = 8
 [node name="Area3D" type="Area3D" parent="." unique_id=1313056482]
 
 [node name="PretendTrail" type="MeshInstance3D" parent="." unique_id=1307240710]
-transform = Transform3D(-6.7747635e-08, 2.0937285, 1.1773311e-08, -3.2820082e-22, -9.151977e-08, 0.26934192, 1.549885, 9.151978e-08, 1.4715227e-15, 0, 0.246, 0)
+transform = Transform3D(1.5498853, 7.105427e-15, 2.5810822e-15, -3.2820087e-22, -9.151978e-08, 0.72650987, 7.1054274e-15, -2.0937285, -3.1756763e-08, 0, 0.544455, 0)
 mesh = SubResource("PrismMesh_q5874")
 
 [node name="MeshConstructor" type="Node3D" parent="." unique_id=260321711]
