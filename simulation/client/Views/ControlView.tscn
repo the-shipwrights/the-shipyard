@@ -19,74 +19,69 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0.541541, 0.543099, 1)
 
-[node name="BoatTitle" type="Label" parent="." unique_id=355979904]
+[node name="SafeArea" type="MarginContainer" parent="." unique_id=546596867]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_top = 24.0
-offset_bottom = 56.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="SafeArea" unique_id=2066357201]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="BoatTitle" type="Label" parent="SafeArea/Content" unique_id=355979904]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 22
 text = "Piloting Boat"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="BoatPreview2D" parent="." unique_id=829975880 instance=ExtResource("2_bbeor")]
-layout_mode = 1
-anchors_preset = 10
-anchor_bottom = 0.0
-offset_left = 24.0
-offset_top = 70.0
-offset_right = -24.0
-offset_bottom = 360.0
-grow_vertical = 1
+[node name="CanvasPanel" type="PanelContainer" parent="SafeArea/Content" unique_id=824636184]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="InfoLabel" type="Label" parent="." unique_id=1826761783]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -60.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="BoatPreview2D" parent="SafeArea/Content/CanvasPanel" unique_id=829975880 instance=ExtResource("2_bbeor")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InfoLabel" type="Label" parent="SafeArea/Content" unique_id=1826761783]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "Boat is active in the archipelago simulation."
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="ThrottleButton" type="Button" parent="." unique_id=1899277753]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -110.0
-offset_top = 32.0
-offset_right = 110.0
-offset_bottom = 102.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="ThrottleButton" type="Button" parent="SafeArea/Content" unique_id=1899277753]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "Hold to throttle
 🛥️💨💨💨"
 
-[node name="RotateButton" type="Button" parent="." unique_id=1582910401]
+[node name="RotateButton" type="Button" parent="SafeArea/Content" unique_id=1582910401]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -110.0
-offset_top = 129.0
-offset_right = 110.0
-offset_bottom = 199.0
-grow_horizontal = 2
-grow_vertical = 2
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "Hold to Rotate"
