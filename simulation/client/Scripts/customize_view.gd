@@ -13,14 +13,14 @@ var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
 var default_launch_text := ""
 
-@onready var boat_preview: BoatPreview2D = $BoatPreview2D
-@onready var launch_button: Button = $LaunchButton
-@onready var status_label: Label = $StatusLabel
-@onready var boat_label: Label = $Label
-@onready var palette: GridContainer = $Palette
-@onready var primary_button: Button = $ColorSelector/Primary
-@onready var secondary_button: Button = $ColorSelector/Secondary
-@onready var accent_button: Button = $ColorSelector/Accent
+@onready var boat_preview: BoatPreview2D = $SafeArea/Content/BoatPreview2D
+@onready var launch_button: Button = $SafeArea/Content/LaunchButton
+@onready var status_label: Label = $SafeArea/Content/StatusLabel
+@onready var boat_label: Label = $SafeArea/Content/Label
+@onready var palette: GridContainer = $SafeArea/Content/PaletteRegion/Palette
+@onready var primary_button: Button = $SafeArea/Content/ColorSelector/Primary
+@onready var secondary_button: Button = $SafeArea/Content/ColorSelector/Secondary
+@onready var accent_button: Button = $SafeArea/Content/ColorSelector/Accent
 
 
 func _ready() -> void:

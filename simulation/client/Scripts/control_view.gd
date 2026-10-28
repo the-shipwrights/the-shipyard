@@ -13,11 +13,11 @@ var boat_id: String = ""
 var ws := WebSocketPeer.new()
 var is_connected := false
 
-@onready var boat_preview: BoatPreview2D = $BoatPreview2D
-@onready var boat_title: Label = $BoatTitle
-@onready var info_label: Label = $InfoLabel
-@onready var rotate_button: Button = $RotateButton
-@onready var speed_button: Button = $ThrottleButton
+@onready var boat_preview: BoatPreview2D = $SafeArea/Content/CanvasPanel/BoatPreview2D
+@onready var boat_title: Label = $SafeArea/Content/BoatTitle
+@onready var info_label: Label = $SafeArea/Content/InfoLabel
+@onready var rotate_button: Button = $SafeArea/Content/RotateButton
+@onready var speed_button: Button = $SafeArea/Content/ThrottleButton
 
 func _ready() -> void:
 	speed_button.button_down.connect(_on_speed_pressed)
