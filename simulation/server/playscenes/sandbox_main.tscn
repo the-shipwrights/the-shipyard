@@ -6,8 +6,8 @@
 [ext_resource type="Material" uid="uid://bx52y43l6c23x" path="res://assets/shaders/water.tres" id="4_oimm0"]
 [ext_resource type="Script" uid="uid://di8a3j0twck4" path="res://scripts/water_surface.gd" id="5_bdqx7"]
 [ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="5_v0nif"]
+[ext_resource type="PackedScene" uid="uid://ca3qipecm0i1d" path="res://packedscenes/terrain_world.scn" id="6_bdqx7"]
 [ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="6_hmybg"]
-[ext_resource type="PackedScene" uid="uid://byq5rntwor60o" path="res://packedscenes/terrain_world.tscn" id="6_oimm0"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_v0nif"]
 
@@ -46,12 +46,12 @@ transform = Transform3D(172.6809, 0, 0, 0, 1, 0, 0, 0, 229.62657, 0, 0, 0)
 mesh = SubResource("PlaneMesh_v0nif")
 surface_material_override/0 = ExtResource("4_oimm0")
 script = ExtResource("5_bdqx7")
-terrain = NodePath("../../Terrain/TerrainWorld")
+terrain = NodePath("")
 
 [node name="Terrain" type="Node3D" parent="World" unique_id=1992012816]
 
-[node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_oimm0")]
-depth = 283
+[node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_bdqx7")]
+depth = 301
 
 [node name="ShrubberyMultiMesh" type="MultiMeshInstance3D" parent="World/Terrain" unique_id=465128265]
 
@@ -59,6 +59,7 @@ depth = 283
 
 [node name="LanscapeCamera" type="Camera3D" parent="." unique_id=1614344467]
 transform = Transform3D(-4.371139e-08, 0.6427876, -0.7660444, 0, 0.7660444, 0.6427876, 1, 2.8097139e-08, -3.3484863e-08, -108.40732, 92.95955, 0)
+visible = false
 projection = 1
 current = true
 size = 155.60472
