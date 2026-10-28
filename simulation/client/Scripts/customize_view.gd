@@ -13,7 +13,7 @@ var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
 var default_launch_text := ""
 
-@onready var boat_preview: BoatPreview2D = $SafeArea/Content/BoatPreview2D
+@onready var boat_preview: BoatPreview2D = %BoatPreview2D
 @onready var launch_button: Button = $SafeArea/Content/LaunchButton
 @onready var status_label: Label = $SafeArea/Content/StatusLabel
 @onready var boat_label: Label = $SafeArea/Content/Label
