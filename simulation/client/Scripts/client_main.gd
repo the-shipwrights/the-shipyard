@@ -4,11 +4,14 @@ var boat_id := ""
 var load_request := HTTPRequest.new()
 
 @onready var landing_screen: Control = $LandingScreen
-@onready var boat_id_input: LineEdit = $LandingScreen/CenterContainer/VBoxContainer/BoatIdInput
-@onready var message_label: Label = $LandingScreen/CenterContainer/VBoxContainer/MessageLabel
+@onready var boat_id_input: LineEdit = $LandingScreen/MarginContainer/VBoxContainer/BoatIdInput
+@onready var message_label: Label = $LandingScreen/MarginContainer/VBoxContainer/MessageLabel
 @onready var builder_view: Control = $ViewContainer/BuilderView
 @onready var customize_view: Control = $ViewContainer/CustomizeView
 @onready var control_view: Control = $ViewContainer/ControlView
+
+@onready var build_button: Button = $LandingScreen/MarginContainer/VBoxContainer/BuilderButton
+@onready var load_button: Button = $LandingScreen/MarginContainer/VBoxContainer/LoadBoatButton
 @onready var home_button: Button = $Button
 
 func get_server_host() -> String:
@@ -28,8 +31,8 @@ func _ready() -> void:
 	customize_view.boat_launched.connect(_on_boat_launched)
 	home_button.pressed.connect(_show_landing)
 
-	$LandingScreen/CenterContainer/VBoxContainer/LoadBoatButton.pressed.connect(_submit_boat_id)
-	$LandingScreen/CenterContainer/VBoxContainer/BuilderButton.pressed.connect(_show_builder)
+	load_button.pressed.connect(_submit_boat_id)
+	build_button.pressed.connect(_show_builder)
 	boat_id_input.text_submitted.connect(_submit_boat_id)
 
 	boat_id = get_boat_id_from_query()
