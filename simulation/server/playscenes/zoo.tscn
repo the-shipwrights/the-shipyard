@@ -1,3 +1,53 @@
 [gd_scene format=3 uid="uid://i0mvlg8la7fv"]
 
+[ext_resource type="PackedScene" uid="uid://dgqqgev3ymhtw" path="res://packedscenes/boat_components/cabin.tscn" id="1_tp6g3"]
+[ext_resource type="PackedScene" uid="uid://kfwj0h48jqi3" path="res://packedscenes/boat_components/hull_bow.tscn" id="2_gpyor"]
+[ext_resource type="PackedScene" uid="uid://d4jvpykkqj3bt" path="res://packedscenes/boat_components/hull_section.tscn" id="3_eatm6"]
+[ext_resource type="PackedScene" uid="uid://8uv2ofme63a8" path="res://packedscenes/boat_components/hull_stern.tscn" id="4_sw70s"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tp6g3"]
+transparency = 1
+albedo_color = Color(0.3061581, 0.5135634, 0.47504628, 0.45882353)
+metallic = 0.16
+metallic_specular = 0.66
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_gpyor"]
+material = SubResource("StandardMaterial3D_tp6g3")
+size = Vector2(256, 256)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eatm6"]
+albedo_color = Color(0.08787947, 0.099091165, 0.025394062, 1)
+metallic = 0.16
+metallic_specular = 0.66
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rh8kf"]
+material = SubResource("StandardMaterial3D_eatm6")
+size = Vector2(256, 256)
+
 [node name="Zoo" type="Node3D" unique_id=174087734]
+
+[node name="ExampleBoat" type="Node3D" parent="." unique_id=2053665583]
+transform = Transform3D(0.307, 0, 0, 0, 0.307, 0, 0, 0, 0.307, -7.6985865, 0.07549667, -3.0144405)
+
+[node name="cabin" parent="ExampleBoat" unique_id=2064062565 instance=ExtResource("1_tp6g3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9475126, 1.5360246)
+
+[node name="HullBow" parent="ExampleBoat" unique_id=1582639780 instance=ExtResource("2_gpyor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.8546104)
+
+[node name="HullSection" parent="ExampleBoat" unique_id=1763578813 instance=ExtResource("3_eatm6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.09558201)
+
+[node name="HullStern" parent="ExampleBoat" unique_id=1252799705 instance=ExtResource("4_sw70s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.097969)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1417698282]
+mesh = SubResource("PlaneMesh_gpyor")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=683765666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020305634, 4.7683716e-07, 0.016223907)
+mesh = SubResource("PlaneMesh_gpyor")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1062365847]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.3200538, 0)
+mesh = SubResource("PlaneMesh_rh8kf")
