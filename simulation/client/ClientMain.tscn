@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bsh6truohdknt" path="res://Views/CustomizeView.tscn" id="2_8dsab"]
 [ext_resource type="PackedScene" uid="uid://dp6yq7w4x8kfa" path="res://Views/BuilderView.tscn" id="2_qdac4"]
 [ext_resource type="PackedScene" uid="uid://c0rck3dp1p2sw" path="res://Views/ControlView.tscn" id="3_e3qio"]
+[ext_resource type="PackedScene" uid="uid://dhngks16mvvfe" path="res://Views/BoatlessOcean.tscn" id="5_puuxk"]
 
 [node name="ClientMain" type="Control" unique_id=1258100918]
 layout_mode = 3
@@ -51,6 +52,10 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0.5415405, 0.54309857, 1)
+
+[node name="BoatlessOcean" parent="LandingScreen" unique_id=1814931078 instance=ExtResource("5_puuxk")]
+layout_mode = 1
+ocean_level = 0.625
 
 [node name="MarginContainer" type="MarginContainer" parent="LandingScreen" unique_id=1023800373]
 layout_mode = 1

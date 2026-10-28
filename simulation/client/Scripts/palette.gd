@@ -269,3 +269,4 @@ func clear_selection() -> void:
 	
 func select_color(color: Color) -> void:
 	_selected_index = palette_colors.find(color)  # -1 if there's no match, which clears it
+	_refresh_swatches()

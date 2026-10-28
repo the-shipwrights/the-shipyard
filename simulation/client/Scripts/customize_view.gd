@@ -7,11 +7,18 @@ signal boat_launched(boat_data: Dictionary)
 
 const COLOR_FIELDS := ["primary", "secondary", "accent"]
 
+const SWATCH_RADIUS := 999       # clamps to a perfect circle at any swatch size
+const ACTIVE_SCALE := 1.15       # the selected swatch grows a little
+const SCALE_TIME := 0.15         # seconds
+
 var boat_data: Dictionary = {}
 var selected_colors: Dictionary = {}
 var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
 var default_launch_text := ""
+
+var _swatch_tweens: Dictionary = {}  # field -> running scale Tween
+var _swatch_targets: Dictionary = {} # field -> scale the swatch is heading to
 
 @onready var boat_preview: BoatPreview2D = %BoatPreview2D
 @onready var launch_button: Button = $SafeArea/Content/LaunchButton
@@ -46,6 +53,12 @@ func _ready() -> void:
 
 	for button in [primary_button, secondary_button, accent_button]:
 		button.disabled = true
+
+	# Scaling happens around the swatch centre, so keep the pivot centred as it resizes.
+	for field in COLOR_FIELDS:
+		var swatch := _swatch_for(field)
+		swatch.pivot_offset = swatch.size / 2.0
+		swatch.resized.connect(func() -> void: swatch.pivot_offset = swatch.size / 2.0)
 
 	launch_button.pressed.connect(launch_boat)
 
@@ -130,29 +143,50 @@ func _update_color_buttons() -> void:
 	_update_color_swatch("accent", accent_swatch)
 
 
+func _swatch_for(field: String) -> Panel:
+	match field:
+		"primary":
+			return primary_swatch
+		"secondary":
+			return secondary_swatch
+		_:
+			return accent_swatch
+
+
 func _update_color_swatch(field: String, swatch: Panel) -> void:
 	if not selected_colors.has(field):
 		return
 
 	var color: Color = selected_colors[field]
+
+	# The swatch itself is just the colour with a thin darker edge, so pale
+	# colours still read against a light background.
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
-	style.corner_radius_top_left = 32
-	style.corner_radius_top_right = 32
-	style.corner_radius_bottom_left = 32
-	style.corner_radius_bottom_right = 32
-
-	var is_active := field == active_color_field
-	var border_width := 3 if is_active else 1
-	var border_color := Color.WHITE if color.get_luminance() <= 0.65 else Color.BLACK
-
-	style.border_width_left = border_width
-	style.border_width_top = border_width
-	style.border_width_right = border_width
-	style.border_width_bottom = border_width
-	style.border_color = border_color if is_active else color.darkened(0.25)
-
+	style.set_corner_radius_all(SWATCH_RADIUS)
+	style.set_border_width_all(2)
+	style.border_color = color.darkened(0.3)
 	swatch.add_theme_stylebox_override("panel", style)
+
+	# Selection: the active swatch grows a little.
+	var is_active := field == active_color_field
+	_animate_swatch_scale(field, swatch, ACTIVE_SCALE if is_active else 1.0)
+
+
+func _animate_swatch_scale(field: String, swatch: Panel, target: float) -> void:
+	# Called on every colour pick too - only animate when the target changes.
+	if _swatch_targets.get(field, -1.0) == target:
+		return
+	_swatch_targets[field] = target
+
+	var old_tween: Tween = _swatch_tweens.get(field)
+	if old_tween != null and old_tween.is_valid():
+		old_tween.kill()
+
+	var tween := create_tween()
+	tween.tween_property(swatch, "scale", Vector2.ONE * target, SCALE_TIME) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_swatch_tweens[field] = tween
 
 
 func _make_button_style(
@@ -247,5 +281,3 @@ func _on_launch_completed(result: int, response_code: int, headers: PackedString
 func _reset_launch_button() -> void:
 	launch_button.text = default_launch_text
 	launch_button.disabled = false
-	
-	

@@ -88,11 +88,6 @@ func _process(delta: float) -> void:
 	_time += delta
 	queue_redraw()
 
-
-# ---------------------------------------------------------------------------
-# Public API (unchanged)
-# ---------------------------------------------------------------------------
-
 func set_customization(colors: Dictionary) -> void:
 	for field in ["primary", "secondary", "accent"]:
 		if not colors.has(field):
@@ -136,11 +131,6 @@ func clear_boat() -> void:
 	_placement_candidates.clear()
 	_candidate_rects.clear()
 	queue_redraw()
-
-
-# ---------------------------------------------------------------------------
-# Drawing
-# ---------------------------------------------------------------------------
 
 func _draw() -> void:
 	_candidate_rects.clear()
@@ -405,11 +395,6 @@ func _gui_input(event: InputEvent) -> void:
 			placement_selected.emit(_candidate_piece_id, _placement_candidates[i])
 			accept_event()
 			return
-
-
-# ---------------------------------------------------------------------------
-# Waves
-# ---------------------------------------------------------------------------
 
 func _wave_offset(
 	x0: float,
