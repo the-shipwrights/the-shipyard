@@ -6,6 +6,8 @@ class_name TerrainWorld
 # TODO: Terrain bounding box should not depend on Cell size. Width and depth should specify
 # Terrain size in metric units rather than the number of cells.
 
+@export var terrain_surface_material: Material
+
 var _width := 257
 ## Number of height samples along the X axis.
 @export_range(3, 1025, 2) var width: int:
@@ -155,8 +157,21 @@ func _run_queued_terrain_regeneration() -> void:
 	_regeneration_queued = false
 	_regenerate_terrain()
 
-#func _ready() -> void:
-	# _regenerate_terrain()
+func _ready() -> void:
+	var generator := TerrainGenerator.new()
+	generator.configure(
+		terrain_seed,
+		ocean_to_land_ratio,
+		minimum_channel_width_m,
+		coast_shelf_width_m,
+		sea_level,
+		ocean_depth_m,
+		island_scale_m,
+		mountain_scale_m,
+		mountain_height_m
+	)
+	heights = generator.build_heights(width, depth, CELL_SIZE)
+	#_regenerate_terrain()
 
 # NITPICK: Consider moving TerrainGenerator to a child Node of TerrainWorld.
 # Nodes are much more traceable than script chains, and the engine overhead for this operation is negligible.
@@ -211,6 +226,7 @@ func _build_mesh() -> void:
 			surface.add_vertex(p11)
 
 	surface.generate_normals(true)
+	surface.set_material(terrain_surface_material)
 	terrain_mesh.mesh = surface.commit()
 
 
@@ -223,6 +239,8 @@ func _build_collision() -> void:
 
 
 func sample_height_local(local_x: float, local_z: float) -> float:
+	if heights.size() != width * depth:
+		return sea_level # Treat unavailable terrain as non-water for route checks.
 	var half_width := float(width - 1) * CELL_SIZE * 0.5
 	var half_depth := float(depth - 1) * CELL_SIZE * 0.5
 	var grid_x := (local_x + half_width) / CELL_SIZE
