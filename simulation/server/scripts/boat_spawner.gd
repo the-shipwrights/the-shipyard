@@ -14,7 +14,7 @@ var row_depths: Dictionary = {}
 
 @onready var terrain: TerrainWorld = $"../World/Terrain/TerrainWorld"
 
-const MAP_LIMIT := 95.0 # The terrain is about 202 m across.
+const MAP_HALF_EXTENTS := Vector2(95.0, 140.0) # X and Z half-extents
 const WATER_CLEARANCE := 0.25
 const ROUTE_SAMPLE_STEP := 2.0
 const BOAT_GAP := 4.0
@@ -181,9 +181,9 @@ func _create_route() -> Array[Vector3]:
 func _random_water_point() -> Vector3:
 	for _attempt in range(100):
 		var point := Vector3(
-			rng.randf_range(-MAP_LIMIT, MAP_LIMIT),
+			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.y),
 			0.15,
-			rng.randf_range(-MAP_LIMIT, MAP_LIMIT)
+			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.y)
 		)
 
 		if _is_deep_water(point) and _is_clear_of_planned_routes(point):
