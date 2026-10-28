@@ -64,7 +64,7 @@ func _get_api_base() -> String:
 
 		var window = JavaScriptBridge.get_interface("window")
 		var scheme := "https" if str(window.location.protocol) == "https:" else "http"
-		return "%s://%s:8000" % [scheme, str(window.location.hostname)]
+		return "%s://%s" % [scheme, str(window.location.host)]
 
 	return server_api_base.trim_suffix("/")
 
@@ -151,6 +151,17 @@ func _color_to_hex(color: Color) -> String:
 	return "#" + color.to_html(false)
 
 
+func _launched_boat_data() -> Dictionary:
+	var launched_data: Dictionary = boat_data.duplicate(true)
+	launched_data["status"] = "launched"
+	launched_data["customization"] = {
+		"primary": _color_to_hex(selected_colors["primary"]),
+		"secondary": _color_to_hex(selected_colors["secondary"]),
+		"accent": _color_to_hex(selected_colors["accent"]),
+	}
+	return launched_data
+
+
 func launch_boat() -> void:
 	status_label.text = "Sending boat..."
 	launch_button.disabled = true
@@ -180,13 +191,24 @@ func _on_launch_completed(result: int, response_code: int, headers: PackedString
 	if response_code == 200:
 		status_label.text = "Boat launched!"
 		launch_button.hide()
-		var updated_data = JSON.parse_string(body.get_string_from_utf8())
-		if updated_data is Dictionary:
-			boat_launched.emit(updated_data)
+		var launched_data := _launched_boat_data()
+		var response_data = JSON.parse_string(body.get_string_from_utf8())
+		if response_data is Dictionary:
+			var response_boat: Dictionary = response_data
+			if response_boat.has("boat"):
+				var selected_customization: Dictionary = launched_data["customization"]
+				launched_data.merge(response_boat, true)
+				launched_data["status"] = "launched"
+				launched_data["customization"] = selected_customization
+			else:
+				push_warning("[Launch] Server response did not include boat data; using the submitted boat data.")
+		else:
+			push_warning("[Launch] Server returned success without a boat JSON object; using the submitted boat data.")
+		boat_launched.emit(launched_data)
 	elif response_code == 409:
 		status_label.text = "Boat already launched!"
-		boat_data["status"] = "launched"
-		boat_launched.emit(boat_data)
+		launch_button.hide()
+		boat_launched.emit(_launched_boat_data())
 	else:
 		status_label.text = "Launch failed (" + str(response_code) + ")"
 		push_error("Launch failed with code: " + str(response_code))

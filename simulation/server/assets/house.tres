@@ -1,0 +1,42 @@
+[gd_resource type="ArrayMesh" format=4 uid="uid://imd4txfjkedx"]
+
+[ext_resource type="Texture2D" uid="uid://dgds7ho7plpr1" path="res://assets/3dmodels/house_house.png" id="1_6cavm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0pjhb"]
+resource_name = "Material"
+cull_mode = 2
+albedo_texture = ExtResource("1_6cavm")
+roughness = 0.66504854
+metadata/_gltf_primary_texture_coord = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_s7xb2"]
+_surfaces = [{
+"aabb": AABB(-1, 0, -1, 2, 2.6034684, 2),
+"format": 34896613377,
+"index_count": 42,
+"index_data": PackedByteArray("AAABAAIAAQADAAIABAABAAAAAwABAAQABQAEAAAABgACAAMABwADAAQABwAGAAMABQAHAAQABgAIAAIACAAAAAIACAAGAAcACAAFAAAACAAHAAUA"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 9,
+"vertex_data": PackedByteArray("CvioxPQHAAD/f////38AAPQHqMT0BwAA9AeoxAr4AAAK+KjECvgAAP//AAAAAAAAAAAAAP//AAD//wAA//8AAAAAAAAAAAAA")
+}]
+blend_shape_mode = 0
+
+[resource]
+resource_name = "house_Cube"
+_surfaces = [{
+"aabb": AABB(-1, 0, -1, 2, 2.6034684, 2),
+"attribute_data": PackedByteArray("/5//f/+//1//3/9//1//P/+fAAD/n/8//18AAP9f////n/+//5////9f/7//H/9//1//P/9f/3//H/8//1//f/+f/z//n/9//1//P/9f/7//n/9//5//v/9f/3//v/9f/9//P//f/3//3/8//7//X/+f/z//n/8//7//X/+f/38="),
+"format": 34896613399,
+"index_count": 42,
+"index_data": PackedByteArray("AAABAAIAAwAEAAUAAwAGAAQABwAIAAkABwAKAAgACwAMAA0ACwAOAAwADwAQABEADwASABAAEwAUABUAEwAWABQAFwAYABkAGgAbABwAHQAeAB8A"),
+"material": SubResource("StandardMaterial3D_0pjhb"),
+"name": "Material",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 32,
+"vertex_data": PackedByteArray("CvioxPQH////f////3////QHqMT0B/////8AAP//9L/0B6jECvgBwAr4qMQK+EXBAAAAAP//vr4AAAAA//+S1PQHqMT0B5rU9AeoxAr4VNUAAAAAAADi0wAAAAAAAP+///8AAP///7///wAAAAD/vwAAAAD///+///8AAAAACdYK+KjECvgQ1gr4qMT0B87W//8AAP//VNUAAAAAAAAZ/wr4qMT0Bxn/9AeoxPQHFv///wAAAAAd//9/////f6Pv9AeoxAr4o+/0B6jE9Aej7/QHqMQK+P///3////9///8K+KjECvj//wr4qMQK+KPv/3////9/o+8K+KjE9Aej7/9/z9L/f8/S/3/P0hD+7gEQ/u4BEP7fARD+/QG81XXUxtVw1KnWAtTg1ODUAAD/fwAA/38AAP9/AAD/fyQrxCkbK8kpPCo7KvwrVSl2v4u/gL+Av3/Ahr6CvnvAmG/Lt5hvy7eYb8u3/38vrf9/L63/fy+tzDdmEMw3ZhDMN2YQ")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_s7xb2")

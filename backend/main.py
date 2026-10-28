@@ -1,16 +1,23 @@
 from datetime import datetime, timezone
 from pathlib import Path
 import json
+import os
 import secrets
 import sqlite3
 import string
+from typing import Literal
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Response, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel, Field, model_validator
 from scanning.boat import Boat, Piece
 
-DB_PATH = Path(__file__).with_name("boats.db")
+DB_PATH = Path(
+    os.getenv("SHIPYARD_DB_PATH", str(Path(__file__).with_name("boats.db")))
+)
+WEB_DIST_DIRECTORY = Path(__file__).resolve().parent.parent / "web" / "dist"
 ALPHABET = string.ascii_uppercase
 
 class PiecePayload(BaseModel):
@@ -45,6 +52,12 @@ class BoatColors(BaseModel):
     secondary: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
     accent: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
 
+
+class AdminBoatUpdate(BaseModel):
+    boat: BoatPayload | None = None
+    customization: BoatColors | None = None
+    status: Literal["customizing", "launched"] | None = None
+
 DEFAULT_BOAT_COLORS = {
     "primary": "#2f7fff",
     "secondary": "#ffffff",
@@ -63,6 +76,7 @@ def utc_timestamp() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 app = FastAPI(title="Shipwright API")
+admin_security = HTTPBasic(auto_error=False)
 
 # Needed while Vite runs on localhost:5173 and FastAPI runs on localhost:8000.
 app.add_middleware(
@@ -107,6 +121,41 @@ def initialize_database():
         connection.commit()
     finally:
         connection.close()
+
+
+def require_admin(
+    credentials: HTTPBasicCredentials | None = Depends(admin_security),
+) -> str:
+    expected_username = os.getenv("SHIPYARD_ADMIN_USER", "")
+    expected_password = os.getenv("SHIPYARD_ADMIN_PASSWORD", "")
+
+    if not expected_username or not expected_password:
+        raise HTTPException(
+            status_code=503,
+            detail="Operator access is not configured on this server",
+        )
+
+    if credentials is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Operator credentials required",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+    valid_user = secrets.compare_digest(
+        credentials.username.encode("utf-8"), expected_username.encode("utf-8")
+    )
+    valid_password = secrets.compare_digest(
+        credentials.password.encode("utf-8"), expected_password.encode("utf-8")
+    )
+    if not (valid_user and valid_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid operator credentials",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+
+    return credentials.username
 
 
 def generate_boat_id(connection):
@@ -361,6 +410,121 @@ async def launch_boat(boat_id: str, colors: BoatColors):
 
     return boat_data
 
+
+@app.get("/api/admin/boats")
+def list_boats(_admin: str = Depends(require_admin)):
+    connection = get_connection()
+    try:
+        rows = connection.execute(
+            "SELECT * FROM boats ORDER BY created_at DESC, id ASC"
+        ).fetchall()
+    finally:
+        connection.close()
+
+    return [serialize_boat(row) for row in rows]
+
+
+@app.patch("/api/admin/boats/{boat_id}")
+async def admin_update_boat(
+    boat_id: str,
+    update: AdminBoatUpdate,
+    _admin: str = Depends(require_admin),
+):
+    normalized_id = normalize_boat_id(boat_id)
+    now = timestamp()
+    assignments: list[str] = []
+    values: list[str | None] = []
+
+    if update.boat is not None:
+        assignments.append("structure_json = ?")
+        values.append(json.dumps(update.boat.model_dump()))
+    if update.customization is not None:
+        assignments.extend([
+            "primary_color = ?",
+            "secondary_color = ?",
+            "accent_color = ?",
+        ])
+        values.extend([
+            update.customization.primary,
+            update.customization.secondary,
+            update.customization.accent,
+        ])
+    connection = get_connection()
+    try:
+        row = connection.execute(
+            "SELECT status FROM boats WHERE id = ?", (normalized_id,)
+        ).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Boat not found")
+
+        previous_status = row["status"]
+        if update.status is not None:
+            assignments.append("status = ?")
+            values.append(update.status)
+            if update.status == STATUS_LAUNCHED and previous_status != STATUS_LAUNCHED:
+                assignments.append("launched_at = ?")
+                values.append(now)
+            elif update.status == STATUS_CUSTOMIZING:
+                assignments.append("launched_at = ?")
+                values.append(None)
+
+        if not assignments:
+            raise HTTPException(status_code=400, detail="No boat changes supplied")
+
+        assignments.append("updated_at = ?")
+        values.append(now)
+        values.append(normalized_id)
+        connection.execute(
+            f"UPDATE boats SET {', '.join(assignments)} WHERE id = ?",
+            values,
+        )
+        connection.commit()
+    finally:
+        connection.close()
+
+    boat_data = serialize_boat(get_boat_row(normalized_id))
+    if boat_data["status"] == STATUS_LAUNCHED:
+        await simulation_manager.broadcast({
+            "event": "boat_launched",
+            "data": boat_data,
+        })
+    elif previous_status == STATUS_LAUNCHED:
+        await simulation_manager.broadcast({
+            "event": "boat_removed",
+            "boat_id": normalized_id,
+        })
+
+    return boat_data
+
+
+@app.delete("/api/admin/boats/{boat_id}", status_code=204)
+async def admin_delete_boat(
+    boat_id: str,
+    _admin: str = Depends(require_admin),
+) -> Response:
+    normalized_id = normalize_boat_id(boat_id)
+    connection = get_connection()
+    try:
+        row = connection.execute(
+            "SELECT status FROM boats WHERE id = ?", (normalized_id,)
+        ).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Boat not found")
+
+        connection.execute("DELETE FROM boats WHERE id = ?", (normalized_id,))
+        connection.commit()
+        was_launched = row["status"] == STATUS_LAUNCHED
+    finally:
+        connection.close()
+
+    if was_launched:
+        await simulation_manager.broadcast({
+            "event": "boat_removed",
+            "boat_id": normalized_id,
+        })
+
+    return Response(status_code=204)
+
 # --- Async boat control endpoint with broadcast ---
 
 @app.websocket("/ws/control/{boat_id}")
@@ -399,3 +563,28 @@ async def boat_control_ws(websocket: WebSocket, boat_id: str):
                 "command": command,
                 "active": False,
             })
+
+
+@app.get("/{requested_path:path}", include_in_schema=False)
+def serve_web_app(requested_path: str = ""):
+    """Serve built Vite files and fall back to the client for browser routes."""
+    web_root = WEB_DIST_DIRECTORY.resolve()
+    index_path = web_root / "index.html"
+    if not index_path.is_file():
+        raise HTTPException(
+            status_code=503,
+            detail="Web client is not built. Run npm --prefix web run build.",
+        )
+
+    if requested_path == "api" or requested_path.startswith(("api/", "ws/")):
+        raise HTTPException(status_code=404, detail="Not found")
+
+    candidate = (web_root / requested_path).resolve()
+    if not candidate.is_relative_to(web_root):
+        raise HTTPException(status_code=404, detail="Not found")
+    if candidate.is_file():
+        return FileResponse(candidate)
+    if Path(requested_path).suffix:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    return FileResponse(index_path)

@@ -1,53 +1,19 @@
-# the-shipyard
+# Web client
 
-## 2. Frontend setup and run
+Use WSL/Linux Bash from the repository root. The frontend requires Node.js and npm.
 
-Prerequisite: Node.js and npm.
+Install dependencies once:
 
-Open a second terminal:
-
-```powershell
-cd C:\Users\minzh\Dokument\gitrepos\the-shipyard\web
+```bash
+npm --prefix web install
 ```
 
-Install the frontend dependencies:
+With FastAPI running at `127.0.0.1:8000`, start Vite:
 
-```powershell
-npm install
+```bash
+npm --prefix web run dev
 ```
 
-Start the Vite development server:
+Open `http://localhost:5173`. Vite proxies `/api` and `/ws` to FastAPI, so the Godot web client can use the same origin during local development. The seeded boat route is `/boat/BOAT`; the builder is available at `/build` and the operator console at `/admin`.
 
-```powershell
-npm run dev
-```
-
-The frontend will normally be available at:
-
-```text
-http://localhost:5173
-```
-
-To make the frontend accessible from other devices on the local network, use:
-
-```powershell
-npm run dev -- --host 0.0.0.0
-```
-
-For the current Godot integration, use `localhost` when running locally because the Godot client is configured to call:
-
-```text
-http://localhost:8000
-```
-
-After starting both servers, open the seeded boat editor at:
-
-```text
-http://localhost:5173/boat/ABCD
-```
-
-The simulation route is:
-
-```text
-http://localhost:5173/simulation
-```
+For an exhibition, export the Godot project's Web preset in the editor after client changes, then run `bash ./Start-Event.sh` from the repository root. The launcher builds the Vite app and serves it with FastAPI through a temporary HTTPS tunnel. If no Godot command-line executable is available, it pauses for you to start the simulation from the editor. The scanner prints the current public URL in each boat's QR code.

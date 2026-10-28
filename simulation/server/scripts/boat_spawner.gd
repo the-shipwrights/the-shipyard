@@ -14,7 +14,7 @@ var row_depths: Dictionary = {}
 
 @onready var terrain: TerrainWorld = $"../World/Terrain/TerrainWorld"
 
-const MAP_LIMIT := 95.0 # The terrain is about 202 m across.
+const MAP_HALF_EXTENTS := Vector2(95.0, 140.0) # X and Z half-extents
 const WATER_CLEARANCE := 0.25
 const ROUTE_SAMPLE_STEP := 2.0
 const BOAT_GAP := 4.0
@@ -30,6 +30,7 @@ func _ready() -> void:
 	network_manager.initial_boats_received.connect(_on_initial_boats_received)
 	network_manager.boat_launched.connect(_on_boat_launched)
 	network_manager.boat_control_received.connect(_on_boat_control_received)
+	network_manager.boat_removed.connect(_on_boat_removed)
 
 func _on_initial_boats_received(boats: Array) -> void:
 	for boat_data in boats:
@@ -39,6 +40,15 @@ func _on_initial_boats_received(boats: Array) -> void:
 
 func _on_boat_launched(boat_data: Dictionary) -> void:
 	_spawn_or_update_boat(boat_data)
+
+
+func _on_boat_removed(boat_id: String) -> void:
+	var boat := spawned_boats.get(boat_id) as Boat
+	if is_instance_valid(boat):
+		boat.queue_free()
+
+	spawned_boats.erase(boat_id)
+	planned_routes.erase(boat_id)
 
 
 func _on_boat_control_received(
@@ -171,9 +181,9 @@ func _create_route() -> Array[Vector3]:
 func _random_water_point() -> Vector3:
 	for _attempt in range(100):
 		var point := Vector3(
-			rng.randf_range(-MAP_LIMIT, MAP_LIMIT),
+			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.y),
 			0.15,
-			rng.randf_range(-MAP_LIMIT, MAP_LIMIT)
+			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.y)
 		)
 
 		if _is_deep_water(point) and _is_clear_of_planned_routes(point):

@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dbhh176h65kgq"]
+
+[ext_resource type="Shader" uid="uid://7drxi7dothfo" path="res://shrubbery.gdshader" id="1_7j7j2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_7j7j2")
+shader_parameter/wind_strength = 0.08
+shader_parameter/wind_speed = 1.594000075715
+shader_parameter/wind_direction = Vector3(1, 0, 0.5)
+shader_parameter/base_color = Color(0.43529412, 0.54901963, 0.105882354, 1)
+shader_parameter/color_variation = 0.15
+shader_parameter/backlight_color = Color(0.07019403, 0.62333006, 0.76087594, 1)
+shader_parameter/backlight_intensity = 1.0
