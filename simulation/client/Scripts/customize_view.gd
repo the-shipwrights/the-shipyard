@@ -18,9 +18,14 @@ var default_launch_text := ""
 @onready var status_label: Label = $SafeArea/Content/StatusLabel
 @onready var boat_label: Label = $SafeArea/Content/Label
 @onready var palette: GridContainer = $SafeArea/Content/PaletteRegion/Palette
-@onready var primary_button: Button = $SafeArea/Content/ColorSelector/Primary
-@onready var secondary_button: Button = $SafeArea/Content/ColorSelector/Secondary
-@onready var accent_button: Button = $SafeArea/Content/ColorSelector/Accent
+
+@onready var primary_button: TextureButton = $SafeArea/Content/ColorSelector/Primary/TextureButton
+@onready var secondary_button: TextureButton = $SafeArea/Content/ColorSelector/Secondary/TextureButton
+@onready var accent_button: TextureButton = $SafeArea/Content/ColorSelector/Accent/TextureButton
+
+@onready var primary_swatch: Panel = $SafeArea/Content/ColorSelector/Primary/Color
+@onready var secondary_swatch: Panel = $SafeArea/Content/ColorSelector/Secondary/Color
+@onready var accent_swatch: Panel = $SafeArea/Content/ColorSelector/Accent/Color
 
 
 func _ready() -> void:
@@ -30,12 +35,34 @@ func _ready() -> void:
 
 	palette.color_selected.connect(_on_palette_color_selected)
 
+	var circle_mask := _make_circle_mask(64)
+	primary_button.texture_click_mask = circle_mask
+	secondary_button.texture_click_mask = circle_mask
+	accent_button.texture_click_mask = circle_mask
+
 	primary_button.pressed.connect(_on_color_field_selected.bind("primary"))
 	secondary_button.pressed.connect(_on_color_field_selected.bind("secondary"))
 	accent_button.pressed.connect(_on_color_field_selected.bind("accent"))
 
+	for button in [primary_button, secondary_button, accent_button]:
+		button.disabled = true
+
 	launch_button.pressed.connect(launch_boat)
 
+func _make_circle_mask(size: int) -> BitMap:
+	var mask := BitMap.new()
+	mask.create(Vector2i(size, size))
+
+	var center := Vector2(size / 2.0, size / 2.0)
+	var radius := size / 2.0
+
+	for y in size:
+		for x in size:
+			var point := Vector2(x + 0.5, y + 0.5)
+			if point.distance_to(center) <= radius:
+				mask.set_bit(x, y, true)
+
+	return mask
 
 func setup(data: Dictionary) -> void:
 	boat_data = data
@@ -45,12 +72,12 @@ func setup(data: Dictionary) -> void:
 
 	var customization: Dictionary = boat_data.get("customization", {})
 
+	selected_colors.clear()
 	for field in COLOR_FIELDS:
-		var fallback_color := _random_palette_color()
-		selected_colors[field] = Color.from_string(
-			str(customization.get(field, "")),
-			fallback_color
-		) if customization.has(field) else fallback_color
+		selected_colors[field] = _random_palette_color()
+
+	for button in [primary_button, secondary_button, accent_button]:
+		button.disabled = false
 
 	_update_color_buttons()
 	boat_preview.set_customization(selected_colors)
@@ -82,6 +109,10 @@ func _random_palette_color() -> Color:
 
 
 func _on_color_field_selected(field: String) -> void:
+	if not selected_colors.has(field):
+		push_warning("Color selector pressed before setup initialized: " + field)
+		return
+
 	active_color_field = field
 	palette.select_color(selected_colors[field])
 	_update_color_buttons()
@@ -94,40 +125,34 @@ func _on_palette_color_selected(color: Color) -> void:
 
 
 func _update_color_buttons() -> void:
-	_update_color_button("primary", primary_button)
-	_update_color_button("secondary", secondary_button)
-	_update_color_button("accent", accent_button)
+	_update_color_swatch("primary", primary_swatch)
+	_update_color_swatch("secondary", secondary_swatch)
+	_update_color_swatch("accent", accent_swatch)
 
 
-func _update_color_button(field: String, button: Button) -> void:
+func _update_color_swatch(field: String, swatch: Panel) -> void:
 	if not selected_colors.has(field):
 		return
 
 	var color: Color = selected_colors[field]
-	var text_color := Color.BLACK if color.get_luminance() > 0.55 else Color.WHITE
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.corner_radius_top_left = 32
+	style.corner_radius_top_right = 32
+	style.corner_radius_bottom_left = 32
+	style.corner_radius_bottom_right = 32
+
+	var is_active := field == active_color_field
+	var border_width := 3 if is_active else 1
 	var border_color := Color.WHITE if color.get_luminance() <= 0.65 else Color.BLACK
 
-	button.add_theme_color_override("font_color", text_color)
-	button.add_theme_color_override("font_hover_color", text_color)
-	button.add_theme_color_override("font_pressed_color", text_color)
-	button.add_theme_color_override("font_focus_color", text_color)
+	style.border_width_left = border_width
+	style.border_width_top = border_width
+	style.border_width_right = border_width
+	style.border_width_bottom = border_width
+	style.border_color = border_color if is_active else color.darkened(0.25)
 
-	button.add_theme_stylebox_override(
-		"normal",
-		_make_button_style(color, field == active_color_field, border_color)
-	)
-	button.add_theme_stylebox_override(
-		"hover",
-		_make_button_style(color.lightened(0.08), field == active_color_field, border_color)
-	)
-	button.add_theme_stylebox_override(
-		"pressed",
-		_make_button_style(color.darkened(0.08), field == active_color_field, border_color)
-	)
-	button.add_theme_stylebox_override(
-		"focus",
-		_make_button_style(color, true, border_color)
-	)
+	swatch.add_theme_stylebox_override("panel", style)
 
 
 func _make_button_style(

@@ -184,6 +184,7 @@ func _on_swatch_gui_input(event: InputEvent, index: int) -> void:
 
 	if not activated or index >= palette_colors.size():
 		return
+	_on_bucket_pressed(index)
 
 func _on_bucket_pressed(index: int) -> void:
 	_selected_index = index
