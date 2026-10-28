@@ -14,6 +14,7 @@ class_name NetworkManager
 signal initial_boats_received(boats: Array)
 signal boat_launched(boat_data: Dictionary)
 signal boat_control_received(boat_id: String, command: String, active: bool)
+signal boat_removed(boat_id: String)
 
 ## the url of the server simulation.
 @export var endpoint_path := "/ws/simulation"
@@ -95,6 +96,9 @@ func _handle_network_message(json_text: String) -> void:
 			var boat_data: Variant = message.get("data", {})
 			if boat_data is Dictionary:
 				boat_launched.emit(boat_data)
+
+		"boat_removed":
+			boat_removed.emit(str(message.get("boat_id", "")).to_upper())
 
 		"boat_control":
 			boat_control_received.emit(

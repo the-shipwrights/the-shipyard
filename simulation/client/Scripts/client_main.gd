@@ -14,16 +14,22 @@ var load_request := HTTPRequest.new()
 @onready var load_button: Button = $LandingScreen/MarginContainer/VBoxContainer/LoadBoatButton
 @onready var home_button: Button = $Button
 
-func get_server_host() -> String:
-	if OS.has_feature("web"):
-		var window = JavaScriptBridge.get_interface("window")
-		return str(window.location.hostname)
-	return "127.0.0.1"
+@export var server_api_base := "http://127.0.0.1:8000"
+@export var web_api_base := ""
 
-func get_api_base() -> String:
-	return "http://" + get_server_host() + ":8000"
+func _get_api_base() -> String:
+	if OS.has_feature("web"):
+		if not web_api_base.is_empty():
+			return web_api_base.trim_suffix("/")
+
+		var window = JavaScriptBridge.get_interface("window")
+		var scheme := "https" if str(window.location.protocol) == "https:" else "http"
+		return "%s://%s" % [scheme, str(window.location.host)]
+
+	return server_api_base.trim_suffix("/")
 
 func _ready() -> void:
+	load_request.accept_gzip = false
 	add_child(load_request)
 	load_request.request_completed.connect(_on_boat_loaded)
 
@@ -44,9 +50,7 @@ func _ready() -> void:
 		_show_landing("no boat with this id")
 		return
 
-	var error := load_request.request(get_api_base() + "/api/boats/" + boat_id)
-	if error != OK:
-		_show_landing("Could not connect to the boat server")
+	_request_boat(boat_id)
 
 func _is_valid_boat_id(value: String) -> bool:
 	var regex := RegEx.new()
@@ -62,9 +66,15 @@ func _submit_boat_id(_submitted_text: String = "") -> void:
 		_show_landing("Enter a 4-letter boat ID")
 		return
 
-	var error := load_request.request(get_api_base() + "/api/boats/" + boat_id)
+	_request_boat(boat_id)
+
+func _request_boat(requested_boat_id: String) -> void:
+	var url := _get_api_base() + "/api/boats/" + requested_boat_id
+	print("[BoatLoad] Requesting ", url)
+	var error := load_request.request(url)
 	if error != OK:
-		_show_landing("Could not connect to the boat server")
+		push_error("[BoatLoad] Request could not start: url=%s error=%d" % [url, error])
+		_show_landing("Could not start boat lookup (%d)" % error)
 
 func _on_boat_created(new_boat_data: Dictionary) -> void:
 	boat_id = str(new_boat_data.get("id", "")).to_upper()
@@ -95,6 +105,11 @@ func _route_state(boat_data: Dictionary) -> void:
 		home_button.show()
 
 func _on_boat_loaded(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	if result != HTTPRequest.RESULT_SUCCESS:
+		push_error("[BoatLoad] Request failed with result %d" % result)
+		_show_landing("Could not connect to the boat server")
+		return
+
 	if response_code == 404:
 		_show_landing("no boat with this id")
 		return
@@ -103,12 +118,29 @@ func _on_boat_loaded(result: int, response_code: int, headers: PackedStringArray
 		_show_landing("Boat load failed (" + str(response_code) + ")")
 		return
 
-	var boat_data = JSON.parse_string(body.get_string_from_utf8())
-	if boat_data == null or not (boat_data is Dictionary):
-		_show_landing("Invalid response from server")
+	var response_text := body.get_string_from_utf8().strip_edges()
+	var content_type := "unknown"
+	for header in headers:
+		if header.to_lower().begins_with("content-type:"):
+			content_type = header
+			break
+	var parser := JSON.new()
+	var parse_result := parser.parse(response_text)
+	if parse_result != OK or not (parser.data is Dictionary):
+		push_error(
+			"[BoatLoad] Expected a JSON object from the API; content-type=%s, response-code=%d, bytes=%d, parse-error=%s, body=%s"
+			% [
+				content_type,
+				response_code,
+				body.size(),
+				parser.get_error_message(),
+				response_text.left(400),
+			]
+		)
+		_show_landing("The server returned unreadable boat data. Please try again or ask an operator.")
 		return
 
-	_route_state(boat_data)
+	_route_state(parser.data)
 
 func _on_boat_launched(updated_boat_data: Dictionary) -> void:
 	_route_state(updated_boat_data)

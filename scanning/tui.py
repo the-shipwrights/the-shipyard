@@ -22,6 +22,7 @@ from numpy import ndarray
 from simple_term_menu import TerminalMenu
 
 from .boat import Boat
+from .event_links import boat_page_url, print_boat_qr
 from .model_interface import model_predict_cam, model_predict_single, model_train
 from .parse_prediction import parse
 from .submit_boat import submit_scanned_boat
@@ -468,6 +469,15 @@ class App:
 
             return camera_index
 
+    def _submit_boat(self, boat: Boat) -> str:
+        """Submit a parsed boat and show the participant's ID and QR link."""
+        boat_id = submit_scanned_boat(boat)
+        url = boat_page_url(boat_id)
+        print(f"Boat submitted successfully with ID: {boat_id}")
+        print(f"Participant link: {url}")
+        print_boat_qr(url)
+        return boat_id
+
     # ------------------------------------------------------------------
     # Parsing workflow
     # ------------------------------------------------------------------
@@ -502,7 +512,7 @@ class App:
                     print("NO BOAT FOUND. PARSE A PREDICTION FIRST.")
                     continue
                 else:
-                    submit_scanned_boat(self.latest_boat)
+                    self._submit_boat(self.latest_boat)
                     continue
 
             self.state = State.MENU
