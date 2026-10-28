@@ -155,8 +155,8 @@ func _run_queued_terrain_regeneration() -> void:
 	_regeneration_queued = false
 	_regenerate_terrain()
 
-func _ready() -> void:
-	_regenerate_terrain()
+#func _ready() -> void:
+	# _regenerate_terrain()
 
 # NITPICK: Consider moving TerrainGenerator to a child Node of TerrainWorld.
 # Nodes are much more traceable than script chains, and the engine overhead for this operation is negligible.
