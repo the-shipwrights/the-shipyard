@@ -5,6 +5,24 @@ class_name MeshConstructor
 const SCALE_FACTOR := 0.25
 
 # omg my eyes
+
+@export var bow: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_bow.tscn"
+)
+
+@export var section: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_section.tscn"
+)
+
+@export var stern: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_stern.tscn"
+)
+
+@export var cabin: PackedScene = preload(
+	"res://packedscenes/boat_components/cabin.tscn"
+)
+
+
 const HULL_BOW_SCENE: PackedScene = preload(
 	"res://packedscenes/boat_components/hull_bow.tscn"
 )
@@ -128,7 +146,7 @@ func _render_data(data: Dictionary) -> void:
 
 		var piece_x := float(piece.get("x", 0)) * SCALE_FACTOR
 		var piece_y := float(piece.get("y", 0)) * SCALE_FACTOR
-		
+
 		# Coloring
 		var piece_id := int(piece.get("id", -1))
 		var material := primary_material
@@ -138,7 +156,11 @@ func _render_data(data: Dictionary) -> void:
 			11:
 				material = accent_material
 
-		var piece_node := _create_piece_node(piece, material)
+		var piece_node := _create_piece_node(
+			piece,
+			material,
+			[primary_color, secondary_color, accent_color]
+		)
 
 		if piece_node == null:
 			continue
@@ -160,7 +182,11 @@ func _clear_existing_meshes() -> void:
 	for child in get_children():
 		child.queue_free()
 
-func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) -> Node3D:
+func _create_piece_node(
+	piece: Dictionary,
+	base_material: StandardMaterial3D,
+	piece_colors: Array[Color]
+) -> Node3D:
 	var id := int(piece.get("id", -1))
 	var pos_x := float(piece.get("x", 0)) * SCALE_FACTOR
 	var pos_y := float(piece.get("y", 0)) * SCALE_FACTOR
@@ -173,7 +199,12 @@ func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) ->
 		var packed_scene := _custom_scene_for_piece(id)
 		if packed_scene != null:
 			piece_node = packed_scene.instantiate() as Node3D
-			is_custom_model = piece_node != null
+			is_custom_model = piece_node != null # ?
+
+
+
+
+
 
 	if is_custom_model:
 		piece_node.scale *= SCALE_FACTOR
@@ -188,6 +219,9 @@ func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) ->
 	if piece_node == null:
 		return null
 
+	if piece_node is BoatPiece:
+		piece_node.set_colors(piece_colors)
+
 	var visual_width := float(piece_node.get_meta("width", 1.0))
 	var visual_height := float(piece_node.get_meta("height", 1.0))
 
@@ -200,7 +234,7 @@ func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) ->
 	if flipped:
 		piece_node.scale.x *= -1.0
 
-	
+
 	print(
 		"piece=%d data_x=%.2f root_x=%.2f"
 		% [id, pos_x, piece_node.position.x]
@@ -231,6 +265,10 @@ func _custom_scene_for_piece(id: int) -> PackedScene:
 			return CABIN_SCENE
 		_:
 			return null
+
+# Sets color of a chosen resource's surface
+func _set_surface_color(mesh: MeshInstance3D, surface_idx: int, color: Color) -> void:
+	pass
 
 func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
@@ -307,13 +345,13 @@ func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 		_:
 			push_warning("Unknown piece type: ", id)
 			return null
-			
+
 	mesh_instance.mesh = mesh
 	mesh_instance.material_override = mat
-	
+
 	# Store dimensions as metadata for positioning math
 	mesh_instance.set_meta("width", w)
 	mesh_instance.set_meta("height", h)
 	mesh_instance.set_meta("depth", d)
-	
+
 	return mesh_instance
