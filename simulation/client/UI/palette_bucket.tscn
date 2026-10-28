@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://td0gj7dyee5a"]
+
+[ext_resource type="Script" uid="uid://bl1o5umm2gewx" path="res://palette_bucket.gd" id="1_2v4pa"]
+[ext_resource type="Texture2D" uid="uid://npi53qffqs7f" path="res://Assets/Bucket.png" id="2_cyxci"]
+[ext_resource type="Texture2D" uid="uid://bhl08a0puhqoq" path="res://Assets/paint.png" id="3_xx1na"]
+
+[node name="PaletteBucket" type="TextureButton" unique_id=16959192]
+custom_minimum_size = Vector2(70, 70)
+script = ExtResource("1_2v4pa")
+paint_color = Color(0.3254902, 0.2, 1, 1)
+
+[node name="Bucket" type="TextureRect" parent="." unique_id=560663309]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_cyxci")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Paint" type="TextureRect" parent="." unique_id=1271655597]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_xx1na")
+expand_mode = 1
+stretch_mode = 5

@@ -11,8 +11,9 @@ var boat_data: Dictionary = {}
 var selected_colors: Dictionary = {}
 var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
+var default_launch_text := ""
 
-@onready var boat_preview: BoatPreview2D = $SafeArea/Content/BoatPreview2D
+@onready var boat_preview: BoatPreview2D = %BoatPreview2D
 @onready var launch_button: Button = $SafeArea/Content/LaunchButton
 @onready var status_label: Label = $SafeArea/Content/StatusLabel
 @onready var boat_label: Label = $SafeArea/Content/Label
@@ -23,6 +24,7 @@ var launch_request := HTTPRequest.new()
 
 
 func _ready() -> void:
+	default_launch_text = launch_button.text
 	add_child(launch_request)
 	launch_request.request_completed.connect(_on_launch_completed)
 
@@ -53,9 +55,11 @@ func setup(data: Dictionary) -> void:
 	_update_color_buttons()
 	boat_preview.set_customization(selected_colors)
 
+	launch_button.text = default_launch_text
 	launch_button.disabled = false
 	launch_button.show()
 	status_label.text = ""
+	palette.select_color(selected_colors[active_color_field])
 
 func _get_api_base() -> String:
 	if OS.has_feature("web"):
@@ -79,6 +83,7 @@ func _random_palette_color() -> Color:
 
 func _on_color_field_selected(field: String) -> void:
 	active_color_field = field
+	palette.select_color(selected_colors[field])
 	_update_color_buttons()
 
 
@@ -163,8 +168,9 @@ func _launched_boat_data() -> Dictionary:
 
 
 func launch_boat() -> void:
-	status_label.text = "Sending boat..."
+	launch_button.text = "Sending boat..."
 	launch_button.disabled = true
+	status_label.text = ""
 
 	var body := JSON.stringify({
 		"primary": _color_to_hex(selected_colors["primary"]),
@@ -181,13 +187,11 @@ func launch_boat() -> void:
 	)
 
 	if error != OK:
+		_reset_launch_button()
 		status_label.text = "Could not send launch request"
-		launch_button.disabled = false
 
 
 func _on_launch_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	launch_button.disabled = false
-
 	if response_code == 200:
 		status_label.text = "Boat launched!"
 		launch_button.hide()
@@ -210,5 +214,13 @@ func _on_launch_completed(result: int, response_code: int, headers: PackedString
 		launch_button.hide()
 		boat_launched.emit(_launched_boat_data())
 	else:
+		_reset_launch_button()
 		status_label.text = "Launch failed (" + str(response_code) + ")"
 		push_error("Launch failed with code: " + str(response_code))
+
+
+func _reset_launch_button() -> void:
+	launch_button.text = default_launch_text
+	launch_button.disabled = false
+	
+	
