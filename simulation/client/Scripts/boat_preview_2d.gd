@@ -140,10 +140,6 @@ func _draw() -> void:
 
 	_draw_wave(waterline - 12.0, 0.75, 0.8, 1.0, BACK_WAVE_COLOR)
 	
-	# Candidate config
-	var candidate_config: Dictionary = PIECE_TYPES.get(_candidate_piece_id, {})
-	if candidate_config.is_empty():
-			_draw_piece(piece, world_center, screen_center, scale_factor)
 
 	_draw_placement_candidates(world_center, screen_center, scale_factor)
 	for piece in _pieces:

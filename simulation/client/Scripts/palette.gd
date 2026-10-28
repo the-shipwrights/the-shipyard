@@ -265,8 +265,6 @@ func _assign_editor_owner(node: Node) -> void:
 
 func clear_selection() -> void:
 	_selected_index = -1
-	_update_selection_visuals()
 	
 func select_color(color: Color) -> void:
 	_selected_index = palette_colors.find(color)  # -1 if there's no match, which clears it
-	_update_selection_visuals()
