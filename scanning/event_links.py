@@ -17,6 +17,10 @@ def boat_page_url(boat_id: str, public_base_url: str | None = None) -> str:
 
 def print_boat_qr(url: str) -> None:
     """Print a scannable QR code using the terminal's block characters."""
+<<<<<<< Updated upstream
+=======
+    print("QR code: ")
+>>>>>>> Stashed changes
     code = qrcode.QRCode(border=2, error_correction=qrcode.constants.ERROR_CORRECT_M)
     code.add_data(url)
     code.make(fit=True)

@@ -5,6 +5,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_0rclp")
+<<<<<<< Updated upstream
 shader_parameter/deep_color = Color(0.1231095, 0.3900775, 0.75126946, 1)
 shader_parameter/beach_color = Color(1.353256, 0.9815948, 0.31155747, 1)
 shader_parameter/lowland_color = Color(0.28538418, 0.9815948, 0.18069082, 1)
@@ -16,4 +17,17 @@ shader_parameter/beach_end = 2.5
 shader_parameter/highland_start = 16.0
 shader_parameter/highland_end = 22.0
 shader_parameter/peak_start = 30.0
+=======
+shader_parameter/deep_color = Color(0.665278, 0.7342233, 1.5699195, 1)
+shader_parameter/beach_color = Color(1.0495763, 0.75806093, 0.41316953, 1)
+shader_parameter/lowland_color = Color(0.6479475, 0.84584075, 0.16003829, 1)
+shader_parameter/highland_color = Color(0.40423095, 0.6564848, 0.24708134, 1)
+shader_parameter/peak_color = Color(0.8663533, 0.84922934, 0.77045923, 1)
+shader_parameter/waterline_start = -1.0
+shader_parameter/waterline_end = 0.5
+shader_parameter/beach_end = 0.7000001594428404
+shader_parameter/highland_start = 2.0
+shader_parameter/highland_end = 7.5
+shader_parameter/peak_start = 3.0
+>>>>>>> Stashed changes
 shader_parameter/peak_end = 36.0

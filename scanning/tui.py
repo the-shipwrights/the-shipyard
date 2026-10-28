@@ -370,7 +370,33 @@ class App:
             "SUBMIT PARSED BOAT",
             "DISCARD PARSED BOAT",
         )
+<<<<<<< Updated upstream
         selection = self._menu_factory(options).show()
+=======
+        while True:
+            selection = self._menu_factory(options).show()
+
+            if selection == 0:
+                if self.latest_boat is None or not self.latest_boat.pieces:
+                    print("NO PARSED BOAT TO SUBMIT.")
+                else:
+                    # boat_id = submit_scanned_boat(self.latest_boat)
+                    # print(f"Boat submitted successfully with ID: {boat_id}")
+                    self._submit_boat(self.latest_boat)
+                self.latest_boat = None
+                break
+            elif selection == 1:
+                if self.latest_boat is None or not self.latest_boat.pieces:
+                    print("NO PARSED BOAT TO SUBMIT.")
+                    break
+                else:
+                    print(self.latest_boat)
+                    continue
+            elif selection == 2 or selection is None:
+                self.latest_boat = None
+                break
+
+>>>>>>> Stashed changes
 
         if selection == 0:
             if self.latest_boat is None or not self.latest_boat.pieces:
