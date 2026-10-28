@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://di8a3j0twck4" path="res://scripts/water_surface.gd" id="5_bdqx7"]
 [ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="5_v0nif"]
 [ext_resource type="PackedScene" uid="uid://c8dia3ibjtmut" path="res://packedscenes/terrain_world.scn" id="6_bdqx7"]
-[ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="6_hmybg"]
 [ext_resource type="CapsuleMesh" uid="uid://djr2v02euhm6t" path="res://assets/shrub.tres" id="7_hmybg"]
 [ext_resource type="Script" uid="uid://8334r6cv5rsd" path="res://scripts/shrubbery_generator.gd" id="7_oimm0"]
 [ext_resource type="Shader" uid="uid://7drxi7dothfo" path="res://shrubbery.gdshader" id="7_v0nif"]
@@ -143,12 +142,16 @@ material = ExtResource("10_xil1t")
 radial_segments = 4
 rings = 1
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_hlqd2"]
-panorama = ExtResource("6_hmybg")
-energy_multiplier = 1.42
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_k4arb"]
+sky_top_color = Color(0.2627451, 0.654902, 0.8235294, 1)
+sky_horizon_color = Color(0.6245106, 0.85557425, 0.96970576, 1)
+sky_curve = 0.15345095
+ground_bottom_color = Color(0.27450982, 0.48235294, 0.6784314, 1)
+ground_horizon_color = Color(0.27450982, 0.4862745, 0.68235296, 1)
+sun_curve = 0.111333385
 
 [sub_resource type="Sky" id="Sky_6mxlk"]
-sky_material = SubResource("PanoramaSkyMaterial_hlqd2")
+sky_material = SubResource("ProceduralSkyMaterial_k4arb")
 
 [sub_resource type="Environment" id="Environment_laaxe"]
 background_mode = 2
@@ -187,7 +190,6 @@ script = ExtResource("5_bdqx7")
 [node name="Terrain" type="Node3D" parent="World" unique_id=1992012816]
 
 [node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_bdqx7")]
-depth = 301
 
 [node name="MultiMeshSpamming" type="Node3D" parent="World/Terrain" unique_id=846106499]
 
@@ -272,7 +274,6 @@ light_color = Color(0.35292637, 0.40151235, 0.1099269, 1)
 light_energy = 1.468
 light_indirect_energy = 2.67
 light_volumetric_fog_energy = 0.979
-
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1821364644]
 environment = SubResource("Environment_laaxe")
