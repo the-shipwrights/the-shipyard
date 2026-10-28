@@ -58,7 +58,7 @@ uniform sampler2D terrain_height : filter_linear, repeat_disable;
 uniform sampler2D shore_dist : filter_linear, repeat_disable;
 uniform vec2 terrain_origin;
 uniform float cell_size = 1.0;
-uniform float terrain_res = 101.0;
+uniform vec2 terrain_size = vec2(101.0);
 uniform float sea_level = 0.0;
 uniform float ocean_depth_m = 5.0;
 uniform float shore_max_dist = 40.0;
@@ -88,12 +88,14 @@ float value_noise(vec2 p) {
 
 vec2 terrain_uv(vec2 xz) {
 	vec2 grid = (xz - terrain_origin) / cell_size;
-	return (grid + 0.5) / terrain_res; // +0.5: texels are centered on vertices
+	return (grid + 0.5) / terrain_size;
+	// +0.5: texels are centered on vertices
 }
 
 bool inside_terrain(vec2 xz) {
 	vec2 grid = (xz - terrain_origin) / cell_size;
-	return all(greaterThanEqual(grid, vec2(0.0))) && all(lessThanEqual(grid, vec2(terrain_res - 1.0)));
+	return all(greaterThanEqual(grid, vec2(0.0)))
+		&& all(lessThanEqual(grid, terrain_size - vec2(1.0)));
 }
 
 // Vertical water depth from the heightmap

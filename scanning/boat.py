@@ -58,11 +58,39 @@ class PieceType:
 # Piece type catalogue
 # ------------------------------------------------------------------
 
-HULL_STERN = PieceType(
-    id=2, name="hull_stern", category="hull", width=4, height=4,
+# Hull Bow
+
+# 0 UP FORWARD
+# 1 UP BACKWARD
+# 2 DOWN FORWARD
+# 3 DOWN BACKWARD
+
+# Hull Stern
+# 4 UP FORWARD
+# 5 UP BACKWARD
+# 6 DOWN FORWARD
+# 7 DOWN BACKWARD
+
+# Hull Section
+# 8 UP
+# 9 DOWN
+
+# Cabin
+# 10 default
+
+# Chimney
+# 11 default
+
+# Sail
+# 12 FORWARD
+# 13 BACKWARD
+
+
+HULL_BOW = PieceType(
+    id=0, name="hull_bow", category="hull", width=6, height=4,
     attachmentPoints=(
-        AttachmentPoint("to_hull", 3, 2),
-        AttachmentPoint("to_middle_left", 2, 3),
+        AttachmentPoint("to_hull", 3, 0),
+        AttachmentPoint("to_middle_right", 0, 3),
         AttachmentPoint("to_accessory", 0, 3),
         AttachmentPoint("to_accessory", 1, 3),
         AttachmentPoint("to_accessory", 2, 3)
@@ -82,11 +110,11 @@ HULL_SECTION = PieceType(
     ),
 )
 
-HULL_BOW = PieceType(
-    id=0, name="hull_bow", category="hull", width=6, height=4,
+HULL_STERN = PieceType(
+    id=2, name="hull_stern", category="hull", width=4, height=4,
     attachmentPoints=(
-        AttachmentPoint("to_hull", 3, 0),
-        AttachmentPoint("to_middle_right", 0, 3),
+        AttachmentPoint("to_hull", 3, 2),
+        AttachmentPoint("to_middle_left", 2, 3),
         AttachmentPoint("to_accessory", 0, 3),
         AttachmentPoint("to_accessory", 1, 3),
         AttachmentPoint("to_accessory", 2, 3)
@@ -103,22 +131,29 @@ CABIN = PieceType(
     ),
 )
 
-TARP = PieceType(
-    id=1000, name="tarp", category="middle", width=100, height=80,
+# TODO define attachmentpoints better @fra ?
+BIG_CABIN = PieceType(
+    id=4, name="big_cabin", category="middle", width=4, height=6,
     attachmentPoints=(
-        
+        AttachmentPoint("from_middle", 0, 0),
+        AttachmentPoint("to_accessory", 0, 2),
+        AttachmentPoint("to_accessory", 1, 2),
+        AttachmentPoint("to_accessory", 2, 2)
     ),
 )
 
-FLAG = PieceType(
-    id=1000, name="flag", category="accessory", width=100, height=100,
-    attachmentPoints=(
-        
-    ),
-)
+
+# Accessories have IDs starting from 10
 
 CHIMNEY = PieceType(
-    id=1000, name="chimney", category="accessory", width=100, height=100,
+    id=10, name="chimney", category="accessory", width=2, height=4,
+    attachmentPoints=(
+        
+    ),
+)
+
+SAIL = PieceType(
+    id=11, name="sail", category="accessory", width=8, height=8,
     attachmentPoints=(
         
     ),
@@ -132,6 +167,9 @@ PIECE_TYPES: dict[int, PieceType] = {
     HULL_SECTION.id: HULL_SECTION,
     HULL_STERN.id: HULL_STERN,
     CABIN.id: CABIN,
+    BIG_CABIN.id: BIG_CABIN,
+    CHIMNEY.id: CHIMNEY,
+    SAIL.id: SAIL,
 }
 
 # ------------------------------------------------------------------
@@ -165,6 +203,8 @@ PIECE_TEXT: dict[str, list[str]] = {
     "hull_section": ["└──────┘", "│      │", "│      │", "┌──────┐"],
     "hull_stern": [" ──────┘", "╲      │", "│      │", "┌──────┐"],
     "cabin": ["└──────┘", "│  []  │", "┌──────┐"],
+    "big_cabin":["┌──────┐","│      │","│      │","│      │","│      │","└──────┘"],
+    "chimney":["┌───┐", "│   │", "│   │", "│   │"],
 }
 
 # ------------------------------------------------------------------
