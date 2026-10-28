@@ -24,6 +24,12 @@ var waypoint_index := 1
 var throttle_active := false
 var current_speed := 0.0
 
+var normal_visual_scale := Vector3.ONE
+var horn_active := false
+
+func _ready() -> void:
+	normal_visual_scale = visuals.scale
+
 
 func configure(data: Dictionary) -> void:
 	boat_id = str(data.get("id", ""))
@@ -37,6 +43,20 @@ func apply_control(command: String, active: bool) -> void:
 	if command == "accelerate":
 		throttle_active = active
 		trail.show()
+	if command == "horn":
+		# Ignore duplicate messages; only respond to rising/falling edges.
+		if active == horn_active:
+			return
+
+		horn_active = active
+
+		if horn_active:
+			visuals.scale = normal_visual_scale * 2.0
+		else:
+			# Equivalent to halving the enlarged scale; restores the exact baseline.
+			visuals.scale = normal_visual_scale
+
+		id_label.visible = horn_active
 
 
 func _process(delta: float) -> void:
@@ -48,6 +68,9 @@ func _process(delta: float) -> void:
 	
 	if not throttle_active:
 		trail.hide()
+	
+	if not horn_active:
+		id_label.hide()
 	
 	var target := route[waypoint_index]
 	var to_target := target - global_position
