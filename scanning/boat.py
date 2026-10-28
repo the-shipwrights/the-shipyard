@@ -58,34 +58,6 @@ class PieceType:
 # Piece type catalogue
 # ------------------------------------------------------------------
 
-# Hull Bow
-
-# 0 UP FORWARD
-# 1 UP BACKWARD
-# 2 DOWN FORWARD
-# 3 DOWN BACKWARD
-
-# Hull Stern
-# 4 UP FORWARD
-# 5 UP BACKWARD
-# 6 DOWN FORWARD
-# 7 DOWN BACKWARD
-
-# Hull Section
-# 8 UP
-# 9 DOWN
-
-# Cabin
-# 10 default
-
-# Chimney
-# 11 default
-
-# Sail
-# 12 FORWARD
-# 13 BACKWARD
-
-
 HULL_BOW = PieceType(
     id=0, name="hull_bow", category="hull", width=6, height=4,
     attachmentPoints=(
@@ -148,14 +120,14 @@ BIG_CABIN = PieceType(
 CHIMNEY = PieceType(
     id=10, name="chimney", category="accessory", width=2, height=4,
     attachmentPoints=(
-        
+
     ),
 )
 
 SAIL = PieceType(
     id=11, name="sail", category="accessory", width=8, height=8,
     attachmentPoints=(
-        
+
     ),
 )
 
@@ -205,6 +177,49 @@ PIECE_TEXT: dict[str, list[str]] = {
     "cabin": ["└──────┘", "│  []  │", "┌──────┐"],
     "big_cabin":["┌──────┐","│      │","│      │","│      │","│      │","└──────┘"],
     "chimney":["┌───┐", "│   │", "│   │", "│   │"],
+}
+
+# ------------------------------------------------------------------
+# Symbol types
+# ------------------------------------------------------------------
+
+@dataclass
+class SymbolType:
+    id: int
+    x: float
+    y: float
+    z: float
+    width: float
+    height: float
+
+# Symbol type catalogue
+# ------------------------------------------------------------------
+
+HULL_BOW      = SymbolType(id=0, x=0.9, y=3, z=0, width=1.333, height=0.8)
+HULL_SECTION  = SymbolType(id=1, x=2, y=3, z=0, width=1.333, height=0.267)
+HULL_STERN    = SymbolType(id=2, x=3.1, y=3, z=0, width=1.333, height=1.333)
+CABIN         = SymbolType(id=3, x=2, y=1.5, z=1, width=1.333, height=1.156)
+# Accessories have IDs starting from 10
+CHIMNEY       = SymbolType(id=10, x=1, y=2.578, z=2, width=0.889, height=0.889)
+SAIL          = SymbolType(id=11, x=4.650, y=4.023, z=3, width=1.156, height=0.729)
+# Extras have IDs starting from 20
+EXTRA_BOW     = SymbolType(id=20, x=0.9, y=1, z=0, width=1.333, height=0.8)
+EXTRA_SECTION = SymbolType(id=21, x=2, y=1, z=0, width=1.333, height=0.267)
+EXTRA_STERN   = SymbolType(id=22, x=3.1, y=1, z=0, width=1.333, height=1.333)
+
+# Symbol type from id
+# ------------------------------------------------------------------
+
+SYMBOL_TYPES: dict[int, SymbolType] = {
+    HULL_BOW.id:      HULL_BOW,
+    HULL_SECTION.id:  HULL_SECTION,
+    HULL_STERN.id:    HULL_STERN,
+    CABIN.id:         CABIN,
+    CHIMNEY.id:       CHIMNEY,
+    SAIL.id:          SAIL,
+    EXTRA_BOW.id:     EXTRA_BOW,
+    EXTRA_SECTION.id: EXTRA_SECTION,
+    EXTRA_STERN.id:   EXTRA_STERN
 }
 
 # ------------------------------------------------------------------
@@ -301,7 +316,7 @@ class Boat:
 
             lines.append(
                 f"  Piece {piece_type.name} "
-                f"(type_id={piece.id}), "
+                f"(id={piece.id}), "
                 f"position=({piece.x}, {piece.y}), "
                 f"size=({piece_type.width}x{piece_type.height}), "
                 f"flipped={piece.flipped}, "
@@ -310,13 +325,13 @@ class Boat:
 
         return "\n".join(lines)
 
-    # Text art 
+    # Text art
     # ------------------------------------------------------------------
 
     def to_text(self) -> str:
         """
         Generate a text-based image representation of the boat.
-        
+
         Note: No separate matrix/grid is stored in Boat.
         """
         if not self.pieces:
