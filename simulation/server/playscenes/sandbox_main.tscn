@@ -8,11 +8,6 @@
 [ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="5_v0nif"]
 [ext_resource type="PackedScene" uid="uid://c8dia3ibjtmut" path="res://packedscenes/terrain_world.scn" id="6_bdqx7"]
 [ext_resource type="Texture2D" uid="uid://c7tddfsp5m4ai" path="res://assets/textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="6_hmybg"]
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-[ext_resource type="PackedScene" uid="uid://byq5rntwor60o" path="res://packedscenes/terrain_world.tscn" id="6_oimm0"]
-=======
 [ext_resource type="CapsuleMesh" uid="uid://djr2v02euhm6t" path="res://assets/shrub.tres" id="7_hmybg"]
 [ext_resource type="Script" uid="uid://8334r6cv5rsd" path="res://scripts/shrubbery_generator.gd" id="7_oimm0"]
 [ext_resource type="Shader" uid="uid://7drxi7dothfo" path="res://shrubbery.gdshader" id="7_v0nif"]
@@ -21,8 +16,6 @@
 [ext_resource type="Texture2D" uid="uid://cpbvjc6v4lfqo" path="res://assets/textures/house.tres" id="11_l874p"]
 [ext_resource type="BoxMesh" uid="uid://c6kxybbc25rxl" path="res://assets/port.tres" id="13_23xk0"]
 [ext_resource type="PackedScene" uid="uid://borp4b76c3qod" path="res://packedscenes/vignette.tscn" id="14_tqpwj"]
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_v0nif"]
 
@@ -193,17 +186,8 @@ script = ExtResource("5_bdqx7")
 
 [node name="Terrain" type="Node3D" parent="World" unique_id=1992012816]
 
-<<<<<<< Updated upstream
 [node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_bdqx7")]
 depth = 301
-=======
-<<<<<<< Updated upstream
-[node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_oimm0")]
-depth = 283
-=======
-[node name="TerrainWorld" parent="World/Terrain" unique_id=510233500 instance=ExtResource("6_bdqx7")]
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 
 [node name="MultiMeshSpamming" type="Node3D" parent="World/Terrain" unique_id=846106499]
 
@@ -276,13 +260,7 @@ size = 155.60472
 script = ExtResource("5_v0nif")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1224911466]
-<<<<<<< Updated upstream
 transform = Transform3D(0.43614244, 0.6222805, 0.650036, -0.74818414, 0.6521249, -0.12228504, -0.50000024, -0.43301296, 0.7499997, -81.03685, 42.942524, 0)
-=======
-<<<<<<< Updated upstream
-transform = Transform3D(0.8660253, -0.2500003, 0.43301278, 0, 0.8660252, 0.50000036, -0.50000024, -0.433013, 0.7499997, -119.185356, 14.195905, 0)
-=======
-transform = Transform3D(1, 0, 0, 0, 0.999246, -0.038827926, 0, 0.038827926, 0.999246, -81.03685, 42.942524, 0)
 light_color = Color(0.92156863, 0.8117647, 0.48235294, 1)
 light_energy = 0.763
 light_indirect_energy = 2.67
@@ -294,8 +272,7 @@ light_color = Color(0.35292637, 0.40151235, 0.1099269, 1)
 light_energy = 1.468
 light_indirect_energy = 2.67
 light_volumetric_fog_energy = 0.979
->>>>>>> Stashed changes
->>>>>>> Stashed changes
+
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1821364644]
 environment = SubResource("Environment_laaxe")

@@ -1,15 +1,15 @@
-[gd_resource type="ArrayMesh" format=4 uid="uid://imd4txfjkedx"]
+[gd_resource type="ArrayMesh" format=4 uid="uid://7j3l5duuvsdn"]
 
-[ext_resource type="Texture2D" uid="uid://cpbvjc6v4lfqo" path="res://assets/textures/house.tres" id="1_6cavm"]
+[ext_resource type="Texture2D" uid="uid://dgds7ho7plpr1" path="res://assets/3dmodels/house_house.png" id="1_6cavm"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6cavm"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0pjhb"]
 resource_name = "Material"
 cull_mode = 2
 albedo_texture = ExtResource("1_6cavm")
 roughness = 0.66504854
 metadata/_gltf_primary_texture_coord = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_0pjhb"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_s7xb2"]
 _surfaces = [{
 "aabb": AABB(-1, 0, -1, 2, 2.6034684, 2),
 "format": 34896613377,
@@ -31,7 +31,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 42,
 "index_data": PackedByteArray("AAABAAIAAwAEAAUAAwAGAAQABwAIAAkABwAKAAgACwAMAA0ACwAOAAwADwAQABEADwASABAAEwAUABUAEwAWABQAFwAYABkAGgAbABwAHQAeAB8A"),
-"material": SubResource("StandardMaterial3D_6cavm"),
+"material": SubResource("StandardMaterial3D_0pjhb"),
 "name": "Material",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
@@ -39,4 +39,4 @@ _surfaces = [{
 "vertex_data": PackedByteArray("CvioxPQH////f////3////QHqMT0B/////8AAP//9L/0B6jECvgBwAr4qMQK+EXBAAAAAP//vr4AAAAA//+S1PQHqMT0B5rU9AeoxAr4VNUAAAAAAADi0wAAAAAAAP+///8AAP///7///wAAAAD/vwAAAAD///+///8AAAAACdYK+KjECvgQ1gr4qMT0B87W//8AAP//VNUAAAAAAAAZ/wr4qMT0Bxn/9AeoxPQHFv///wAAAAAd//9/////f6Pv9AeoxAr4o+/0B6jE9Aej7/QHqMQK+P///3////9///8K+KjECvj//wr4qMQK+KPv/3////9/o+8K+KjE9Aej7/9/z9L/f8/S/3/P0hD+7gEQ/u4BEP7fARD+/QG81XXUxtVw1KnWAtTg1ODUAAD/fwAA/38AAP9/AAD/fyQrxCkbK8kpPCo7KvwrVSl2v4u/gL+Av3/Ahr6CvnvAmG/Lt5hvy7eYb8u3/38vrf9/L63/fy+tzDdmEMw3ZhDMN2YQ")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_0pjhb")
+shadow_mesh = SubResource("ArrayMesh_s7xb2")
