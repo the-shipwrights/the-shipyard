@@ -15,15 +15,16 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	camera_height = 4.8
 	particle_count = 3
 	
 	particle_positions[0] = $CloudParticle1.position
 	particle_positions[1] = $CloudParticle2.position
 	particle_positions[2] = $CloudParticle3.position
 
-	particle_radiuses[0] = 1.0
-	particle_radiuses[1] = 1.0
-	particle_radiuses[2] = 1.0
+	particle_radiuses[0] = $CloudParticle1.scale.x / 2
+	particle_radiuses[1] = $CloudParticle2.scale.x / 2
+	particle_radiuses[2] = $CloudParticle3.scale.x / 2
 	
 	material.set_shader_parameter("screen_height", camera_height)
 	material.set_shader_parameter("particle_positions", particle_positions)
