@@ -4,6 +4,7 @@ class_name MeshConstructor
 
 const SCALE_FACTOR := 0.25
 
+# omg my eyes
 const HULL_BOW_SCENE: PackedScene = preload(
 	"res://packedscenes/boat_components/hull_bow.tscn"
 )
@@ -73,7 +74,7 @@ func _make_editor_preview_data() -> Dictionary:
 				{"id": 1, "x": 4, "y": 0},    # hull section
 				{"id": 1, "x": 8, "y": 0},    # hull section
 				{"id": 1, "x": 12, "y": 0},   # hull section
-				{"id": 0, "x": 16, "y": 0},   # bow
+				{"id": 0, "x": 15, "y": 0},   # bow
 				{"id": 4, "x": 4, "y": 4},    # big cabin
 				{"id": 3, "x": 8, "y": 4},    # cabin
 				{"id": 10, "x": 9, "y": 7},   # chimney
