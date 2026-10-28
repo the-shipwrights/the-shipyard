@@ -45,6 +45,7 @@ shadow_mesh = SubResource("ArrayMesh_thdnb")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6tki6"]
 resource_name = "primary"
 cull_mode = 2
+albedo_color = Color(0.62961227, 0.43503362, 0.56597483, 1)
 roughness = 0.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jmvys"]
@@ -140,6 +141,7 @@ roughness = 0.5
 [node name="HullStern" type="Node3D" unique_id=16027531 node_paths=PackedStringArray("meshes")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 script = ExtResource("1_6tki6")
+primary_color = Color(0.62961227, 0.43503362, 0.56597483, 1)
 meshes = [NodePath("stern-body"), NodePath("stern-floor"), NodePath("hull-rail")]
 
 [node name="stern-body" type="MeshInstance3D" parent="." unique_id=892442082]
