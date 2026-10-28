@@ -205,193 +205,193 @@ columns = 4
 script = ExtResource("2_6jt7g")
 palette_colors = Array[Color]([Color(0.90588236, 0.25882354, 0.2627451, 1), Color(0.92156863, 0.5568628, 0.3529412, 1), Color(0.9137255, 0.8, 0.38039216, 1), Color(0.81960785, 0.8901961, 0.4627451, 1), Color(0.654902, 0.73333335, 0.4509804, 1), Color(0.49803922, 0.8235294, 0.3764706, 1), Color(0.25882354, 0.79607844, 0.42745098, 1), Color(0.29411766, 0.7176471, 0.6039216, 1), Color(0.27450982, 0.69411767, 0.76862746, 1), Color(0.30980393, 0.57254905, 0.95686275, 1), Color(0.43137255, 0.45882353, 0.7882353, 1), Color(0.69803923, 0.33333334, 0.43529412, 1), Color(0.09795057, 0.09661385, 0.029443337, 1), Color(0.78039217, 0.654902, 0.5372549, 1), Color(0.69411767, 0.62352943, 0.59607846, 1), Color(0.8352941, 0.827451, 0.83137256, 1)])
 
-[node name="PaletteSwatch" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=2134775248]
+[node name="PaletteSwatch" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=588736725]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/PaletteSwatch" unique_id=1232867170]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/PaletteSwatch" unique_id=1986825102]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ct0er")
 
-[node name="@Control@26192" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1977291101]
+[node name="@Control@19833" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1626759834]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26192" unique_id=322573235]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19833" unique_id=2092710524]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_4vjqg")
 
-[node name="@Control@26193" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1051744156]
+[node name="@Control@19834" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=734698759]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26193" unique_id=594951350]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19834" unique_id=394981764]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_v02wf")
 
-[node name="@Control@26194" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=358479551]
+[node name="@Control@19835" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=169880281]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26194" unique_id=1987879842]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19835" unique_id=535490168]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_e28wa")
 
-[node name="@Control@26195" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=297406233]
+[node name="@Control@19836" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=2053499792]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26195" unique_id=745787476]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19836" unique_id=796649319]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_xmlon")
 
-[node name="@Control@26196" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1445430794]
+[node name="@Control@19837" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1019788883]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26196" unique_id=628339592]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19837" unique_id=2057139825]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_t30ng")
 
-[node name="@Control@26197" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1983567755]
+[node name="@Control@19838" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=339906816]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26197" unique_id=1455130425]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19838" unique_id=828058220]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_s5p5q")
 
-[node name="@Control@26198" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1547304550]
+[node name="@Control@19839" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1072383671]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26198" unique_id=852250158]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19839" unique_id=1978068003]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_d1irj")
 
-[node name="@Control@26199" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=2029537236]
+[node name="@Control@19840" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1685724022]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26199" unique_id=294896632]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19840" unique_id=2118022977]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dxypb")
 
-[node name="@Control@26200" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1298986118]
+[node name="@Control@19841" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=2107585112]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26200" unique_id=1660989446]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19841" unique_id=1133646163]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ya4qn")
 
-[node name="@Control@26201" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=261070826]
+[node name="@Control@19842" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=229683987]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26201" unique_id=8708537]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19842" unique_id=1519977161]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_uqxm3")
 
-[node name="@Control@26202" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=902359183]
+[node name="@Control@19843" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=198401599]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26202" unique_id=1169268688]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19843" unique_id=1908827626]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_rt7dm")
 
-[node name="@Control@26203" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=659672697]
+[node name="@Control@19844" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=324012817]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26203" unique_id=935051384]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19844" unique_id=531465717]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_4tu2b")
 
-[node name="@Control@26204" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1733180862]
+[node name="@Control@19845" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=361936814]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26204" unique_id=549082583]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19845" unique_id=1188337429]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_5krvr")
 
-[node name="@Control@26205" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=635895716]
+[node name="@Control@19846" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=315341095]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26205" unique_id=1088092913]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19846" unique_id=2138558620]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_1ejna")
 
-[node name="@Control@26206" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=504954399]
+[node name="@Control@19847" type="Control" parent="SafeArea/Content/PaletteRegion/Palette" unique_id=1962520526]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 mouse_filter = 2
 metadata/_palette_generated = true
 
-[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@26206" unique_id=632869368]
+[node name="Color" type="Panel" parent="SafeArea/Content/PaletteRegion/Palette/@Control@19847" unique_id=986925166]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

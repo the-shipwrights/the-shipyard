@@ -150,7 +150,6 @@ func _begin_placement(piece_id: int) -> void:
 
 	var locations := _get_open_locations(piece_id)
 	boat_preview.set_placement_candidates(piece_id, locations)
-
 	if locations.is_empty():
 		status_label.text = "No open " + str(config["name"]) + " attachment locations."
 		return
@@ -380,5 +379,5 @@ func _on_submit_completed(result: int, response_code: int, headers: PackedString
 func _get_api_base() -> String:
 	if OS.has_feature("web"):
 		var window = JavaScriptBridge.get_interface("window")
-		return "http://" + str(window.location.hostname) + ":8000"
+		return str(window.location.origin)
 	return "http://127.0.0.1:8000"

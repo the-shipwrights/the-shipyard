@@ -30,6 +30,7 @@ func _ready() -> void:
 	network_manager.initial_boats_received.connect(_on_initial_boats_received)
 	network_manager.boat_launched.connect(_on_boat_launched)
 	network_manager.boat_control_received.connect(_on_boat_control_received)
+	network_manager.boat_removed.connect(_on_boat_removed)
 
 func _on_initial_boats_received(boats: Array) -> void:
 	for boat_data in boats:
@@ -39,6 +40,15 @@ func _on_initial_boats_received(boats: Array) -> void:
 
 func _on_boat_launched(boat_data: Dictionary) -> void:
 	_spawn_or_update_boat(boat_data)
+
+
+func _on_boat_removed(boat_id: String) -> void:
+	var boat := spawned_boats.get(boat_id) as Boat
+	if is_instance_valid(boat):
+		boat.queue_free()
+
+	spawned_boats.erase(boat_id)
+	planned_routes.erase(boat_id)
 
 
 func _on_boat_control_received(

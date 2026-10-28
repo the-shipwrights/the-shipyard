@@ -303,3 +303,231 @@ code {
     border-right-color: var(--border);
   }
 }
+
+.admin-shell {
+  width: min(1080px, 100%);
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+  text-align: left;
+}
+
+.admin-header,
+.admin-toolbar,
+.boat-card-heading,
+.admin-toolbar-actions,
+.boat-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.admin-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 18px;
+}
+
+.admin-header h1 {
+  font-size: clamp(30px, 5vw, 44px);
+  margin: 2px 0 0;
+}
+
+.admin-header a {
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.admin-content {
+  padding-top: 24px;
+}
+
+.admin-login,
+.boat-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.admin-login {
+  width: min(440px, 100%);
+  box-sizing: border-box;
+  margin: 48px auto;
+  padding: 24px;
+}
+
+.admin-login h2 {
+  margin-bottom: 8px;
+}
+
+.admin-login > p:not(.admin-message) {
+  margin-bottom: 22px;
+  font-size: 14px;
+}
+
+.admin-login label,
+.boat-edit-form > label {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-shell input:not([type="color"]),
+.admin-shell select,
+.admin-shell textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--bg);
+  color: var(--text-h);
+  font: 15px/1.4 var(--sans);
+}
+
+.admin-shell textarea {
+  font-family: var(--mono);
+  font-size: 13px;
+  resize: vertical;
+}
+
+.admin-shell button {
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #fff;
+  font: 600 14px/1.2 var(--sans);
+  cursor: pointer;
+}
+
+.admin-shell button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.admin-shell button.secondary {
+  border-color: var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.admin-shell button.danger {
+  border-color: #c0392b;
+  background: #c0392b;
+}
+
+.admin-toolbar {
+  margin-bottom: 14px;
+  color: var(--text-h);
+}
+
+.admin-toolbar-actions {
+  justify-content: flex-end;
+}
+
+.boat-list {
+  display: grid;
+  gap: 16px;
+}
+
+.boat-card {
+  padding: 20px;
+}
+
+.boat-card h2 {
+  margin: 0;
+}
+
+.boat-status {
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: var(--accent-bg);
+  color: var(--text-h);
+  font-size: 12px;
+}
+
+.boat-meta {
+  margin: 8px 0 18px;
+  font-size: 13px;
+}
+
+.color-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.color-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-h);
+  font-size: 14px;
+}
+
+.color-field input {
+  width: 44px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  background: var(--bg);
+}
+
+.boat-actions {
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.admin-message {
+  margin: 10px 0;
+  color: #247a3e;
+  font-size: 14px;
+}
+
+.admin-message.error {
+  color: #c0392b;
+}
+
+.empty-state {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .admin-shell {
+    padding: 20px 14px 40px;
+  }
+
+  .admin-header,
+  .boat-card-heading {
+    align-items: flex-start;
+  }
+
+  .admin-toolbar {
+    align-items: flex-start;
+  }
+
+  .color-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .boat-card {
+    padding: 16px;
+  }
+}
