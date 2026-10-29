@@ -139,7 +139,9 @@ if [[ "$api_ready" -ne 1 ]]; then
     exit 1
 fi
 
-if [[ -n "$GODOT" ]]; then
+if [[ "${SHIPYARD_START_LOCAL_SIMULATION:-1}" == "0" ]]; then
+    printf 'Skipping the local simulation; a remote simulation will connect through the tunnel.\n'
+elif [[ -n "$GODOT" ]]; then
     printf 'Starting the Godot simulation...\n'
     "$GODOT" --path "$REPO_ROOT/simulation/server" &
     GODOT_PID=$!

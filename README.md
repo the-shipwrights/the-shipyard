@@ -105,5 +105,15 @@ For local development, the Vite server proxies `/api` and `/ws` to FastAPI. Star
 For running cloudflare only
 
 ```bash
+# Start parser and peripherals (simulation)
+./Start-Event-Split.sh
+
+# Start it with remote simulation
+SHIPYARD_START_LOCAL_SIMULATION=0 bash Start-Event-Split.sh
+
+# Run the public tunnel
 cloudflared tunnel --protocol http2 --url http://127.0.0.1:8000
+
+# Open on the simulation pc
+SHIPYARD_SIMULATION_WS_BASE="wss://<current-trycloudflare-host>" ./archipelago.x86_64
 ```
