@@ -109,7 +109,6 @@ func _make_editor_preview_data() -> Dictionary:
 				{"id": 1, "x": 8, "y": 0},    # hull section
 				{"id": 1, "x": 12, "y": 0},   # hull section
 				{"id": 0, "x": 15, "y": 0},   # bow
-				{"id": 4, "x": 4, "y": 4},    # big cabin
 				{"id": 3, "x": 8, "y": 4},    # cabin
 				{"id": 10, "x": 9, "y": 5},   # chimney
 				{"id": 11, "x": 12, "y": 4},  # sail
@@ -217,11 +216,6 @@ func _create_piece_node(
 			piece_node = packed_scene.instantiate() as Node3D
 			is_custom_model = piece_node != null # ?
 
-
-
-
-
-
 	if is_custom_model:
 		piece_node.scale *= SCALE_FACTOR
 
@@ -246,6 +240,8 @@ func _create_piece_node(
 		pos_y + visual_height / 2.0,
 		0.0
 	)
+	
+	piece_node.position
 
 	if flipped:
 		piece_node.scale.x *= -1.0

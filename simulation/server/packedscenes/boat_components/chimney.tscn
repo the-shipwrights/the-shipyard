@@ -81,20 +81,20 @@ meshes = [NodePath("chimney-body"), NodePath("chimney-sec"), NodePath("detail_00
 secondary_color = Color(0.5653126, 0.41913217, 0.33795124, 1)
 detail_color = Color(0.69051224, 0.37854525, 0.47636712, 1)
 
-[node name="chimney-body" parent="." index="0" unique_id=1156259903]
-transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 0, -0.041547, 0)
+[node name="chimney-body" parent="." index="0" unique_id=38797879]
+transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 2.5757227, -0.041547954, 0.018547058)
 surface_material_override/0 = SubResource("StandardMaterial3D_caio1")
 
-[node name="chimney-sec" parent="." index="1" unique_id=1360224135]
-transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 0, -0.041547, 0)
+[node name="chimney-sec" parent="." index="1" unique_id=481662374]
+transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 2.5757227, -0.041547954, 0.018547058)
 surface_material_override/0 = SubResource("StandardMaterial3D_irw63")
 
-[node name="detail_001" parent="." index="2" unique_id=104134547]
-transform = Transform3D(0.8, 0, 0, 0, 0.20088004, 0, 0, 0, 0.8, 0, 5.5830936, 0)
+[node name="detail_001" parent="." index="2" unique_id=1108962264]
+transform = Transform3D(0.8, 0, 0, 0, 0.20088004, 0, 0, 0, 0.8, 2.5757227, 5.5830927, 0.018547058)
 surface_material_override/0 = SubResource("StandardMaterial3D_6j3re")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." index="3" unique_id=1525384866]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.583227, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5757227, 5.583226, 0.018547058)
 lifetime = 4.0
 process_material = SubResource("ParticleProcessMaterial_nsjaq")
 draw_pass_1 = SubResource("SphereMesh_rh8kf")
