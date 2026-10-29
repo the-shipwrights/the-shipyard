@@ -10,10 +10,14 @@ from scanning.boat import Boat, Piece
 
 def main():
     myBoat = Boat(pieces=[
-        Piece(2, 0, 0),    # stern
-        Piece(1, 4, 0),    # hull section
-        Piece(0, 8, 0),    # bow
-        Piece(3, 2, 4),    # cabin
+        Piece(2, 0, 0),     # stern
+        Piece(1, 4, 0),     # hull section
+        Piece(1, 8, 0),     # hull section
+        Piece(1, 12, 0),    # hull section
+        Piece(0, 16, 0),    # bow
+        Piece(3, 8, 4),     # cabin
+        Piece(10, 9, 7),    # chimney
+        Piece(11, 12, 4),   # Sail
     ])
 
     errors = myBoat.validate()

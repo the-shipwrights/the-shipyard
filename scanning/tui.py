@@ -102,10 +102,10 @@ class App:
         self.latest             = latest
         self._parse_snapshots   = False
 
-    def _on_snapshot(self, detections: list[dict], image_frame, image_height) -> None:
+    def _on_snapshot(self, detections: list[dict], image_frame, image_width, image_height) -> None:
         """Store a snapshot and optionally parse and handle its boat."""
 
-        self.latest_prediction = {"detections": detections, "image_height": image_height}
+        self.latest_prediction = {"detections": detections, "image_width": image_width, "image_height": image_height}
 
         # We send detections, image_frame, and image_height.
         self.latest = Latest(detections=detections, image_frame=image_frame, image_height=image_height)
@@ -368,18 +368,34 @@ class App:
         self.latest_boat = parse(self.latest_prediction)
         options = (
             "SUBMIT PARSED BOAT",
-            "DISCARD PARSED BOAT",
+            "PRINT PARSED BOAT",
+            "DISCARD PARSED BOAT"
         )
-        selection = self._menu_factory(options).show()
+        while True:
+            selection = self._menu_factory(options).show()
 
-        if selection == 0:
-            if self.latest_boat is None or not self.latest_boat.pieces:
-                print("NO PARSED BOAT TO SUBMIT.")
-            else:
-                self._submit_boat(self.latest_boat)
-            self.latest_boat = None
-        elif selection == 1 or selection is None:
-            self.latest_boat = None
+            if selection == 0:
+                if self.latest_boat is None or not self.latest_boat.pieces:
+                    print("NO PARSED BOAT TO SUBMIT.")
+                else:
+                    # boat_id = submit_scanned_boat(self.latest_boat)
+
+                    # print(f"Boat submitted successfully with ID: {boat_id}")
+                    self._submit_boat(self.latest_boat)
+                self.latest_boat = None
+                break
+            elif selection == 1:
+                if self.latest_boat is None or not self.latest_boat.pieces:
+                    print("NO PARSED BOAT TO SUBMIT.")
+                    break
+                else:
+                    print(self.latest_boat)
+                    continue
+            elif selection == 2 or selection is None:
+                self.latest_boat = None
+                break
+
+
         else:
             raise RuntimeError(f"Snapshot decision menu returned invalid selection: {selection!r}")
 

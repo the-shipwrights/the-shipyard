@@ -18,6 +18,7 @@ signal boat_removed(boat_id: String)
 
 ## the url of the server simulation.
 @export var endpoint_path := "/ws/simulation"
+@export var native_ws_base := "ws://127.0.0.1:8000"
 
 # ---------------------------------------
 # CONSTANTS & VARIABLES
@@ -68,13 +69,23 @@ func _connect_to_server() -> void:
 
 
 func _get_ws_url() -> String:
-	var host := "127.0.0.1"
-
 	if OS.has_feature("web"):
 		var window = JavaScriptBridge.get_interface("window")
-		host = str(window.location.hostname)
+		var scheme := "wss" if str(window.location.protocol) == "https:" else "ws"
+		return "%s://%s%s" % [
+			scheme,
+			str(window.location.host),
+			endpoint_path,
+		]
 
-	return "ws://%s:8000%s" % [host, endpoint_path]
+	var configured_base := OS.get_environment(
+		"SHIPYARD_SIMULATION_WS_BASE"
+	).strip_edges()
+
+	if configured_base.is_empty():
+		configured_base = native_ws_base
+
+	return configured_base.trim_suffix("/") + endpoint_path
 
 
 func _handle_network_message(json_text: String) -> void:

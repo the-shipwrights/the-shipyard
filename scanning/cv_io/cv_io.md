@@ -66,3 +66,9 @@ for each Criteria:
 
 ### 4. Return a `Boat` 
 Parser should be able to return a boat, allowing it to be submitted to the boat database.
+
+
+## IMPORTANT THINGS TO RESOLVE BEFORE STARTING
+- **Class mapping:** Define a single mapping from each detector class name and ID to a PieceType ID in [boat.py](../boat.py). Cover every CV class that's currently defined, and explicitly mark unsupported classes. Do not use detector class IDs directly as Piece.id (I thiiink that's the case right now?)
+- **Input and output shapes:** Document the prediction object and bounding-box keys. The current parser accepts {"detections": ..., "image_height": ...} with x1/y1/x2/y2 boxes. Define confidence range, image dimensions, coordinate origin, and behavior for malformed or unknown detections.
+- **Coordinate system:** Define the grid-cell dimensions and conversion to integer Piece.x and Piece.y, including the image-y to boat-y conversion. Use the existing Boat coordinate convention and example as a reference. This description sort of does this, but the current parse_predictions.py is hard to decipher the function of.
