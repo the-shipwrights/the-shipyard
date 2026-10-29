@@ -145,7 +145,7 @@ def model_train(
     model: str | Path | None = None,
     dataset: str | Path = "wooden_block_symbols",
     epochs: int = 10,
-    imgsz: int = 640,
+    imgsz: int = 960,
 ) -> str | Path:
     if not isinstance(epochs, int) or epochs <= 0:
         raise ValueError("epochs must be a positive integer")
@@ -178,7 +178,7 @@ def model_train(
 def model_predict_single(
     weights_path: Path | str | None,
     img_path: Path,
-    on_snapshot: Callable[[list[dict], ndarray, int], None],
+    on_snapshot: Callable[[list[dict], ndarray, int, int], None],
     threshold: bool = False,
 ) -> None:
     """
@@ -218,7 +218,7 @@ def model_predict_single(
     if not cv.imwrite(str(original_path), original_image):
         raise OSError(f"Failed to save original input image to {original_path}")
 
-    on_snapshot(result.summary(), image, image.shape[0])  # ty: ignore[unresolved-attribute]
+    on_snapshot(result.summary(), image, image.shape[1], image.shape[0])  # ty: ignore[unresolved-attribute]
 
     print(format_detections(result.summary()))  # ty: ignore[unresolved-attribute]
     print(f"\033[90mAnnotated prediction saved to {_display_path(annotated_path)}\033[0m")
@@ -243,7 +243,7 @@ def model_predict_single(
 def model_predict_cam(
     weights_path: str | Path | None,
     camera_idx: int,
-    on_snapshot: Callable[[list[dict], ndarray, int], None],
+    on_snapshot: Callable[[list[dict], ndarray, int, int], None],
     threshold: bool = False,
 ) -> None:
     """
@@ -259,6 +259,8 @@ def model_predict_cam(
 
     model = YOLO(weights_path)
     camera = cv.VideoCapture(camera_idx)
+    camera.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
+    camera.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
     if not camera.isOpened():
         camera.release()
         raise RuntimeError(f"Could not open camera index {camera_idx}")
@@ -310,7 +312,7 @@ def model_predict_cam(
                         f"Failed to save original camera snapshot to {original_path}"
                     )
                 print(format_detections(snapshot))
-                on_snapshot(snapshot, frame, frame.shape[0])
+                on_snapshot(snapshot, frame, frame.shape[1], frame.shape[0])
                 print(f"\033[90mAnnotated snapshot saved to {_display_path(annotated_path)}\033[0m")
                 print(f"Original snapshot saved to {_display_path(original_path)}")
 
