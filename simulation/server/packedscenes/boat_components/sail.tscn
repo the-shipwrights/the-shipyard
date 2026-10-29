@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://c64lw5fjvsu8j"]
+
+[ext_resource type="PackedScene" uid="uid://bvgpdn20rmyle" path="res://assets/3dmodels/sail.glb" id="1_snb5j"]
+[ext_resource type="Script" uid="uid://wdm2x7j1xwos" path="res://scripts/boat_piece.gd" id="2_gt216"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gt216"]
+resource_name = "secondary"
+cull_mode = 2
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gj3w1"]
+resource_name = "primary"
+cull_mode = 2
+albedo_color = Color(0.62660015, 0.62660015, 0.62660015, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gghej"]
+resource_name = "detail"
+cull_mode = 2
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ks37f"]
+resource_name = "detail"
+cull_mode = 2
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_56wf6"]
+resource_name = "secondary"
+cull_mode = 2
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_phs1j"]
+resource_name = "primary"
+cull_mode = 2
+albedo_color = Color(0.62660015, 0.62660015, 0.62660015, 1)
+roughness = 0.5
+
+[node name="sail" unique_id=2069218044 node_paths=PackedStringArray("meshes") instance=ExtResource("1_snb5j")]
+transform = Transform3D(7.54979e-08, 0, -1, 0, 1.2, 0, 1, 0, 7.54979e-08, 0, 0, 0)
+script = ExtResource("2_gt216")
+primary_color = Color(0.62660015, 0.62660015, 0.62660015, 1)
+meshes = [NodePath("base"), NodePath("big-sail"), NodePath("detail"), NodePath("detail-small"), NodePath("mast"), NodePath("small-sail")]
+
+[node name="base" parent="." index="0" unique_id=340975079]
+transform = Transform3D(-1.1308405, 0, 1.3871733e-07, 0, 1.4306852, 0, -9.886124e-08, 0, -1.5867411, 1.948927e-07, 0, -0.7548592)
+surface_material_override/0 = SubResource("StandardMaterial3D_gt216")
+
+[node name="big-sail" parent="." index="1" unique_id=68958188]
+transform = Transform3D(-1.1308405, 0, 1.3871733e-07, 0, 1.4306852, 0, -9.886124e-08, 0, -1.5867411, 1.948927e-07, 0, -0.7548592)
+surface_material_override/0 = SubResource("StandardMaterial3D_gj3w1")
+
+[node name="detail" parent="." index="2" unique_id=274009123]
+transform = Transform3D(-1.1308405, 0, 1.3871733e-07, 0, 1.4306852, 0, -9.886124e-08, 0, -1.5867411, 1.948927e-07, 0, -0.7548592)
+surface_material_override/0 = SubResource("StandardMaterial3D_gghej")
+
+[node name="detail-small" parent="." index="3" unique_id=1731061668]
+transform = Transform3D(-1.1308405, 0, 1.3871733e-07, 0, 1.4306852, 0, -9.886124e-08, 0, -1.5867411, 1.948927e-07, 0, -0.7548592)
+surface_material_override/0 = SubResource("StandardMaterial3D_ks37f")
+
+[node name="mast" parent="." index="4" unique_id=497063879]
+transform = Transform3D(-1.1308405, 0, 1.3871733e-07, 0, 1.4306852, 0, -9.886124e-08, 0, -1.5867411, 1.948927e-07, 0, -0.7548592)
+surface_material_override/0 = SubResource("StandardMaterial3D_56wf6")
+
+[node name="small-sail" parent="." index="5" unique_id=843889047]
+transform = Transform3D(-1.1308405, 0, 1.3871733e-07, 0, 1.4306852, 0, -9.886124e-08, 0, -1.5867411, 1.948927e-07, 0, -0.7548592)
+surface_material_override/0 = SubResource("StandardMaterial3D_phs1j")

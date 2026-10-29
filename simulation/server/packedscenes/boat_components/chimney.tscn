@@ -1,0 +1,100 @@
+[gd_scene format=3 uid="uid://uc0acmvojmaj"]
+
+[ext_resource type="PackedScene" uid="uid://ex1t3dqogly4" path="res://assets/3dmodels/chimney.glb" id="1_y82o4"]
+[ext_resource type="Script" uid="uid://wdm2x7j1xwos" path="res://scripts/boat_piece.gd" id="2_caio1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_caio1"]
+resource_name = "secondary"
+cull_mode = 2
+albedo_color = Color(0.5653126, 0.41913217, 0.33795124, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_irw63"]
+resource_name = "primary"
+cull_mode = 2
+albedo_color = Color(0.78112996, 0.6406247, 0.57524097, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6j3re"]
+resource_name = "detail"
+cull_mode = 2
+albedo_color = Color(0.69051224, 0.37854525, 0.47636712, 1)
+roughness = 0.5
+
+[sub_resource type="Gradient" id="Gradient_nhp4g"]
+offsets = PackedFloat32Array(0, 0.2716179, 0.6387361, 1)
+colors = PackedColorArray(0.6733639, 0.67336386, 0.67336386, 1, 0.6745098, 0.6745098, 0.6745098, 1, 0.972549, 0.972549, 0.972549, 0.4862745, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_t0xfr"]
+gradient = SubResource("Gradient_nhp4g")
+
+[sub_resource type="Curve" id="Curve_nhp4g"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_nhp4g"]
+curve = SubResource("Curve_nhp4g")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nsjaq"]
+lifetime_randomness = 0.23
+emission_shape_scale = Vector3(1, 0.43, 1)
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 0.8
+emission_ring_inner_radius = 0.0
+emission_ring_cone_angle = 90.0
+gravity = Vector3(0, 0.5, 0)
+linear_accel_min = -2.2351742e-06
+linear_accel_max = -2.2351742e-06
+scale_max = 4.0
+scale_curve = SubResource("CurveTexture_nhp4g")
+color_ramp = SubResource("GradientTexture1D_t0xfr")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yu54l"]
+transparency = 1
+shading_mode = 0
+diffuse_mode = 3
+specular_mode = 1
+disable_ambient_light = true
+disable_fog = true
+disable_specular_occlusion = true
+vertex_color_use_as_albedo = true
+heightmap_scale = 1.0
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="SphereMesh" id="SphereMesh_rh8kf"]
+material = SubResource("StandardMaterial3D_yu54l")
+radius = 0.25
+height = 0.5
+radial_segments = 4
+rings = 4
+
+[node name="chimney" unique_id=858179211 node_paths=PackedStringArray("meshes") instance=ExtResource("1_y82o4")]
+script = ExtResource("2_caio1")
+primary_color = Color(0.78112996, 0.6406247, 0.57524097, 1)
+meshes = [NodePath("chimney-body"), NodePath("chimney-sec"), NodePath("detail_001")]
+secondary_color = Color(0.5653126, 0.41913217, 0.33795124, 1)
+detail_color = Color(0.69051224, 0.37854525, 0.47636712, 1)
+
+[node name="chimney-body" parent="." index="0" unique_id=38797879]
+transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 2.5757227, -0.041547954, 0.018547058)
+surface_material_override/0 = SubResource("StandardMaterial3D_caio1")
+
+[node name="chimney-sec" parent="." index="1" unique_id=481662374]
+transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 2.5757227, -0.041547954, 0.018547058)
+surface_material_override/0 = SubResource("StandardMaterial3D_irw63")
+
+[node name="detail_001" parent="." index="2" unique_id=1108962264]
+transform = Transform3D(0.8, 0, 0, 0, 0.20088004, 0, 0, 0, 0.8, 2.5757227, 5.5830927, 0.018547058)
+surface_material_override/0 = SubResource("StandardMaterial3D_6j3re")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." index="3" unique_id=1525384866]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5757227, 5.583226, 0.018547058)
+lifetime = 4.0
+process_material = SubResource("ParticleProcessMaterial_nsjaq")
+draw_pass_1 = SubResource("SphereMesh_rh8kf")

@@ -1,17 +1,126 @@
+@tool
 extends Node3D
 class_name MeshConstructor
 
-# Converts Boat.py pixel dimensions (e.g., width 100) to Godot 3D meters (1.0m)
 const SCALE_FACTOR := 0.25
 
-var use_custom_models := false # Toggle this to true when final models are ready
+# omg my eyes
 
+@export var bow: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_bow.tscn"
+)
+
+@export var section: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_section.tscn"
+)
+
+@export var stern: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_stern.tscn"
+)
+
+@export var cabin: PackedScene = preload(
+	"res://packedscenes/boat_components/cabin.tscn"
+)
+
+@export var sail: PackedScene = preload(
+	"res://packedscenes/boat_components/sail.tscn"
+)
+
+@export var chimney: PackedScene = preload(
+	"res://packedscenes/boat_components/chimney.tscn"
+)
+
+
+const HULL_BOW_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_bow.tscn"
+)
+const HULL_SECTION_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_section.tscn"
+)
+const HULL_STERN_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/hull_stern.tscn"
+)
+const CABIN_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/cabin.tscn"
+)
+
+const SAIL_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/sail.tscn"
+)
+
+const CHIMNEY_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/chimney.tscn"
+)
+
+var _last_data: Dictionary = {}
+
+@export var show_editor_preview := false:
+	set(value):
+		show_editor_preview = value
+		if Engine.is_editor_hint() and is_inside_tree():
+			_refresh_editor_preview()
+
+@export var use_custom_models := false:
+	set(value):
+		use_custom_models = value
+		if is_inside_tree():
+			_refresh_current_view()
+
+func _enter_tree() -> void:
+	if Engine.is_editor_hint():
+		_refresh_editor_preview()
+
+func build_from_data(data: Dictionary) -> void:
+	_last_data = data.duplicate(true)
+	_render_data(_last_data)
+
+func _refresh_current_view() -> void:
+	if Engine.is_editor_hint():
+		_refresh_editor_preview()
+	elif not _last_data.is_empty():
+		_render_data(_last_data)
+
+func _refresh_editor_preview() -> void:
+	if not Engine.is_editor_hint():
+		return
+
+	if not show_editor_preview:
+		_clear_existing_meshes()
+		return
+
+	var preview_data := _last_data
+	if preview_data.is_empty():
+		preview_data = _make_editor_preview_data()
+
+	_render_data(preview_data)
+
+func _make_editor_preview_data() -> Dictionary:
+	return {
+		"id": "BOAT",
+		"customization": {
+			"primary": "#2f7fff",
+			"secondary": "#ffffff",
+			"accent": "#ff8800",
+		},
+		"boat": {
+			"pieces": [
+				{"id": 2, "x": 0, "y": 0},    # stern
+				{"id": 1, "x": 4, "y": 0},    # hull section
+				{"id": 1, "x": 8, "y": 0},    # hull section
+				{"id": 1, "x": 12, "y": 0},   # hull section
+				{"id": 0, "x": 15, "y": 0},   # bow
+				{"id": 3, "x": 8, "y": 4},    # cabin
+				{"id": 10, "x": 9, "y": 5},   # chimney
+				{"id": 11, "x": 12, "y": 4},  # sail
+			]
+		}
+	}
 var boat_footprint := Vector3.ZERO
 
 # func _ready() -> void:
 
 ## Build directly from a provided data dictionary
-func build_from_data(data: Dictionary) -> void:
+func _render_data(data: Dictionary) -> void:
 	_clear_existing_meshes()
 
 	var boat_id := str(data.get("id", "<unknown>"))
@@ -52,7 +161,7 @@ func build_from_data(data: Dictionary) -> void:
 
 		var piece_x := float(piece.get("x", 0)) * SCALE_FACTOR
 		var piece_y := float(piece.get("y", 0)) * SCALE_FACTOR
-		
+
 		# Coloring
 		var piece_id := int(piece.get("id", -1))
 		var material := primary_material
@@ -62,7 +171,11 @@ func build_from_data(data: Dictionary) -> void:
 			11:
 				material = accent_material
 
-		var piece_node := _create_piece_node(piece, material)
+		var piece_node := _create_piece_node(
+			piece,
+			material,
+			[primary_color, secondary_color, accent_color]
+		)
 
 		if piece_node == null:
 			continue
@@ -84,102 +197,177 @@ func _clear_existing_meshes() -> void:
 	for child in get_children():
 		child.queue_free()
 
-func _create_piece_node(piece: Dictionary, base_material: StandardMaterial3D) -> Node3D:
-	var id: int = piece.get("id", -1)
-	var pos_x: float = float(piece.get("x", 0)) * SCALE_FACTOR
-	var pos_y: float = float(piece.get("y", 0)) * SCALE_FACTOR
-	var flipped: bool = piece.get("flipped", false)
-	
+func _create_piece_node(
+	piece: Dictionary,
+	base_material: StandardMaterial3D,
+	piece_colors: Array[Color]
+) -> Node3D:
+	var id := int(piece.get("id", -1))
+	var pos_x := float(piece.get("x", 0)) * SCALE_FACTOR
+	var pos_y := float(piece.get("y", 0)) * SCALE_FACTOR
+	var flipped := bool(piece.get("flipped", false))
+
 	var piece_node: Node3D
-	
+	var is_custom_model := false
+
 	if use_custom_models:
-		# FUTURE IMPLEMENTATION: Load custom scenes based on piece id
-		# Example:
-		# piece_node = load("res://models/pieces/piece_%d.tscn" % id).instantiate()
-		pass
+		var packed_scene := _custom_scene_for_piece(id)
+		if packed_scene != null:
+			piece_node = packed_scene.instantiate() as Node3D
+			is_custom_model = piece_node != null # ?
+
+	if is_custom_model:
+		piece_node.scale *= SCALE_FACTOR
+
+		var grid_size := _grid_size_for_piece(id)
+		piece_node.set_meta("width", grid_size.x * SCALE_FACTOR)
+		piece_node.set_meta("height", grid_size.y * SCALE_FACTOR)
+		piece_node.set_meta("depth", (6.0 if id <= 2 else 4.0) * SCALE_FACTOR)
 	else:
-		# CURRENT IMPLEMENTATION: Procedural primitive shapes based on boat.py[cite: 1]
 		piece_node = _generate_primitive(id, base_material)
-	
-	if not piece_node:
+
+	if piece_node == null:
 		return null
-		
-	# Godot primitives are centered. We offset by half the width/height 
-	# to match the bottom-left coordinate system used in Boat.py.
-	var visual_width := 1.0 # Default fallback
-	var visual_height := 1.0
-	
-	if piece_node.has_meta("width"): visual_width = piece_node.get_meta("width")
-	if piece_node.has_meta("height"): visual_height = piece_node.get_meta("height")
-	
+
+	if piece_node is BoatPiece:
+		piece_node.set_colors(piece_colors)
+
+	var visual_width := float(piece_node.get_meta("width", 1.0))
+	var visual_height := float(piece_node.get_meta("height", 1.0))
+
 	piece_node.position = Vector3(
-		pos_x + (visual_width / 2.0),
-		pos_y + (visual_height / 2.0),
+		pos_x + visual_width / 2.0,
+		pos_y + visual_height / 2.0,
 		0.0
 	)
 	
-	# Apply flipping
+	piece_node.position
+
 	if flipped:
-		piece_node.scale.x = -1.0
-		
+		piece_node.scale.x *= -1.0
+
+
+	print(
+		"piece=%d data_x=%.2f root_x=%.2f"
+		% [id, pos_x, piece_node.position.x]
+	)
 	return piece_node
+
+
+func _grid_size_for_piece(id: int) -> Vector2:
+	match id:
+		0:
+			return Vector2(6, 4) # bow
+		1, 2:
+			return Vector2(4, 4) # hull section and stern
+		3:
+			return Vector2(4, 3) # cabin
+		_:
+			return Vector2.ONE
+
+func _custom_scene_for_piece(id: int) -> PackedScene:
+	match id:
+		0:
+			return HULL_BOW_SCENE
+		1:
+			return HULL_SECTION_SCENE
+		2:
+			return HULL_STERN_SCENE
+		3:
+			return CABIN_SCENE
+		10:
+			return CHIMNEY_SCENE
+		11: 
+			return SAIL_SCENE
+		_:
+			return null
+
+# Sets color of a chosen resource's surface
+func _set_surface_color(mesh: MeshInstance3D, surface_idx: int, color: Color) -> void:
+	pass
 
 func _generate_primitive(id: int, mat: StandardMaterial3D) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
+	var w := 4.0 * SCALE_FACTOR
+	var h := 4.0 * SCALE_FACTOR
+	var d := 6.0 * SCALE_FACTOR
 	var mesh: Mesh
-	var w := 1.0
-	var h := 1.0
-	var d := 1.5
-	
-	# Mapping based on PieceType definitions in boat.py[cite: 1]
-	match id:
-		0: # HULL_BOW (w=6, h=4)
-			w = 1.5; h = 1.0; d = 1.5
-			mesh = PrismMesh.new() # Using prism for angled hull
-			mesh.size = Vector3(w, h, d)
-			mesh.left_to_right = 0.0
-			mesh_instance.rotation_degrees.x = 180.0
-		1: # HULL_SECTION (w=4, h=4)
-			w = 1.0; h = 1.0; d = 1.5
-			mesh = BoxMesh.new()
-			mesh.size = Vector3(w, h, d)
-		2: # HULL_STERN (w=4, h=4)
-			w = 1.0; h = 1.0; d = 1.5
-			mesh = PrismMesh.new() # Using prism for angled hull
-			mesh.size = Vector3(w, h, d)
-			mesh.left_to_right = 1.0
-			mesh_instance.rotation_degrees.x = 180.0
-		3: # CABIN (w=4, h=3)
-			w = 1.0; h = 0.75; d = 1.0
-			mesh = BoxMesh.new()
-			mesh.size = Vector3(w, h, d)
-		4: # BIG_CABIN (4 × 6 grid units)
-			w = 1.0
-			h = 1.5
-			d = 1.0
-			mesh = BoxMesh.new()
-			mesh.size = Vector3(w, h, d)
-		11: # CHIMNEY
-			w = SCALE_FACTOR
-			h = 4.0 * SCALE_FACTOR
-			d = SCALE_FACTOR
 
+	match id:
+		0: # HULL_BOW, 6 × 4 grid units
+			w = 6.0 * SCALE_FACTOR
+			h = 4.0 * SCALE_FACTOR
+			d = 6.0 * SCALE_FACTOR
+			var bow_mesh := PrismMesh.new()
+			bow_mesh.size = Vector3(w, h, d)
+			bow_mesh.left_to_right = 0.0
+			mesh = bow_mesh
+			mesh_instance.rotation_degrees.x = 180.0
+
+		1: # HULL_SECTION, 4 × 4 grid units
+			w = 4.0 * SCALE_FACTOR
+			h = 4.0 * SCALE_FACTOR
+			d = 6.0 * SCALE_FACTOR
+			var section_mesh := BoxMesh.new()
+			section_mesh.size = Vector3(w, h, d)
+			mesh = section_mesh
+
+		2: # HULL_STERN, 4 × 4 grid units
+			w = 4.0 * SCALE_FACTOR
+			h = 4.0 * SCALE_FACTOR
+			d = 6.0 * SCALE_FACTOR
+			var stern_mesh := PrismMesh.new()
+			stern_mesh.size = Vector3(w, h, d)
+			stern_mesh.left_to_right = 1.0
+			mesh = stern_mesh
+			mesh_instance.rotation_degrees.x = 180.0
+
+		3: # CABIN, 4 × 3 grid units
+			w = 4.0 * SCALE_FACTOR
+			h = 4.0 * SCALE_FACTOR
+			d = 4.0 * SCALE_FACTOR
+			var cabin_mesh := BoxMesh.new()
+			cabin_mesh.size = Vector3(w, h, d)
+			mesh = cabin_mesh
+
+		4: # BIG_CABIN, 4 × 6 grid units
+			w = 4.0 * SCALE_FACTOR
+			h = 6.0 * SCALE_FACTOR
+			d = 6.0 * SCALE_FACTOR
+			var big_cabin_mesh := BoxMesh.new()
+			big_cabin_mesh.size = Vector3(w, h, d)
+			mesh = big_cabin_mesh
+
+		10: # CHIMNEY, 2 × 4 grid units
+			w = 2.0 * SCALE_FACTOR
+			h = 4.0 * SCALE_FACTOR
+			d = 2.0 * SCALE_FACTOR
 			var chimney_mesh := CylinderMesh.new()
 			chimney_mesh.top_radius = w * 0.4
 			chimney_mesh.bottom_radius = w * 0.45
 			chimney_mesh.height = h
 			chimney_mesh.radial_segments = 8
 			mesh = chimney_mesh
+
+		11: # SAIL placeholder, 8 × 8 grid units
+			w = 8.0 * SCALE_FACTOR
+			h = 8.0 * SCALE_FACTOR
+			d = 1.0 * SCALE_FACTOR
+			var bow_mesh := PrismMesh.new()
+			bow_mesh.size = Vector3(w, h, d)
+			bow_mesh.left_to_right = 0.0
+			mesh = bow_mesh
+
 		_:
 			push_warning("Unknown piece type: ", id)
 			return null
-			
+
 	mesh_instance.mesh = mesh
 	mesh_instance.material_override = mat
-	
+
 	# Store dimensions as metadata for positioning math
 	mesh_instance.set_meta("width", w)
 	mesh_instance.set_meta("height", h)
 	mesh_instance.set_meta("depth", d)
-	
+
 	return mesh_instance

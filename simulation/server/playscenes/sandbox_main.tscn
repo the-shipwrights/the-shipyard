@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://di8a0hlree2w6" path="res://scripts/network_manager.gd" id="1_nwbs8"]
 [ext_resource type="Script" uid="uid://c0ccfpadd8ft4" path="res://scripts/boat_spawner.gd" id="2_56ww4"]
 [ext_resource type="PackedScene" uid="uid://cxa4wyqnbm02s" path="res://packedscenes/boat.tscn" id="3_bdqx7"]
-[ext_resource type="Material" uid="uid://bx52y43l6c23x" path="res://assets/shaders/water.tres" id="4_oimm0"]
+[ext_resource type="Material" uid="uid://dkw0ty8o04ito" path="res://assets/shaders/water.tres" id="4_oimm0"]
 [ext_resource type="Script" uid="uid://di8a3j0twck4" path="res://scripts/water_surface.gd" id="5_bdqx7"]
 [ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="5_v0nif"]
 [ext_resource type="PackedScene" uid="uid://c8dia3ibjtmut" path="res://packedscenes/terrain_world.scn" id="6_bdqx7"]
@@ -302,14 +302,14 @@ mesh = SubResource("TubeTrailMesh_8n2nk")
 transform = Transform3D(-4.371139e-08, 0.6427876, -0.7660444, 0, 0.7660444, 0.6427876, 1, 2.8097139e-08, -3.3484863e-08, -108.40732, 92.95955, 0)
 visible = false
 projection = 1
-current = true
 size = 155.60472
 
 [node name="vignette" parent="LanscapeCamera" unique_id=327358756 instance=ExtResource("14_tqpwj")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=297227228]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.123703, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.499978, 20.825363)
 visible = false
+current = true
 size = 155.60472
 script = ExtResource("5_v0nif")
 
