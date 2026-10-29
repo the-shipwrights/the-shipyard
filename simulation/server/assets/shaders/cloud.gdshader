@@ -58,6 +58,10 @@ void fragment() {
 		}
 	}
 	
+	float depth = -100000.0;
+	float current_depth = depth;
+	vec4 final_color = vec4(0.0);
+	
 	for (int i = 0; i < 3; i++) {
 		vec4 view_position = VIEW_MATRIX * vec4(particle_positions[i], 1.0);
 		vec4 projection = PROJECTION_MATRIX * view_position;
@@ -68,13 +72,27 @@ void fragment() {
 			abs(SCREEN_UV.x - screen_uv.x) <= screen_radius.x  &&
 			abs(SCREEN_UV.y - screen_uv.y) <= screen_radius.y
 		){
+			float curve_x = sqrt(-pow((SCREEN_UV.x - screen_uv.x) * screen_width, 2) + pow(particle_radiuses[i], 2));
+			float curve_y = sqrt(-pow((SCREEN_UV.y - screen_uv.y) * screen_height, 2) + pow(particle_radiuses[i], 2));
+			float curve = (curve_x / particle_radiuses[i]) * (curve_y / particle_radiuses[i]) * particle_radiuses[i];
+			float distance_to_camera = view_position.z;
+			current_depth = distance_to_camera + curve;
+			
 			vec2 infill_uv = vec2(
 				(SCREEN_UV.x - screen_uv.x) * screen_width + particle_radiuses[i],
 				(SCREEN_UV.y - screen_uv.y) * screen_height + particle_radiuses[i]
 			);
 			vec4 infill_color = texture(image, infill_uv);
-			if (infill_color[3] > 0.0)
-				ALBEDO = ALBEDO * (1.0 - infill_color[3]) + infill_color.rgb * infill_color[3];
+			if (infill_color[3] == 1.0 && current_depth > depth) {
+				final_color = infill_color;
+				depth = current_depth;
+			}
+			else if (infill_color[3] > 0.0 && current_depth > depth) {
+				final_color.rgb = final_color.rgb * (1.0 - infill_color[3]) + infill_color.rgb * infill_color[3];
+				final_color.a = 1.0 - (1.0 - final_color.a) * (1.0 - infill_color[3]);
+			}
+			ALBEDO = vec3(-depth / 5.0, 0.0, 0.0);
 		}
 	}
+	// ALBEDO = ALBEDO * (1.0 - final_color.a) + final_color.rgb * final_color.a;
 }

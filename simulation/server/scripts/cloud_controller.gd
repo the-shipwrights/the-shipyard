@@ -2,6 +2,7 @@
 extends Node
 
 var camera_height: float = 5.0
+var camera_direction: Vector3
 var particle_count: int
 var particle_positions: Array[Vector3]
 var particle_radiuses: Array[float]
