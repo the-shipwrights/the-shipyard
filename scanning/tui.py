@@ -378,8 +378,10 @@ class App:
                 if self.latest_boat is None or not self.latest_boat.pieces:
                     print("NO PARSED BOAT TO SUBMIT.")
                 else:
-                    boat_id = submit_scanned_boat(self.latest_boat)
-                    print(f"Boat submitted successfully with ID: {boat_id}")
+                    # boat_id = submit_scanned_boat(self.latest_boat)
+
+                    # print(f"Boat submitted successfully with ID: {boat_id}")
+                    self._submit_boat(self.latest_boat)
                 self.latest_boat = None
                 break
             elif selection == 1:
