@@ -78,6 +78,13 @@ theme_override_font_sizes/font_size = 20
 text = "Hold to throttle
 🛥️💨💨💨"
 
+[node name="HornButton" type="Button" parent="SafeArea/Content" unique_id=157043926]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "🛥️📢"
+
 [node name="RotateButton" type="Button" parent="SafeArea/Content" unique_id=1582910401]
 visible = false
 custom_minimum_size = Vector2(0, 64)
