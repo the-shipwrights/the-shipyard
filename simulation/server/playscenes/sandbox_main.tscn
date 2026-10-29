@@ -14,6 +14,7 @@
 [ext_resource type="Material" uid="uid://dbhh176h65kgq" path="res://assets/materials/shrubbery.tres" id="10_xil1t"]
 [ext_resource type="Texture2D" uid="uid://cpbvjc6v4lfqo" path="res://assets/textures/house.tres" id="11_l874p"]
 [ext_resource type="BoxMesh" uid="uid://c6kxybbc25rxl" path="res://assets/port.tres" id="13_23xk0"]
+[ext_resource type="Script" uid="uid://csviksf5eqb78" path="res://playscenes/lanscape_camera.gd" id="14_crhjm"]
 [ext_resource type="PackedScene" uid="uid://borp4b76c3qod" path="res://packedscenes/vignette.tscn" id="14_tqpwj"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_v0nif"]
@@ -299,13 +300,17 @@ transform = Transform3D(2.69, 0, 0, 0, 0.535, 0, 0, 0, 2.69, -5.340576e-05, 7.20
 mesh = SubResource("TubeTrailMesh_8n2nk")
 
 [node name="LanscapeCamera" type="Camera3D" parent="." unique_id=1614344467]
-transform = Transform3D(-4.371139e-08, 0.6427876, -0.7660444, 0, 0.7660444, 0.6427876, 1, 2.8097139e-08, -3.3484863e-08, -108.40732, 92.95955, 0)
+transform = Transform3D(-4.371139e-08, 0.64278764, -0.76604444, 0, 0.76604444, 0.64278764, 1, 2.809714e-08, -3.3484866e-08, -161.4097, 92.95955, -61.362473)
 visible = false
 projection = 1
 current = true
-size = 155.60472
+size = 94.679
+script = ExtResource("14_crhjm")
+screenshot_size = Vector2i(3508, 4961)
+screenshot_path = "uid://btwo12ijm06cq"
 
 [node name="vignette" parent="LanscapeCamera" unique_id=327358756 instance=ExtResource("14_tqpwj")]
+visible = false
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=297227228]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.123703, 20)
