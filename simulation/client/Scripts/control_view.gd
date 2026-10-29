@@ -13,7 +13,7 @@ var boat_id: String = ""
 var ws := WebSocketPeer.new()
 var is_connected := false
 
-@onready var boat_preview: BoatPreview2D = $SafeArea/Content/CanvasPanel/BoatPreview2D
+@onready var boat_preview: BoatPreview2D = %BoatPreview2D
 @onready var boat_title: Label = $SafeArea/Content/BoatTitle
 @onready var info_label: Label = $SafeArea/Content/InfoLabel
 @onready var rotate_button: Button = $SafeArea/Content/RotateButton

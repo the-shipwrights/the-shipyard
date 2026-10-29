@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://bm5u5olpv6sfl" path="res://Scripts/control_view.gd" id="1_vcfef"]
 [ext_resource type="PackedScene" uid="uid://d3pp0kklmyfy6" path="res://Views/BoatPreview2D.tscn" id="2_bbeor"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k1j8q"]
+
 [node name="ControlView" type="Control" unique_id=1945440094]
 layout_mode = 3
 anchors_preset = 15
@@ -21,6 +23,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0.541541, 0.543099, 1)
+
+[node name="BoatPreview2D" parent="." unique_id=829975880 instance=ExtResource("2_bbeor")]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 0
+anchors_preset = 0
+grow_horizontal = 1
+grow_vertical = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+ocean_level = 0.505
 
 [node name="SafeArea" type="MarginContainer" parent="." unique_id=546596867]
 layout_mode = 1
@@ -55,11 +68,7 @@ custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="BoatPreview2D" parent="SafeArea/Content/CanvasPanel" unique_id=829975880 instance=ExtResource("2_bbeor")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_k1j8q")
 
 [node name="InfoLabel" type="Label" parent="SafeArea/Content" unique_id=1826761783]
 custom_minimum_size = Vector2(0, 48)
@@ -92,3 +101,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "Hold to Rotate"
+
+[node name="CanvasPanel2" type="PanelContainer" parent="SafeArea/Content" unique_id=1080368721]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_k1j8q")

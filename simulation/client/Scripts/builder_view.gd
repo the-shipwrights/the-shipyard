@@ -69,7 +69,7 @@ var submit_request := HTTPRequest.new()
 @onready var btn_chimney: Button = $SafeArea/Content/PieceGrid/AddChimney
 @onready var btn_sail: Button = $SafeArea/Content/PieceGrid/AddSail
 
-@onready var boat_preview: BoatPreview2D = $SafeArea/Content/CanvasPanel/BoatPreview2D
+@onready var boat_preview: BoatPreview2D = %BoatPreview2D
 
 func _ready() -> void:
 	add_child(submit_request)
