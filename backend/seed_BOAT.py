@@ -15,7 +15,6 @@ def main():
         Piece(1, 8, 0),     # hull section
         Piece(1, 12, 0),    # hull section
         Piece(0, 16, 0),    # bow
-        Piece(4, 4, 4),     # cabig
         Piece(3, 8, 4),     # cabin
         Piece(10, 9, 7),    # chimney
         Piece(11, 12, 4),   # Sail

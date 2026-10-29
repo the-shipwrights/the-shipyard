@@ -100,3 +100,10 @@ Before the event, open `simulation/client` in the Godot editor and export the We
 The boat database remains in `backend/boats.db`. Stopping the launcher ends the tunnel and event services; a future event can still use the saved records, but it will have a new public URL.
 
 For local development, the Vite server proxies `/api` and `/ws` to FastAPI. Start FastAPI, then run `npm --prefix web run dev`; the default participant URL is `http://localhost:5173`.
+
+
+For running cloudflare only
+
+```bash
+cloudflared tunnel --protocol http2 --url http://127.0.0.1:8000
+```

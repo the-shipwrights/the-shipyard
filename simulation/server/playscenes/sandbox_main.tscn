@@ -302,14 +302,14 @@ mesh = SubResource("TubeTrailMesh_8n2nk")
 transform = Transform3D(-4.371139e-08, 0.6427876, -0.7660444, 0, 0.7660444, 0.6427876, 1, 2.8097139e-08, -3.3484863e-08, -108.40732, 92.95955, 0)
 visible = false
 projection = 1
+current = true
 size = 155.60472
 
 [node name="vignette" parent="LanscapeCamera" unique_id=327358756 instance=ExtResource("14_tqpwj")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=297227228]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.499978, 20.825363)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -40.445076, 14.842291)
 visible = false
-current = true
 size = 155.60472
 script = ExtResource("5_v0nif")
 
