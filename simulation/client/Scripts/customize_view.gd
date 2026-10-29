@@ -7,55 +7,99 @@ signal boat_launched(boat_data: Dictionary)
 
 const COLOR_FIELDS := ["primary", "secondary", "accent"]
 
+const SWATCH_RADIUS := 999       # clamps to a perfect circle at any swatch size
+const ACTIVE_SCALE := 1.15       # the selected swatch grows a little
+const SCALE_TIME := 0.15         # seconds
+
 var boat_data: Dictionary = {}
 var selected_colors: Dictionary = {}
 var active_color_field := "primary"
 var launch_request := HTTPRequest.new()
+var default_launch_text := ""
 
-@onready var boat_preview: BoatPreview2D = $SafeArea/Content/BoatPreview2D
+var _swatch_tweens: Dictionary = {}  # field -> running scale Tween
+var _swatch_targets: Dictionary = {} # field -> scale the swatch is heading to
+
+@onready var boat_preview: BoatPreview2D = %BoatPreview2D
 @onready var launch_button: Button = $SafeArea/Content/LaunchButton
 @onready var status_label: Label = $SafeArea/Content/StatusLabel
 @onready var boat_label: Label = $SafeArea/Content/Label
 @onready var palette: GridContainer = $SafeArea/Content/PaletteRegion/Palette
-@onready var primary_button: Button = $SafeArea/Content/ColorSelector/Primary
-@onready var secondary_button: Button = $SafeArea/Content/ColorSelector/Secondary
-@onready var accent_button: Button = $SafeArea/Content/ColorSelector/Accent
+
+@onready var primary_button: TextureButton = $SafeArea/Content/ColorSelector/Primary/TextureButton
+@onready var secondary_button: TextureButton = $SafeArea/Content/ColorSelector/Secondary/TextureButton
+@onready var accent_button: TextureButton = $SafeArea/Content/ColorSelector/Accent/TextureButton
+
+@onready var primary_swatch: Panel = $SafeArea/Content/ColorSelector/Primary/Color
+@onready var secondary_swatch: Panel = $SafeArea/Content/ColorSelector/Secondary/Color
+@onready var accent_swatch: Panel = $SafeArea/Content/ColorSelector/Accent/Color
 
 
 func _ready() -> void:
+	default_launch_text = launch_button.text
 	add_child(launch_request)
 	launch_request.request_completed.connect(_on_launch_completed)
 
 	palette.color_selected.connect(_on_palette_color_selected)
 
+	var circle_mask := _make_circle_mask(64)
+	primary_button.texture_click_mask = circle_mask
+	secondary_button.texture_click_mask = circle_mask
+	accent_button.texture_click_mask = circle_mask
+
 	primary_button.pressed.connect(_on_color_field_selected.bind("primary"))
 	secondary_button.pressed.connect(_on_color_field_selected.bind("secondary"))
 	accent_button.pressed.connect(_on_color_field_selected.bind("accent"))
 
+	for button in [primary_button, secondary_button, accent_button]:
+		button.disabled = true
+
+	# Scaling happens around the swatch centre, so keep the pivot centred as it resizes.
+	for field in COLOR_FIELDS:
+		var swatch := _swatch_for(field)
+		swatch.pivot_offset = swatch.size / 2.0
+		swatch.resized.connect(func() -> void: swatch.pivot_offset = swatch.size / 2.0)
+
 	launch_button.pressed.connect(launch_boat)
 
+func _make_circle_mask(size: int) -> BitMap:
+	var mask := BitMap.new()
+	mask.create(Vector2i(size, size))
+
+	var center := Vector2(size / 2.0, size / 2.0)
+	var radius := size / 2.0
+
+	for y in size:
+		for x in size:
+			var point := Vector2(x + 0.5, y + 0.5)
+			if point.distance_to(center) <= radius:
+				mask.set_bit(x, y, true)
+
+	return mask
 
 func setup(data: Dictionary) -> void:
 	boat_data = data
 	boat_preview.set_boat(data)
 
-	boat_label.text = "Boat #" + str(boat_data.get("id", ""))
+	boat_label.text = "Båt #" + str(boat_data.get("id", ""))
 
 	var customization: Dictionary = boat_data.get("customization", {})
 
+	selected_colors.clear()
 	for field in COLOR_FIELDS:
-		var fallback_color := _random_palette_color()
-		selected_colors[field] = Color.from_string(
-			str(customization.get(field, "")),
-			fallback_color
-		) if customization.has(field) else fallback_color
+		selected_colors[field] = _random_palette_color()
+
+	for button in [primary_button, secondary_button, accent_button]:
+		button.disabled = false
 
 	_update_color_buttons()
 	boat_preview.set_customization(selected_colors)
 
+	launch_button.text = default_launch_text
 	launch_button.disabled = false
 	launch_button.show()
 	status_label.text = ""
+	palette.select_color(selected_colors[active_color_field])
 
 func _get_api_base() -> String:
 	if OS.has_feature("web"):
@@ -78,7 +122,12 @@ func _random_palette_color() -> Color:
 
 
 func _on_color_field_selected(field: String) -> void:
+	if not selected_colors.has(field):
+		push_warning("Color selector pressed before setup initialized: " + field)
+		return
+
 	active_color_field = field
+	palette.select_color(selected_colors[field])
 	_update_color_buttons()
 
 
@@ -89,40 +138,55 @@ func _on_palette_color_selected(color: Color) -> void:
 
 
 func _update_color_buttons() -> void:
-	_update_color_button("primary", primary_button)
-	_update_color_button("secondary", secondary_button)
-	_update_color_button("accent", accent_button)
+	_update_color_swatch("primary", primary_swatch)
+	_update_color_swatch("secondary", secondary_swatch)
+	_update_color_swatch("accent", accent_swatch)
 
 
-func _update_color_button(field: String, button: Button) -> void:
+func _swatch_for(field: String) -> Panel:
+	match field:
+		"primary":
+			return primary_swatch
+		"secondary":
+			return secondary_swatch
+		_:
+			return accent_swatch
+
+
+func _update_color_swatch(field: String, swatch: Panel) -> void:
 	if not selected_colors.has(field):
 		return
 
 	var color: Color = selected_colors[field]
-	var text_color := Color.BLACK if color.get_luminance() > 0.55 else Color.WHITE
-	var border_color := Color.WHITE if color.get_luminance() <= 0.65 else Color.BLACK
 
-	button.add_theme_color_override("font_color", text_color)
-	button.add_theme_color_override("font_hover_color", text_color)
-	button.add_theme_color_override("font_pressed_color", text_color)
-	button.add_theme_color_override("font_focus_color", text_color)
+	# The swatch itself is just the colour with a thin darker edge, so pale
+	# colours still read against a light background.
+	var style := StyleBoxFlat.new()
+	style.bg_color = color
+	style.set_corner_radius_all(SWATCH_RADIUS)
+	style.set_border_width_all(2)
+	style.border_color = color.darkened(0.3)
+	swatch.add_theme_stylebox_override("panel", style)
 
-	button.add_theme_stylebox_override(
-		"normal",
-		_make_button_style(color, field == active_color_field, border_color)
-	)
-	button.add_theme_stylebox_override(
-		"hover",
-		_make_button_style(color.lightened(0.08), field == active_color_field, border_color)
-	)
-	button.add_theme_stylebox_override(
-		"pressed",
-		_make_button_style(color.darkened(0.08), field == active_color_field, border_color)
-	)
-	button.add_theme_stylebox_override(
-		"focus",
-		_make_button_style(color, true, border_color)
-	)
+	# Selection: the active swatch grows a little.
+	var is_active := field == active_color_field
+	_animate_swatch_scale(field, swatch, ACTIVE_SCALE if is_active else 1.0)
+
+
+func _animate_swatch_scale(field: String, swatch: Panel, target: float) -> void:
+	# Called on every colour pick too - only animate when the target changes.
+	if _swatch_targets.get(field, -1.0) == target:
+		return
+	_swatch_targets[field] = target
+
+	var old_tween: Tween = _swatch_tweens.get(field)
+	if old_tween != null and old_tween.is_valid():
+		old_tween.kill()
+
+	var tween := create_tween()
+	tween.tween_property(swatch, "scale", Vector2.ONE * target, SCALE_TIME) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_swatch_tweens[field] = tween
 
 
 func _make_button_style(
@@ -163,8 +227,9 @@ func _launched_boat_data() -> Dictionary:
 
 
 func launch_boat() -> void:
-	status_label.text = "Sending boat..."
+	launch_button.text = "Sending boat..."
 	launch_button.disabled = true
+	status_label.text = ""
 
 	var body := JSON.stringify({
 		"primary": _color_to_hex(selected_colors["primary"]),
@@ -181,13 +246,11 @@ func launch_boat() -> void:
 	)
 
 	if error != OK:
+		_reset_launch_button()
 		status_label.text = "Could not send launch request"
-		launch_button.disabled = false
 
 
 func _on_launch_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
-	launch_button.disabled = false
-
 	if response_code == 200:
 		status_label.text = "Boat launched!"
 		launch_button.hide()
@@ -210,5 +273,11 @@ func _on_launch_completed(result: int, response_code: int, headers: PackedString
 		launch_button.hide()
 		boat_launched.emit(_launched_boat_data())
 	else:
+		_reset_launch_button()
 		status_label.text = "Launch failed (" + str(response_code) + ")"
 		push_error("Launch failed with code: " + str(response_code))
+
+
+func _reset_launch_button() -> void:
+	launch_button.text = default_launch_text
+	launch_button.disabled = false

@@ -13,25 +13,29 @@ var boat_id: String = ""
 var ws := WebSocketPeer.new()
 var is_connected := false
 
-@onready var boat_preview: BoatPreview2D = $SafeArea/Content/CanvasPanel/BoatPreview2D
+@onready var boat_preview: BoatPreview2D = %BoatPreview2D
 @onready var boat_title: Label = $SafeArea/Content/BoatTitle
 @onready var info_label: Label = $SafeArea/Content/InfoLabel
 @onready var rotate_button: Button = $SafeArea/Content/RotateButton
 @onready var speed_button: Button = $SafeArea/Content/ThrottleButton
+@onready var horn_button: Button = $SafeArea/Content/HornButton
 
 func _ready() -> void:
 	speed_button.button_down.connect(_on_speed_pressed)
 	speed_button.button_up.connect(_on_speed_released)
 	rotate_button.button_down.connect(_on_rotate_pressed)
 	rotate_button.button_up.connect(_on_rotate_released)
+	horn_button.button_down.connect(_on_horn_pressed)
+	horn_button.button_up.connect(_on_horn_released)
+
 
 func setup(data: Dictionary) -> void:
 	boat_data = data
 	boat_preview.set_boat(data)
 
 	boat_id = str(boat_data.get("id", "")).to_upper()
-	boat_title.text = "Piloting Boat #" + boat_id
-	info_label.text = "Hold the button below to turn your boat in the archipelago."
+	boat_title.text = "Kör båt #" + boat_id
+	info_label.text = "Båten är till sjöss!"
 	_connect_to_control_socket()
 
 func _connect_to_control_socket() -> void:
@@ -80,6 +84,12 @@ func _on_speed_pressed() -> void:
 
 func _on_speed_released() -> void:
 	_send_control_command("accelerate", false)
+	
+func _on_horn_pressed() -> void:
+	_send_control_command("horn", true)
+
+func _on_horn_released() -> void:
+	_send_control_command("horn", false)
 
 func _send_control_command(command: String, active: bool) -> void:
 	if ws.get_ready_state() != WebSocketPeer.STATE_OPEN:

@@ -184,7 +184,9 @@ func _on_swatch_gui_input(event: InputEvent, index: int) -> void:
 
 	if not activated or index >= palette_colors.size():
 		return
+	_on_bucket_pressed(index)
 
+func _on_bucket_pressed(index: int) -> void:
 	_selected_index = index
 	_refresh_swatches()
 	color_selected.emit(palette_colors[index])
@@ -261,3 +263,10 @@ func _assign_editor_owner(node: Node) -> void:
 	var edited_scene_root := get_tree().edited_scene_root
 	if edited_scene_root != null:
 		node.owner = edited_scene_root
+
+func clear_selection() -> void:
+	_selected_index = -1
+	
+func select_color(color: Color) -> void:
+	_selected_index = palette_colors.find(color)  # -1 if there's no match, which clears it
+	_refresh_swatches()

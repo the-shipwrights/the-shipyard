@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://bporpqxjbn6s7" path="res://Scripts/builder_view.gd" id="1_builder"]
 [ext_resource type="PackedScene" uid="uid://d3pp0kklmyfy6" path="res://Views/BoatPreview2D.tscn" id="2_1ydyr"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1ydyr"]
+
 [node name="BuilderView" type="Control" unique_id=748961357]
 layout_mode = 3
 anchors_preset = 15
@@ -21,6 +23,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0.5415405, 0.54309857, 1)
+
+[node name="BoatPreview2D" parent="." unique_id=1814931078 instance=ExtResource("2_1ydyr")]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 0
+anchors_preset = 0
+grow_horizontal = 1
+grow_vertical = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+ocean_level = 0.465
 
 [node name="SafeArea" type="MarginContainer" parent="." unique_id=521977535]
 layout_mode = 1
@@ -55,11 +68,7 @@ custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="BoatPreview2D" parent="SafeArea/Content/CanvasPanel" unique_id=1814931078 instance=ExtResource("2_1ydyr")]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1ydyr")
 
 [node name="PieceLabel" type="Label" parent="SafeArea/Content" unique_id=1505453266]
 custom_minimum_size = Vector2(0, 28)
@@ -80,37 +89,37 @@ columns = 3
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "◥"
+text = "Back"
 
 [node name="AddHullSection" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=2032002444]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "■"
+text = "Hull"
 
 [node name="AddHullBow" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1565472805]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "◤"
+text = "Front"
 
 [node name="AddCabin" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=973140402]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "⧇"
+text = "Cabin"
 
 [node name="AddChimney" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=480473204]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "⩎"
+text = "Chimney"
 
 [node name="AddSail" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=112311726]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "◭"
+text = "Sail"
 
 [node name="AddBigCabinLeft" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1824628514]
 custom_minimum_size = Vector2(0, 48)

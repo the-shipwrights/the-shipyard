@@ -6,7 +6,7 @@
 [ext_resource type="Material" uid="uid://dkw0ty8o04ito" path="res://assets/shaders/water.tres" id="4_oimm0"]
 [ext_resource type="Script" uid="uid://di8a3j0twck4" path="res://scripts/water_surface.gd" id="5_bdqx7"]
 [ext_resource type="Script" uid="uid://didog8mf7u27r" path="res://scripts/camera_controller.gd" id="5_v0nif"]
-[ext_resource type="PackedScene" uid="uid://c8dia3ibjtmut" path="res://packedscenes/terrain_world.scn" id="6_bdqx7"]
+[ext_resource type="PackedScene" uid="uid://c8dia3ibjtmut" path="res://sandbox_main/packedscenes/terrain_world.scn" id="6_bdqx7"]
 [ext_resource type="CapsuleMesh" uid="uid://djr2v02euhm6t" path="res://assets/shrub.tres" id="7_hmybg"]
 [ext_resource type="Script" uid="uid://8334r6cv5rsd" path="res://scripts/shrubbery_generator.gd" id="7_oimm0"]
 [ext_resource type="Shader" uid="uid://7drxi7dothfo" path="res://shrubbery.gdshader" id="7_v0nif"]
@@ -307,7 +307,7 @@ size = 155.60472
 [node name="vignette" parent="LanscapeCamera" unique_id=327358756 instance=ExtResource("14_tqpwj")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=297227228]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -54.196476, 19.793665)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25.328358, 20.387814)
 visible = false
 size = 155.60472
 script = ExtResource("5_v0nif")
