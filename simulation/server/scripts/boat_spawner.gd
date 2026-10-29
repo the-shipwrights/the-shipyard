@@ -14,7 +14,7 @@ var row_depths: Dictionary = {}
 
 @onready var terrain: TerrainWorld = $"../World/Terrain/TerrainWorld"
 
-const MAP_HALF_EXTENTS := Vector2(95.0, 140.0) # X and Z half-extents
+const MAP_HALF_EXTENTS := Vector2(90.0, 140.0) # X and Z half-extents
 const WATER_CLEARANCE := 0.25
 const ROUTE_SAMPLE_STEP := 2.0
 const BOAT_GAP := 4.0

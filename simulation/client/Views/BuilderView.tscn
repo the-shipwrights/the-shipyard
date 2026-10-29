@@ -89,37 +89,37 @@ columns = 3
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "◥"
+text = "Back"
 
 [node name="AddHullSection" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=2032002444]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "■"
+text = "Hull"
 
 [node name="AddHullBow" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1565472805]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "◤"
+text = "Front"
 
 [node name="AddCabin" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=973140402]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "⧇"
+text = "Cabin"
 
 [node name="AddChimney" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=480473204]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "⩎"
+text = "Chimney"
 
 [node name="AddSail" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=112311726]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "◭"
+text = "Sail"
 
 [node name="AddBigCabinLeft" type="Button" parent="SafeArea/Content/PieceGrid" unique_id=1824628514]
 custom_minimum_size = Vector2(0, 48)

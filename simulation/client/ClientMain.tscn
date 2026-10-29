@@ -80,7 +80,7 @@ theme_override_constants/separation = 12
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Boat ID (4 letters)"
+placeholder_text = "Båt ID (4 bokstäver)"
 alignment = 1
 max_length = 4
 
@@ -88,7 +88,7 @@ max_length = 4
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Load boat"
+text = "Ladda båt"
 
 [node name="BuilderButton" type="Button" parent="LandingScreen/MarginContainer/VBoxContainer" unique_id=1437876282]
 custom_minimum_size = Vector2(0, 48)

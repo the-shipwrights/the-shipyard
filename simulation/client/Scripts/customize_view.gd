@@ -81,7 +81,7 @@ func setup(data: Dictionary) -> void:
 	boat_data = data
 	boat_preview.set_boat(data)
 
-	boat_label.text = "Boat #" + str(boat_data.get("id", ""))
+	boat_label.text = "Båt #" + str(boat_data.get("id", ""))
 
 	var customization: Dictionary = boat_data.get("customization", {})
 

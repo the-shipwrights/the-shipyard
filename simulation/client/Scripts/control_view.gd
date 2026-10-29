@@ -34,8 +34,8 @@ func setup(data: Dictionary) -> void:
 	boat_preview.set_boat(data)
 
 	boat_id = str(boat_data.get("id", "")).to_upper()
-	boat_title.text = "Piloting Boat #" + boat_id
-	info_label.text = "Hold the button below to turn your boat in the archipelago."
+	boat_title.text = "Kör båt #" + boat_id
+	info_label.text = "Båten är till sjöss!"
 	_connect_to_control_socket()
 
 func _connect_to_control_socket() -> void:

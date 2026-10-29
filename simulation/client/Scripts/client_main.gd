@@ -10,6 +10,8 @@ var load_request := HTTPRequest.new()
 @onready var customize_view: Control = $ViewContainer/CustomizeView
 @onready var control_view: Control = $ViewContainer/ControlView
 
+
+@export var allow_boat_building := false
 @onready var build_button: Button = $LandingScreen/MarginContainer/VBoxContainer/BuilderButton
 @onready var load_button: Button = $LandingScreen/MarginContainer/VBoxContainer/LoadBoatButton
 @onready var home_button: Button = $Button
@@ -32,13 +34,14 @@ func _ready() -> void:
 	load_request.accept_gzip = false
 	add_child(load_request)
 	load_request.request_completed.connect(_on_boat_loaded)
+	build_button.visible = allow_boat_building
+	build_button.pressed.connect(_show_builder)
 
 	builder_view.boat_created.connect(_on_boat_created)
 	customize_view.boat_launched.connect(_on_boat_launched)
 	home_button.pressed.connect(_show_landing)
 
 	load_button.pressed.connect(_submit_boat_id)
-	build_button.pressed.connect(_show_builder)
 	boat_id_input.text_submitted.connect(_submit_boat_id)
 
 	boat_id = get_boat_id_from_query()
@@ -81,6 +84,8 @@ func _on_boat_created(new_boat_data: Dictionary) -> void:
 	_route_state(new_boat_data)
 
 func _show_builder() -> void:
+	if not allow_boat_building:
+		return
 	landing_screen.hide()
 	customize_view.hide()
 	control_view.hide()

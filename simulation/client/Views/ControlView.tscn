@@ -41,7 +41,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = 16.0
+offset_top = 56.0
 offset_right = -16.0
 offset_bottom = -16.0
 grow_horizontal = 2
@@ -84,15 +84,14 @@ custom_minimum_size = Vector2(0, 72)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
-text = "Hold to throttle
-🛥️💨💨💨"
+text = "Gasa !"
 
 [node name="HornButton" type="Button" parent="SafeArea/Content" unique_id=157043926]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
-text = "🛥️📢"
+text = "Tuta !"
 
 [node name="RotateButton" type="Button" parent="SafeArea/Content" unique_id=1582910401]
 visible = false
