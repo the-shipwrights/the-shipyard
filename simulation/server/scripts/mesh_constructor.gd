@@ -22,6 +22,14 @@ const SCALE_FACTOR := 0.25
 	"res://packedscenes/boat_components/cabin.tscn"
 )
 
+@export var sail: PackedScene = preload(
+	"res://packedscenes/boat_components/sail.tscn"
+)
+
+@export var chimney: PackedScene = preload(
+	"res://packedscenes/boat_components/chimney.tscn"
+)
+
 
 const HULL_BOW_SCENE: PackedScene = preload(
 	"res://packedscenes/boat_components/hull_bow.tscn"
@@ -34,6 +42,14 @@ const HULL_STERN_SCENE: PackedScene = preload(
 )
 const CABIN_SCENE: PackedScene = preload(
 	"res://packedscenes/boat_components/cabin.tscn"
+)
+
+const SAIL_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/sail.tscn"
+)
+
+const CHIMNEY_SCENE: PackedScene = preload(
+	"res://packedscenes/boat_components/chimney.tscn"
 )
 
 var _last_data: Dictionary = {}
@@ -95,7 +111,7 @@ func _make_editor_preview_data() -> Dictionary:
 				{"id": 0, "x": 15, "y": 0},   # bow
 				{"id": 4, "x": 4, "y": 4},    # big cabin
 				{"id": 3, "x": 8, "y": 4},    # cabin
-				{"id": 10, "x": 9, "y": 7},   # chimney
+				{"id": 10, "x": 9, "y": 5},   # chimney
 				{"id": 11, "x": 12, "y": 4},  # sail
 			]
 		}
@@ -263,6 +279,10 @@ func _custom_scene_for_piece(id: int) -> PackedScene:
 			return HULL_STERN_SCENE
 		3:
 			return CABIN_SCENE
+		10:
+			return CHIMNEY_SCENE
+		11: 
+			return SAIL_SCENE
 		_:
 			return null
 

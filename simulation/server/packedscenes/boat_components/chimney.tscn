@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://uc0acmvojmaj"]
+
+[ext_resource type="PackedScene" uid="uid://ex1t3dqogly4" path="res://assets/3dmodels/chimney.glb" id="1_y82o4"]
+[ext_resource type="Script" uid="uid://wdm2x7j1xwos" path="res://scripts/boat_piece.gd" id="2_caio1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_caio1"]
+resource_name = "secondary"
+cull_mode = 2
+albedo_color = Color(0.5653126, 0.41913217, 0.33795124, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_irw63"]
+resource_name = "primary"
+cull_mode = 2
+albedo_color = Color(0.78112996, 0.6406247, 0.57524097, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6j3re"]
+resource_name = "detail"
+cull_mode = 2
+albedo_color = Color(0.69051224, 0.37854525, 0.47636712, 1)
+roughness = 0.5
+
+[node name="chimney" unique_id=858179211 node_paths=PackedStringArray("meshes") instance=ExtResource("1_y82o4")]
+script = ExtResource("2_caio1")
+primary_color = Color(0.78112996, 0.6406247, 0.57524097, 1)
+meshes = [NodePath("chimney-body"), NodePath("chimney-sec"), NodePath("detail_001")]
+secondary_color = Color(0.5653126, 0.41913217, 0.33795124, 1)
+detail_color = Color(0.69051224, 0.37854525, 0.47636712, 1)
+
+[node name="chimney-body" parent="." index="0" unique_id=1156259903]
+transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 0, -0.041547, 0)
+surface_material_override/0 = SubResource("StandardMaterial3D_caio1")
+
+[node name="chimney-sec" parent="." index="1" unique_id=1360224135]
+transform = Transform3D(1, 0, 0, 0, 0.80352014, 0, 0, 0, 1, 0, -0.041547, 0)
+surface_material_override/0 = SubResource("StandardMaterial3D_irw63")
+
+[node name="detail_001" parent="." index="2" unique_id=104134547]
+transform = Transform3D(0.8, 0, 0, 0, 0.20088004, 0, 0, 0, 0.8, 0, 5.5830936, 0)
+surface_material_override/0 = SubResource("StandardMaterial3D_6j3re")
