@@ -77,13 +77,17 @@ void fragment() {
 				abs(SCREEN_UV.x - screen_uv.x) <= screen_radius.x + 0.01 &&
 				abs(SCREEN_UV.y - screen_uv.y) <= screen_radius.y + 0.01
 			){
-				if (infill_color[3] > 0.9999 && current_depth > depth) {
+				if (infill_color.a > 0.9999 && current_depth > depth) {
 					final_color = infill_color;
 					depth = current_depth;
 				}
-				else if (infill_color[3] > 0.0 && current_depth > depth) {
-					final_color.rgb = final_color.rgb * (1.0 - infill_color[3]) + infill_color.rgb * infill_color[3];
-					final_color.a = 1.0 - (1.0 - final_color.a) * (1.0 - infill_color[3]);
+				else if (infill_color.a > 0.0 && current_depth > depth) {
+					final_color.rgb = final_color.rgb * (1.0 - infill_color.a) + infill_color.rgb * infill_color.a;
+					final_color.a = 1.0 - (1.0 - final_color.a) * (1.0 - infill_color.a);
+				}
+				else if (infill_color.a > 0.0 && current_depth < depth) {
+					final_color.rgb = final_color.rgb * final_color.a + infill_color.rgb * (1.0 - final_color.a);
+					final_color.a = 1.0 - (1.0 - final_color.a) * (1.0 - infill_color.a);
 				}
 			}
 		}

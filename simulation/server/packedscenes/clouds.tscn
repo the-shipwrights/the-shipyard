@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://x17nnuoxnafl"]
 
 [ext_resource type="QuadMesh" uid="uid://c8b2pqj5iecng" path="res://assets/3dmodels/cloud_particle.tres" id="1_6t0eo"]
-[ext_resource type="Script" uid="uid://b4kjvxb6hrxjx" path="res://scripts/cloud_controller.gd" id="1_dtbih"]
+[ext_resource type="Script" uid="uid://b4kjvxb6hrxjx" path="res://scripts/clouds.gd" id="1_dtbih"]
 [ext_resource type="Material" uid="uid://ce7j214e4fhjh" path="res://assets/materials/cloud_material.tres" id="4_dk4w1"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_8twhp"]
@@ -33,6 +33,7 @@ mesh = ExtResource("1_6t0eo")
 
 [node name="ViewQuad" type="MeshInstance3D" parent="TestMeshes" unique_id=973988668]
 transform = Transform3D(5, 0, 0, 0, -2.1855695e-07, 5, 0, -5, -2.1855695e-07, 2.5, 0, 2.5)
+visible = false
 mesh = ExtResource("1_6t0eo")
 
 [node name="ViewCube" type="MeshInstance3D" parent="TestMeshes" unique_id=2019608315]

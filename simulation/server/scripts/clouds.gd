@@ -49,9 +49,9 @@ func create_cloud(size: Vector2, thickness: float):
 	
 	var particle_count: int = round(size.x * size.y / pow(thickness, 2))
 	for i in range(particle_count):
-		cloud.particles.append(create_particle(size, thickness, 0.8))
-		cloud.particles.append(create_particle(size, thickness, 0.4))
-		cloud.particles.append(create_particle(size, thickness, 0.4))
+		cloud.particles.append(create_particle(size, thickness, 1.0))
+		cloud.particles.append(create_particle(size, thickness, 0.6))
+		cloud.particles.append(create_particle(size, thickness, 0.6))
 	clouds.append(cloud)
 	
 func create_particle(size: Vector2, thickness: float, threshold: float) -> Particle:
