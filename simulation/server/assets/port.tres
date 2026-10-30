@@ -1,0 +1,10 @@
+[gd_resource type="BoxMesh" format=3 uid="uid://c6kxybbc25rxl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rmxvs"]
+albedo_color = Color(0.48621285, 0.31561542, 0.24367872, 1)
+backlight_enabled = true
+backlight = Color(0.8532292, 0.8532292, 0.85322917, 1)
+
+[resource]
+material = SubResource("StandardMaterial3D_rmxvs")
+size = Vector3(3.528, 0.503, 0.75)

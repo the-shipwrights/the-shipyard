@@ -1,0 +1,60 @@
+extends RefCounted
+
+const PIECE_CONFIGS := {
+	0: {
+		"name": "hull_bow",
+		"width": 6,
+		"height": 4,
+		"category": "hull",
+		"shape": "bow",
+		"color_field": "primary",
+	},
+	1: {
+		"name": "hull_section",
+		"width": 4,
+		"height": 4,
+		"category": "hull",
+		"shape": "rect",
+		"color_field": "primary",
+	},
+	2: {
+		"name": "hull_stern",
+		"width": 4,
+		"height": 4,
+		"category": "hull",
+		"shape": "stern",
+		"color_field": "primary",
+	},
+	3: {
+		"name": "cabin",
+		"width": 4,
+		"height": 3,
+		"category": "middle",
+		"shape": "rect",
+		"color_field": "secondary",
+	},
+	4: {
+		"name": "big_cabin",
+		"width": 4,
+		"height": 6,
+		"category": "middle",
+		"shape": "rect",
+		"color_field": "secondary",
+	},
+	10: {
+		"name": "chimney",
+		"width": 2,
+		"height": 4,
+		"category": "accessory",
+		"shape": "rect",
+		"color_field": "accent",
+	},
+	11: {
+		"name": "sail",
+		"width": 8,
+		"height": 8,
+		"category": "accessory",
+		"shape": "sail",
+		"color_field": "accent",
+	},
+}

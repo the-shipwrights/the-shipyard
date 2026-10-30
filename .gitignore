@@ -18,6 +18,7 @@ mono_crash.*.json
 scanning/.env/
 scanning/training_data/*
 scanning/runs/detect/
+cv_training_sets
 
 # we want to push this folder, idk how to do this im no .gitignore expert, but this works.
 *!scanning/training_data/training.md
@@ -30,6 +31,6 @@ __pycache__/
 .vscode/
 
 runs/
-backend/boats.db
+# backend/boats.db
 scanning/yolo26n.pt
 weights/

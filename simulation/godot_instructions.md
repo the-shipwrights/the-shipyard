@@ -62,7 +62,18 @@ Why keep boat constructor and client interaction seperate? umm SOLID or somethin
 
 
 ## Boat reconstruction
-todo
+
+### Modular Meshes
+Each boat is composed of a modular set of meshes. Further more, Each mesh is split into a set of three meshes: Primary mesh, Secondary mesh, and details mesh. Each mesh is assigned its own material, which dictates the color of that mesh. See figure below. 
+
+![](boat_mesh_diagram.png)
+
+### Putting pieces together 
+Although the mesh constructor is responsible for putting together the Boat, should it also be responsible for editing texture colors? Unsure... Maybe though! 
+
+Naming of different surfaces is consistent. Should we have one resource per boat containing a trio of materials that are unique to each boat then? Yea probably. 
+
+It would probably be best for the mesh constructor to handle colors as well. I will need to toy around with it some more later. 
 
 ## Terrain Generation
 todo

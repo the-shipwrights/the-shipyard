@@ -1,12 +1,14 @@
 """
-Model training & prediction entry points.
+Model training & prediction entry points. ANSI codes my beloved.
 
 NOTICE: AI was used to generate parts of the code, but a hefty part is human-written,
 and **everything** has been thoroughly tested by a human[1]
 
 [1]: (its python: if its not thoroughly tested, it will break)
 """
-
+import select
+import shutil
+import sys
 import tempfile
 from collections.abc import Callable
 from datetime import datetime
@@ -14,7 +16,78 @@ from pathlib import Path
 
 import cv2 as cv
 import yaml
+from numpy import ndarray
 from ultralytics import YOLO
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+TRAINING_RUNS_DIRECTORY = Path(__file__).resolve().parent / "runs" / "detect"
+PREDICTION_RUNS_DIRECTORY = Path(__file__).resolve().parent / "runs" / "predict"
+
+
+def _display_path(path: Path) -> str:
+    """Format a path relative to the project root for console output."""
+    return path.resolve().relative_to(PROJECT_ROOT).as_posix()
+
+
+# Copilot generated function based on a very verbose description to make it really pretty.
+def format_detections(detections: list[dict]) -> str:
+    """Format detections on one line each with colored labels and box coordinates."""
+    if not detections:
+        return "No detections."
+
+    names = [str(detection.get("name", "unknown")) for detection in detections]
+    confidences = [
+        f"{detection['confidence']:.2%}"
+        if detection.get("confidence") is not None
+        else ""
+        for detection in detections
+    ]
+    name_width = max(map(len, names))
+    confidence_width = max(map(len, confidences))
+
+    lines = []
+    for detection, name, confidence_text in zip(
+        detections, names, confidences, strict=True
+    ):
+        confidence = detection.get("confidence")
+        line = f"\033[48;2;0;95;95m\033[97m{name.ljust(name_width)}\033[0m"
+        if confidence is not None:
+            confidence_color = (
+                "\033[32m" if confidence > 0.85
+                else "\033[33m" if confidence > 0.5
+                else "\033[31m"
+            )
+            line += f" {confidence_color}{confidence_text.rjust(confidence_width)}\033[0m"
+        else:
+            line += f" {' ' * confidence_width}"
+
+        box = detection.get("box")
+        if box is not None:
+            coordinates = ", ".join(
+                f"{key}={value:8.2f}" if isinstance(value, (int, float))
+                else f"{key}={value}"
+                for key, value in box.items()
+            )
+            line += f" \033[90m{{{coordinates}}}\033[0m"
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _prepare_terminal_output(*, scroll: bool = False) -> None:
+    """Optionally scroll terminal output and restore default text formatting."""
+    if sys.stdout.isatty():
+        if scroll:
+            sys.stdout.write("\n" * shutil.get_terminal_size().lines)
+        sys.stdout.write("\033[0m")
+        sys.stdout.flush()
+
+
+def _terminal_key() -> int | None:
+    """Read a pending terminal p/q command without blocking the camera loop."""
+    if not sys.stdin.isatty() or not select.select([sys.stdin], [], [], 0)[0]:
+        return None
+    command = sys.stdin.readline().strip().lower()
+    return ord(command) if command in {"p", "q"} else None
 
 
 def _dataset_yaml(dataset: str | Path) -> Path:
@@ -57,7 +130,7 @@ def _portable_dataset_yaml(data_file: Path) -> tuple[Path, tempfile.TemporaryDir
 
 
 def _threshold_frame(frame: cv.typing.MatLike) -> cv.typing.MatLike:
-    """Convert a color frame to a three-channel binary image using Otsu thresholding."""
+    """Convert a color frame to a three-channel binary image using Otsu thresholding. how """
     grayscale = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     _, binary = cv.threshold(
         grayscale,
@@ -72,7 +145,7 @@ def model_train(
     model: str | Path | None = None,
     dataset: str | Path = "wooden_block_symbols",
     epochs: int = 10,
-    imgsz: int = 640,
+    imgsz: int = 960,
 ) -> str | Path:
     if not isinstance(epochs, int) or epochs <= 0:
         raise ValueError("epochs must be a positive integer")
@@ -90,20 +163,22 @@ def model_train(
             data=str(portable_data_file),
             epochs=epochs,
             imgsz=imgsz,
+            project=str(TRAINING_RUNS_DIRECTORY)
         )
     finally:
         if temporary_directory is not None:
             temporary_directory.cleanup()
 
+    # TODO: this is returning incorrectly. make it match with project string.
     return Path(results.save_dir) / "weights" / "best.pt"
 
 
 
 #  docs: (https://docs.ultralytics.com/modes/predict)
 def model_predict_single(
-    weights_path: Path,
+    weights_path: Path | str | None,
     img_path: Path,
-    on_snapshot: Callable[[list[dict]], None],
+    on_snapshot: Callable[[list[dict], ndarray, int, int], None],
     threshold: bool = False,
 ) -> None:
     """
@@ -111,6 +186,10 @@ def model_predict_single(
     input: path to model weights, path to image
     return: a print of that bigass log of detected classes and where they are located.
     """
+
+    if weights_path == None:
+        raise ValueError("oh no, the weights path is set to None! This is really bad. Don't call model_predict_single unless you have a valid path!!!!")
+
     model = YOLO(weights_path)
     image = cv.imread(str(img_path))
     if image is None:
@@ -125,26 +204,25 @@ def model_predict_single(
         verbose=False, # skip logging results to terminal
     )
 
-    result = results[0] # a list of results. single image predictions are a 1-item list.
+    result = results[0] # a list of results. single image predictions are a 1-item list.  # ty: ignore[not-subscriptable]
 
-    snapshot_directory = Path("runs/predict")
+    snapshot_directory = PREDICTION_RUNS_DIRECTORY
     snapshot_directory.mkdir(parents=True, exist_ok=True)
     snapshot_name = (
-        f"{Path(img_path).stem}-{datetime.now():%Y%m%d-%H%M%S-%f}"
+        f"{Path(img_path).stem}-{datetime.now():%y%m%d-%H%M%S}"  # noqa: DTZ005
     )
     annotated_path = snapshot_directory / f"{snapshot_name}.jpg"
     original_path = snapshot_directory / f"{snapshot_name}-original.jpg"
-    if not cv.imwrite(str(annotated_path), result.plot()):
+    if not cv.imwrite(str(annotated_path), result.plot()):  # ty: ignore[unresolved-attribute]
         raise OSError(f"Failed to save annotated prediction to {annotated_path}")
     if not cv.imwrite(str(original_path), original_image):
         raise OSError(f"Failed to save original input image to {original_path}")
 
-    on_snapshot(result.summary(), image.shape[0])
+    on_snapshot(result.summary(), image, image.shape[1], image.shape[0])  # ty: ignore[unresolved-attribute]
 
-    print(result.verbose()) # this prints a list of detected occurences for each class, i.e "1 front, 2 hull"
-    print(result.summary()) # this prints each result object in results, very verbose
-    print(f"Annotated prediction saved to {annotated_path}")
-    print(f"Original image saved to {original_path}")
+    print(format_detections(result.summary()))  # ty: ignore[unresolved-attribute]
+    print(f"\033[90mAnnotated prediction saved to {_display_path(annotated_path)}\033[0m")
+    print(f"Original image saved to {_display_path(original_path)}")
     # The naming for these methods makes no sense at all. wtf @ultralytics??
 
     """result.summary() has this shape (data not representative):
@@ -163,9 +241,9 @@ def model_predict_single(
 
 
 def model_predict_cam(
-    weights_path: Path,
+    weights_path: str | Path | None,
     camera_idx: int,
-    on_snapshot: Callable[[list[dict]], None],
+    on_snapshot: Callable[[list[dict], ndarray, int, int], None],
     threshold: bool = False,
 ) -> None:
     """
@@ -176,15 +254,20 @@ def model_predict_cam(
     the data and output it.
     input: path to model weights, camera index, snapshot callback.
     """
+    if weights_path == None:
+        raise ValueError("weights path is empty! Not good... It should be assigned before calling model_predict_cam")
 
     model = YOLO(weights_path)
     camera = cv.VideoCapture(camera_idx)
+    camera.set(cv.CAP_PROP_FRAME_WIDTH, 1280)
+    camera.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
     if not camera.isOpened():
         camera.release()
         raise RuntimeError(f"Could not open camera index {camera_idx}")
 
     latest_non_empty_summary: list[dict] = []
-    snapshot_directory = Path("runs/predict")
+    snapshot_directory = PREDICTION_RUNS_DIRECTORY
+    terminal_scrolled = False
 
     try:
         while True:
@@ -198,11 +281,16 @@ def model_predict_cam(
                 _threshold_frame(original_frame) if threshold else original_frame
             )
             results = model.predict(source=model_frame, verbose=False)
-            result = results[0]
-            frame = result.plot()
+            result = results[0]  # ty: ignore[not-subscriptable]
+            frame = result.plot()  # ty: ignore[unresolved-attribute]
             cv.imshow("Camera prediction", frame)
             key = cv.waitKey(1) & 0xFF
-            summary = result.summary()
+            terminal_key = _terminal_key()
+            if terminal_key is not None:
+                key = terminal_key
+            _prepare_terminal_output(scroll=not terminal_scrolled)
+            terminal_scrolled = True
+            summary = result.summary()  # ty: ignore[unresolved-attribute]
 
             if summary:
                 latest_non_empty_summary = summary
@@ -211,7 +299,7 @@ def model_predict_cam(
                 snapshot = summary or latest_non_empty_summary
                 snapshot_directory.mkdir(parents=True, exist_ok=True)
                 snapshot_name = (
-                    f"camera-{camera_idx}-{datetime.now():%Y%m%d-%H%M%S-%f}"
+                    f"{datetime.now():%y%m%d-%H%M%S}"  # noqa: DTZ005
                 )
                 annotated_path = snapshot_directory / f"{snapshot_name}.jpg"
                 original_path = snapshot_directory / f"{snapshot_name}-original.jpg"
@@ -223,12 +311,13 @@ def model_predict_cam(
                     raise OSError(
                         f"Failed to save original camera snapshot to {original_path}"
                     )
-                on_snapshot(snapshot, frame.shape[0])
-                print(snapshot)
-                print(f"Annotated snapshot saved to {annotated_path}")
-                print(f"Original snapshot saved to {original_path}")
+                print(format_detections(snapshot))
+                on_snapshot(snapshot, frame, frame.shape[1], frame.shape[0])
+                print(f"\033[90mAnnotated snapshot saved to {_display_path(annotated_path)}\033[0m")
+                print(f"Original snapshot saved to {_display_path(original_path)}")
 
             elif key == ord("q"):
+                camera.release()
                 break
     finally:
         try:

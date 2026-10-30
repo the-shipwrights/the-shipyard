@@ -1,0 +1,8 @@
+matplotlib==3.11.2
+numpy==2.5.3
+opencv-contrib-python==5.0.0.93
+Pillow==12.3.0
+PyYAML==6.0.3
+simple-term-menu==1.6.6
+qrcode>=8.0
+ultralytics==8.4.154

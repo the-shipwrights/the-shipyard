@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="archipelago"
-run/main_scene="uid://bygbttvsg706t"
+run/main_scene="uid://b7uypgueg7b2h"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/textures/icon.svg"
 run/size/mode=0
@@ -26,6 +26,16 @@ window/stretch/aspect="expand"
 [dotnet]
 
 project/assembly_name="archipelago"
+
+[file_customization]
+
+folder_colors={
+"res://packedscenes/boat_components/": "yellow"
+}
+
+[filesystem]
+
+import/blender/enabled=false
 
 [physics]
 

@@ -20,7 +20,11 @@ config/icon="res://icon.svg"
 window/size/viewport_width=375
 window/size/viewport_height=812
 window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep_height"
+
+[dotnet]
+
+project/assembly_name="mobile-controls"
 
 [physics]
 

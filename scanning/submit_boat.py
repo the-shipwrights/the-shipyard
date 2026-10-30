@@ -1,9 +1,15 @@
+import os
+
 import requests
-from boat import Boat, Piece
+
+from .boat import Boat, Piece
+from .event_links import boat_page_url
 
 
-def submit_scanned_boat(boat: Boat, server_url: str = "http://localhost:8000") -> str:
+def submit_scanned_boat(boat: Boat, server_url: str | None = None) -> str:
     """Send a scanned Boat instance to the backend and return the generated 4-letter ID."""
+    if server_url is None:
+        server_url = os.getenv("SHIPYARD_API_URL", "http://127.0.0.1:8000")
     endpoint = f"{server_url.rstrip('/')}/api/boats"
     
     # BoatPayload expects a list of pieces matching PiecePayload
@@ -37,9 +43,9 @@ def test_boat_submission():
 
     # 3. Post to the FastAPI backend
     try:
-        boat_id = submit_scanned_boat(myBoat, server_url="http://localhost:8000")
+        boat_id = submit_scanned_boat(myBoat)
         print(f"Success! Boat registered with ID: {boat_id}")
-        print(f"Participant customizer link: http://localhost:5173/boat/{boat_id}")
+        print(f"Participant customizer link: {boat_page_url(boat_id)}")
     except requests.exceptions.HTTPError as err:
         print(f"Server rejected boat payload: {err.response.status_code} - {err.response.text}")
     except requests.exceptions.ConnectionError:
