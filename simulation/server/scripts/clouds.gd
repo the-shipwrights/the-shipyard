@@ -17,7 +17,7 @@ class Cloud:
 func _ready() -> void:
 	camera_height = 4.8
 	material = load("res://assets/materials/cloud_material.tres")
-	create_cloud(Vector2(3.0, 4.0), 0.5)
+	# create_cloud(Vector3(0.0, 0.0, 0.0), Vector2(16.0, 16.0), 4.0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -26,7 +26,7 @@ func _process(delta: float) -> void:
 	
 	for cloud in clouds:
 		for particle in cloud.particles:
-			particle_positions.append(particle.position + cloud.node.position)
+			particle_positions.append(particle.position + cloud.node.position + self.position)
 			particle_radiuses.append(particle.radius)
 	
 	material.set_shader_parameter("screen_height", camera_height)
@@ -38,7 +38,7 @@ func move_clouds(transle: Vector3):
 	for cloud in clouds:
 		cloud.node.transform = cloud.node.transform.translated(transle)
 
-func create_cloud(size: Vector2, thickness: float):
+func create_cloud(position: Vector3, size: Vector2, thickness: float):
 	var half: Vector2 = size / 2.0
 	var cloud: Cloud = Cloud.new()
 	var node: Node3D = Node3D.new()
@@ -46,12 +46,15 @@ func create_cloud(size: Vector2, thickness: float):
 	node.owner = self
 	node.name = "Cloud1"
 	cloud.node = node
+	cloud.node.position = position
 	
 	var particle_count: int = round(size.x * size.y / pow(thickness, 2))
 	for i in range(particle_count):
 		cloud.particles.append(create_particle(size, thickness, 1.0))
 		cloud.particles.append(create_particle(size, thickness, 0.6))
 		cloud.particles.append(create_particle(size, thickness, 0.6))
+		cloud.particles.append(create_particle(size, thickness, 0.6))
+	
 	clouds.append(cloud)
 	
 func create_particle(size: Vector2, thickness: float, threshold: float) -> Particle:

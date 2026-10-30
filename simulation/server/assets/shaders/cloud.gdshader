@@ -3,12 +3,13 @@ shader_type spatial;
 render_mode unshaded;
 
 uniform sampler2D image : source_color;
+uniform vec3 outline_albedo: source_color;
 uniform float border_thickness;
 
 uniform float screen_height;
 uniform int particle_count;
-uniform vec3[256] particle_positions;
-uniform float[256] particle_radiuses;
+uniform vec3[512] particle_positions;
+uniform float[512] particle_radiuses;
 
 void vertex() {
 		
@@ -42,7 +43,8 @@ void fragment() {
 			abs(screen_uv_diff.x) <= scaled_radius.x &&
 			abs(screen_uv_diff.y) <= scaled_radius.y
 		){
-			ALPHA = 1.0 - (1.0 - ALPHA) * (1.0 - outline_color[3]);
+			ALBEDO = outline_albedo;
+			ALPHA = 1.0 - (1.0 - ALPHA) * (1.0 - outline_color.a);
 		}
 	}
 	float depth = -100000.0;
