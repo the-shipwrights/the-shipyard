@@ -60,6 +60,7 @@ Why keep boat constructor and client interaction seperate? umm SOLID or somethin
 
 ![](simulation-diagram.png)
 
+
 ## Boat reconstruction
 
 ### Modular Meshes
@@ -77,11 +78,25 @@ It would probably be best for the mesh constructor to handle colors as well. I w
 ## Terrain Generation
 todo
 
+## Real-time Cartoon Clouds 
+Heavily inspired by [Realtime Rendering of Cartoon Smoke & Clouds by Morgan Mcguire (2006)](https://www.researchgate.net/publication/221523194_Real-time_rendering_of_cartoon_smoke_and_clouds), clouds will be rendered as cartoony 2D sprites overlaid on each other + a bunch of math to make it look great. 
+
+TODO: how will the clouds be generated & animated?
+
+### Node Structure
+Clouds will be on a separate render layer with a dedicated subviewport so that they can have a dedicated [compositor](https://docs.godotengine.org/en/stable/tutorials/rendering/compositor.html#compositor-effects) (See figure below). The main camera will be responsible for rendering everything as usual, while the secondary camera will render clouds with a custom compositor.  
+
+![](subviewport_trickery.png)
+
+Clouds themselves will be a [MultiMesh3D](https://docs.godotengine.org/en/stable/classes/class_multimesh.html). on a layer that only the secondary camera will render. In the figure above, that would mean that they would be picked up by the camera under `SubViewport2`.  This gives us this final node tree:  
+
+![](cloudtestscene_composition.png)
+
+Clouds is a packedscene that is responsible for managing spawning of meshes. SubViewport2 will hold the compositor along with the CompositorEffect, which currently links back to the placeholder [post_process_shader.gd](simulation/server/assets/shaders/post_process_shader.gd). 
+<!-- TODO: rewrite docs so there is a part defining how the main scene is structured. Move the details of viewports there instead of flooding this subheading -->
 ### Shaders
 todo 
 #### Boat shaders
 todo
 #### Ocean shaders
-todo
-#### Fog shaders
 todo
