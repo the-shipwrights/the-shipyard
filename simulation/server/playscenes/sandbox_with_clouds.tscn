@@ -199,7 +199,7 @@ fog_height_density = 16.0
 script = ExtResource("1_nyb33")
 
 [node name="BoatSpawner" type="Node3D" parent="." unique_id=968204350]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1041584, -0.6, -5.43182)
 script = ExtResource("2_gmrqm")
 boat_scene = ExtResource("3_bqb3r")
 
@@ -207,11 +207,12 @@ boat_scene = ExtResource("3_bqb3r")
 
 [node name="Ocean" type="Node3D" parent="World" unique_id=1162286959]
 
-[node name="OceanMesh" type="MeshInstance3D" parent="World/Ocean" unique_id=955107884]
+[node name="OceanMesh" type="MeshInstance3D" parent="World/Ocean" unique_id=955107884 node_paths=PackedStringArray("terrain")]
 transform = Transform3D(169.384, 0, 0, 0, 0.985, 0, 0, 0, 225.245, 0, -0.49, 0)
 mesh = SubResource("PlaneMesh_v0nif")
 surface_material_override/0 = ExtResource("4_unq8f")
 script = ExtResource("5_koa0q")
+terrain = NodePath("../../Terrain/TerrainWorld")
 
 [node name="Terrain" type="Node3D" parent="World" unique_id=1992012816]
 
@@ -317,7 +318,7 @@ size = 155.60472
 [node name="vignette" parent="LanscapeCamera" unique_id=327358756 instance=ExtResource("14_u4sem")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=297227228]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -704.0471, -545.00275, -344.06653)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -705.46387, -622.24493, -333.5463)
 visible = false
 size = 155.60472
 script = ExtResource("15_feigq")
