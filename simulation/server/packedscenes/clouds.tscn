@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://x17nnuoxnafl"]
+
+[ext_resource type="QuadMesh" uid="uid://c8b2pqj5iecng" path="res://assets/3dmodels/cloud_particle.tres" id="1_6t0eo"]
+[ext_resource type="Script" uid="uid://b4kjvxb6hrxjx" path="res://scripts/clouds.gd" id="1_dtbih"]
+[ext_resource type="Material" uid="uid://ce7j214e4fhjh" path="res://assets/materials/cloud_material.tres" id="4_dk4w1"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8twhp"]
+material = ExtResource("4_dk4w1")
+
+[node name="Clouds" type="Node3D" unique_id=739357004]
+editor_description = "Handles cloud generation and animation, perhaps also other things? we shall see..."
+script = ExtResource("1_dtbih")
+
+[node name="TestMeshes" type="Node3D" parent="." unique_id=1564192195]
+
+[node name="CloudParticle1" type="MeshInstance3D" parent="TestMeshes" unique_id=893149861]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1.0000002, 0, -1.0000002, -4.37114e-08, 3.6881828, 1.7433448, -0.9628298)
+visible = false
+layers = 2
+mesh = ExtResource("1_6t0eo")
+
+[node name="CloudParticle2" type="MeshInstance3D" parent="TestMeshes" unique_id=2121152295]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1.0000002, 0, -1.0000002, -4.37114e-08, 1.7581491, 0.1, -1.0768595)
+visible = false
+layers = 2
+mesh = ExtResource("1_6t0eo")
+
+[node name="CloudParticle3" type="MeshInstance3D" parent="TestMeshes" unique_id=1679534410]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1.0000002, 0, -1.0000002, -4.37114e-08, 0.78842115, 0.58258164, -0.7747631)
+visible = false
+layers = 2
+mesh = ExtResource("1_6t0eo")
+
+[node name="ViewQuad" type="MeshInstance3D" parent="TestMeshes" unique_id=973988668]
+transform = Transform3D(5, 0, 0, 0, -2.1855695e-07, 5, 0, -5, -2.1855695e-07, 2.5, 0, 2.5)
+visible = false
+mesh = ExtResource("1_6t0eo")
+
+[node name="ViewCube" type="MeshInstance3D" parent="TestMeshes" unique_id=2019608315]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+mesh = SubResource("BoxMesh_8twhp")

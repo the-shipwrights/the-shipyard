@@ -8,6 +8,11 @@ const SPACING_Z := 5.0
 
 @onready var network_manager: NetworkManager = $"../NetworkManager"
 
+const INITIAL_BOATS_PER_FRAME := 3
+
+var initial_boat_queue: Array[Dictionary] = []
+var initial_spawn_running := false
+
 var spawned_boats: Dictionary = {}
 var spawn_layout: Dictionary = {}
 var row_depths: Dictionary = {}
@@ -35,8 +40,30 @@ func _ready() -> void:
 func _on_initial_boats_received(boats: Array) -> void:
 	for boat_data in boats:
 		if boat_data is Dictionary:
+			initial_boat_queue.append(boat_data)
+
+	if not initial_spawn_running:
+		_drain_initial_boat_queue()
+
+func _drain_initial_boat_queue() -> void:
+	initial_spawn_running = true
+	var index := 0
+
+	while index < initial_boat_queue.size():
+		var batch_end := mini(
+			index + INITIAL_BOATS_PER_FRAME,
+			initial_boat_queue.size()
+		)
+
+		while index < batch_end:
+			var boat_data: Dictionary = initial_boat_queue[index]
+			index += 1
 			_spawn_or_update_boat(boat_data)
 
+		await get_tree().process_frame
+
+	initial_boat_queue.clear()
+	initial_spawn_running = false
 
 func _on_boat_launched(boat_data: Dictionary) -> void:
 	_spawn_or_update_boat(boat_data)
@@ -155,7 +182,7 @@ func _create_route() -> Array[Vector3]:
 		var route: Array[Vector3] = [start]
 		var valid := true
 
-		for _waypoint in range(5):
+		for _waypoint in range(2):
 			var found := false
 
 			for _candidate_attempt in range(80):
@@ -181,9 +208,9 @@ func _create_route() -> Array[Vector3]:
 func _random_water_point() -> Vector3:
 	for _attempt in range(100):
 		var point := Vector3(
-			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.y),
+			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.x),
 			0.15,
-			rng.randf_range(-MAP_HALF_EXTENTS.x, MAP_HALF_EXTENTS.y)
+			rng.randf_range(-MAP_HALF_EXTENTS.y, MAP_HALF_EXTENTS.y)
 		)
 
 		if _is_deep_water(point) and _is_clear_of_planned_routes(point):
